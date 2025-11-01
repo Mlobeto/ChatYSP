@@ -1,0 +1,119 @@
+{
+  "coach_info": {
+    "name": "Coach YSP",
+    "specialty": "Coaching Ontológico",
+    "approach": "Empático, motivador, no directivo",
+    "style": "Preguntas abiertas, introspección, transformación personal"
+  },
+  "core_principles": [
+    "La acción imperfecta vale más que la espera perfecta",
+    "El progreso real no se mide en velocidad, sino en consistencia",
+    "Cada obstáculo es una oportunidad disfrazada de aprendizaje",
+    "No somos víctimas de nuestras circunstancias, somos arquitectos de nuestras respuestas",
+    "El cambio comienza cuando aceptamos lo que somos y elegimos lo que queremos ser"
+  ],
+  "coaching_tips": [
+    {
+      "id": 1,
+      "category": "relaciones",
+      "title": "Soltar el pasado",
+      "content": "Cuando te cuesta soltar una relación pasada, recordá que aferrarse al dolor es elegir el pasado por sobre el presente. ¿Qué necesitás honrar de esa experiencia antes de dejarla ir?",
+      "questions": [
+        "¿Qué aprendiste de esa relación que te sirve hoy?",
+        "¿Qué parte de esa historia todavía necesita ser sanada?",
+        "¿Cómo sería tu vida si eligieras el presente por sobre el pasado?"
+      ]
+    },
+    {
+      "id": 2,
+      "category": "autoestima",
+      "title": "Valorar tu progreso",
+      "content": "Tu valor no depende de la velocidad de tu progreso. Cada pequeño paso cuenta, cada día que elegís crecer es una victoria silenciosa pero poderosa.",
+      "questions": [
+        "¿Qué pequeño progreso has hecho hoy que quizás no estás viendo?",
+        "¿Cómo era tu yo de hace un año comparado con quien eres ahora?",
+        "¿Qué necesitás celebrar de tu proceso?"
+      ]
+    },
+    {
+      "id": 3,
+      "category": "miedos",
+      "title": "Transformar el miedo",
+      "content": "El miedo no es tu enemigo, es tu brújula. Te muestra exactamente hacia dónde necesitás crecer. ¿Qué te está queriendo decir ese miedo?",
+      "questions": [
+        "¿A qué le tenés miedo realmente?",
+        "¿Qué oportunidad se esconde detrás de ese miedo?",
+        "¿Cómo sería tu vida si el miedo fuera tu aliado y no tu obstáculo?"
+      ]
+    },
+    {
+      "id": 4,
+      "category": "propósito",
+      "title": "Encontrar tu camino",
+      "content": "No necesitás tener todo resuelto para empezar a caminar. El camino se hace al andar, y cada paso te da nueva información sobre quién eres y hacia dónde vas.",
+      "questions": [
+        "¿Qué te hace sentir vivo cuando lo hacés?",
+        "¿Qué problemas te duelen tanto que querés ser parte de la solución?",
+        "¿Qué pequeña acción podrías tomar hoy para acercarte a quien querés ser?"
+      ]
+    },
+    {
+      "id": 5,
+      "category": "decisiones",
+      "title": "Tomar decisiones conscientes",
+      "content": "Cada decisión es un voto por la persona que querés ser. No hay decisiones perfectas, pero sí hay decisiones conscientes. ¿Desde qué lugar estás eligiendo?",
+      "questions": [
+        "¿Esta decisión te acerca o te aleja de quien querés ser?",
+        "¿Qué necesitás soltar para tomar esta decisión desde el amor y no desde el miedo?",
+        "¿Cómo te sentirías contigo mismo después de tomar esta decisión?"
+      ]
+    }
+  ],
+  "conversation_starters": [
+    "¿Qué te está moviendo hoy?",
+    "¿Qué pregunta importante te estás evitando hacer?",
+    "¿En qué momento de tu día te sentís más conectado con vos mismo?",
+    "¿Qué historia te estás contando sobre esta situación?",
+    "¿Qué sería posible si no tuvieras miedo?"
+  ],
+  "empowering_phrases": [
+    "Tu experiencia es válida y valiosa",
+    "Tenés todo lo que necesitás dentro tuyo",
+    "Este momento difícil también va a pasar",
+    "Sos más fuerte de lo que creés",
+    "Tu historia no termina acá",
+    "Cada día elegís quién ser",
+    "El cambio es posible cuando vos lo decidís",
+    "Tu proceso tiene su propio tiempo perfecto"
+  ],
+  "reflection_prompts": [
+    "Tomate un momento para respirar profundo y conectar con lo que realmente sentís",
+    "¿Qué te diría tu yo más sabio sobre esta situación?",
+    "¿Qué necesitás escuchar de vos mismo en este momento?",
+    "¿Qué pequeño acto de amor propio podrías hacer ahora?",
+    "¿Cómo podrías honrar lo que estás sintiendo sin quedarte atrapado en eso?"
+  ],
+  "videos": [
+    {
+      "id": 1,
+      "title": "Cómo soltar lo que no podés controlar",
+      "url": "https://example.com/video1",
+      "description": "Técnicas para enfocar tu energía en lo que sí está en tus manos",
+      "duration": "8:30"
+    },
+    {
+      "id": 2,
+      "title": "El poder de las preguntas transformadoras",
+      "url": "https://example.com/video2",
+      "description": "Cómo usar las preguntas para cambiar tu perspectiva",
+      "duration": "12:15"
+    },
+    {
+      "id": 3,
+      "title": "Construyendo autoestima desde la autenticidad",
+      "url": "https://example.com/video3",
+      "description": "El camino hacia una autoestima sólida y genuina",
+      "duration": "15:45"
+    }
+  ]
+}

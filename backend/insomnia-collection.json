@@ -1,0 +1,636 @@
+{
+	"_type": "export",
+	"__export_format": 4,
+	"__export_date": "2025-11-01T00:00:00.000Z",
+	"__export_source": "insomnia.desktop.app:v2023.5.8",
+	"resources": [
+		{
+			"_id": "req_auth_register",
+			"parentId": "fld_auth",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/auth/register",
+			"name": "Registro de Usuario",
+			"description": "Registrar un nuevo usuario en el sistema",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"username\": \"johndoe\",\n\t\"email\": \"john@example.com\",\n\t\"password\": \"Password123!\",\n\t\"avatar\": \"https://avatar.url/john.jpg\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1698796800000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_auth_login",
+			"parentId": "fld_auth",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/auth/login",
+			"name": "Iniciar Sesión",
+			"description": "Autenticar usuario y obtener JWT token",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"email\": \"john@example.com\",\n\t\"password\": \"Password123!\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1698796700000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_auth_profile",
+			"parentId": "fld_auth",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/auth/profile",
+			"name": "Obtener Perfil",
+			"description": "Obtener información del perfil del usuario autenticado",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796600000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_auth_update_profile",
+			"parentId": "fld_auth",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/auth/profile",
+			"name": "Actualizar Perfil",
+			"description": "Actualizar información del perfil del usuario",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"username\": \"johndoe_updated\",\n\t\"avatar\": \"https://avatar.url/john_new.jpg\",\n\t\"bio\": \"Soy un desarrollador apasionado por la tecnología\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796500000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_rooms_list",
+			"parentId": "fld_rooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/rooms",
+			"name": "Listar Salas",
+			"description": "Obtener lista de todas las salas públicas",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1",
+					"description": "Número de página"
+				},
+				{
+					"name": "limit",
+					"value": "10",
+					"description": "Cantidad por página"
+				},
+				{
+					"name": "type",
+					"value": "chat",
+					"description": "Tipo de sala (chat, game)"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796400000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_rooms_create",
+			"parentId": "fld_rooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/rooms",
+			"name": "Crear Sala",
+			"description": "Crear una nueva sala de chat o juegos",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Sala de Coaching Personal\",\n\t\"description\": \"Espacio para crecimiento personal y reflexión\",\n\t\"roomType\": \"chat\",\n\t\"isPublic\": true,\n\t\"maxUsers\": 10,\n\t\"password\": \"\",\n\t\"settings\": {\n\t\t\"aiEnabled\": true,\n\t\t\"allowFiles\": false,\n\t\t\"moderation\": \"auto\"\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796300000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_rooms_join",
+			"parentId": "fld_rooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/rooms/1/join",
+			"name": "Unirse a Sala",
+			"description": "Unirse a una sala específica",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"password\": \"\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796200000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_chat_messages",
+			"parentId": "fld_chat",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/chat/rooms/1/messages",
+			"name": "Obtener Mensajes",
+			"description": "Obtener mensajes de una sala específica",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1",
+					"description": "Página de mensajes"
+				},
+				{
+					"name": "limit",
+					"value": "50",
+					"description": "Cantidad de mensajes"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796100000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_chat_send_message",
+			"parentId": "fld_chat",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/chat/rooms/1/messages",
+			"name": "Enviar Mensaje",
+			"description": "Enviar un mensaje a una sala",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"content\": \"Me siento un poco perdido últimamente, ¿podrían ayudarme?\",\n\t\"messageType\": \"text\",\n\t\"replyToId\": null\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796000000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_chat_ai_message",
+			"parentId": "fld_chat",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/chat/rooms/1/messages",
+			"name": "Mensaje con IA (Coach)",
+			"description": "Enviar mensaje que activa respuesta del coach",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"content\": \"@coach No sé qué hacer con mi vida profesional, me siento estancado\",\n\t\"messageType\": \"text\",\n\t\"mentionAI\": true\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698795900000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_games_create",
+			"parentId": "fld_games",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/games/rooms/1/games",
+			"name": "Crear Juego",
+			"description": "Crear un nuevo juego de trivia",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"gameType\": \"trivia\",\n\t\"settings\": {\n\t\t\"maxPlayers\": 6,\n\t\t\"questionsCount\": 10,\n\t\t\"timePerQuestion\": 30,\n\t\t\"difficulty\": \"medium\",\n\t\t\"category\": \"general\"\n\t}\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698795800000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_games_join",
+			"parentId": "fld_games",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/games/rooms/1/games/join",
+			"name": "Unirse a Juego",
+			"description": "Unirse a un juego existente",
+			"method": "POST",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698795700000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_games_answer",
+			"parentId": "fld_games",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/games/rooms/1/games/answer",
+			"name": "Enviar Respuesta",
+			"description": "Enviar respuesta a una pregunta del juego",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"answerIndex\": 2,\n\t\"timeUsed\": 15\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698795600000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_stats",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/stats",
+			"name": "Estadísticas del Sistema",
+			"description": "Obtener estadísticas generales del sistema",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795500000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_users",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/users",
+			"name": "Gestionar Usuarios",
+			"description": "Obtener lista de usuarios para administración",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "search",
+					"value": ""
+				},
+				{
+					"name": "role",
+					"value": ""
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795400000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_questions_create",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/questions",
+			"name": "Crear Pregunta",
+			"description": "Crear nueva pregunta para juegos de trivia",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"question\": \"¿Cuál es la capital de Francia?\",\n\t\"options\": [\"Madrid\", \"Londres\", \"París\", \"Roma\"],\n\t\"correctAnswer\": 2,\n\t\"category\": \"geografía\",\n\t\"difficulty\": \"easy\",\n\t\"points\": 10\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795300000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "env_base",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "ChatYSP Environment",
+			"data": {
+				"base_url": "http://localhost:5000",
+				"jwt_token": "",
+				"admin_token": ""
+			},
+			"dataPropertyOrder": {
+				"&": ["base_url", "jwt_token", "admin_token"]
+			},
+			"color": "#7d69cb",
+			"isPrivate": false,
+			"metaSortKey": 1698796800000,
+			"_type": "environment"
+		},
+		{
+			"_id": "jar_cookies",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "Default Jar",
+			"cookies": [],
+			"_type": "cookie_jar"
+		},
+		{
+			"_id": "fld_auth",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "🔐 Autenticación",
+			"description": "Endpoints para registro, login y gestión de perfil",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796800000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_rooms",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "🏠 Salas",
+			"description": "Gestión de salas de chat y juegos",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796700000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_chat",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "💬 Chat",
+			"description": "Mensajería y funciones del chat",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796600000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_games",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "🎮 Juegos",
+			"description": "Funcionalidades de juegos y trivia",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796500000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_admin",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "⚙️ Administración",
+			"description": "Panel de administración y gestión",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796400000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "wrk_chatysp",
+			"parentId": null,
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "ChatYSP API",
+			"description": "API completa para ChatYSP - Plataforma de chat con juegos y coaching ontológico",
+			"scope": "collection",
+			"_type": "workspace"
+		}
+	]
+}
