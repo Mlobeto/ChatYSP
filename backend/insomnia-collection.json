@@ -36,6 +36,37 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_auth_register_admin",
+			"parentId": "fld_auth",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/auth/register-admin",
+			"name": "Registro de Administrador",
+			"description": "Registrar un nuevo usuario administrador con clave especial",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"username\": \"admin\",\n\t\"email\": \"admin@chatysp.com\",\n\t\"password\": \"AdminPassword123!\",\n\t\"adminKey\": \"ChatYSP-Admin-Key-2024-Secure\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {},
+			"metaSortKey": -1698796750000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
 			"_id": "req_auth_login",
 			"parentId": "fld_auth",
 			"modified": 1698796800000,
