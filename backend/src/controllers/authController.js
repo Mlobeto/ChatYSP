@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 const { User } = require('../models');
 
 const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, {
@@ -12,7 +13,7 @@ const register = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({
       where: {
-        $or: [{ email }, { username }],
+        [Op.or]: [{ email }, { username }],
       },
     });
 
@@ -179,7 +180,7 @@ const updateProfile = async (req, res) => {
       const existingUser = await User.findOne({
         where: {
           username,
-          id: { $ne: userId },
+          id: { [Op.ne]: userId },
         },
       });
 
@@ -233,7 +234,7 @@ const registerAdmin = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({
       where: {
-        $or: [{ email }, { username }],
+        [Op.or]: [{ email }, { username }],
       },
     });
 
