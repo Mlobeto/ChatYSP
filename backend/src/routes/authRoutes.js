@@ -34,7 +34,8 @@ const registerValidation = [
     .isLength({ min: 6 })
     .withMessage('La contraseña debe tener al menos 6 caracteres')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('La contraseña debe contener al menos una letra minúscula, una mayúscula y un número'),
+    .withMessage('La contraseña debe contener al menos una letra minúscula, '
+      + 'una mayúscula y un número'),
 ];
 
 // Login validation rules
@@ -46,6 +47,26 @@ const loginValidation = [
   body('password')
     .notEmpty()
     .withMessage('La contraseña es requerida'),
+];
+
+// Admin register validation rules
+const adminRegisterValidation = [
+  body('username')
+    .trim()
+    .isLength({ min: 3, max: 20 })
+    .withMessage('El nombre de usuario debe tener entre 3 y 20 caracteres')
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage('El nombre de usuario solo puede contener letras, números y guiones bajos'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Debe proporcionar un email válido'),
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('La contraseña debe tener al menos 6 caracteres'),
+  body('adminKey')
+    .notEmpty()
+    .withMessage('La clave de administrador es requerida'),
 ];
 
 // Update profile validation rules
@@ -65,9 +86,21 @@ const updateProfileValidation = [
 
 // Routes
 router.post('/register', registerValidation, validateRequest, authController.register);
+router.post(
+  '/register-admin',
+  adminRegisterValidation,
+  validateRequest,
+  authController.registerAdmin,
+);
 router.post('/login', loginValidation, validateRequest, authController.login);
 router.post('/logout', authMiddleware, authController.logout);
 router.get('/profile', authMiddleware, authController.getProfile);
-router.put('/profile', authMiddleware, updateProfileValidation, validateRequest, authController.updateProfile);
+router.put(
+  '/profile',
+  authMiddleware,
+  updateProfileValidation,
+  validateRequest,
+  authController.updateProfile,
+);
 
 module.exports = router;

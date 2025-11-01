@@ -215,8 +215,68 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const registerAdmin = async (req, res) => {
+  try {
+    const {
+      username, email, password, adminKey,
+    } = req.body;
+
+    // Verify admin registration key (you should set this in your .env file)
+    const ADMIN_REGISTRATION_KEY = process.env.ADMIN_REGISTRATION_KEY || 'ChatYSP-Admin-2024';
+    if (!adminKey || adminKey !== ADMIN_REGISTRATION_KEY) {
+      return res.status(403).json({
+        success: false,
+        message: 'Clave de administrador inválida',
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      where: {
+        $or: [{ email }, { username }],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'El usuario o email ya existe',
+      });
+    }
+
+    // Create new admin user
+    const user = await User.create({
+      username,
+      email,
+      password,
+      role: 'admin', // Set role as admin
+    });
+
+    // Remove password from response
+    const { password: userPassword, ...userWithoutPassword } = user.toJSON();
+
+    // Generate token
+    const token = generateToken(user.id);
+
+    res.status(201).json({
+      success: true,
+      message: 'Administrador registrado exitosamente',
+      user: userWithoutPassword,
+      token,
+    });
+  } catch (error) {
+    console.error('Register admin error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
+  registerAdmin,
   login,
   logout,
   getProfile,
