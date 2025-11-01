@@ -566,6 +566,248 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_admin_users_update_role",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/users/{{ _.user_id }}/role",
+			"name": "Cambiar Rol de Usuario",
+			"description": "Cambiar el rol de un usuario (user/admin)",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"role\": \"admin\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795290000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_users_deactivate",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/users/{{ _.user_id }}",
+			"name": "Desactivar Usuario",
+			"description": "Desactivar un usuario del sistema",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795280000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_rooms_list",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/rooms",
+			"name": "Gestionar Salas",
+			"description": "Obtener lista de salas para administración",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "20"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795270000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_rooms_deactivate",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/rooms/{{ _.room_id }}",
+			"name": "Desactivar Sala",
+			"description": "Desactivar una sala del sistema",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795260000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_messages_list",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/messages",
+			"name": "Gestionar Mensajes",
+			"description": "Obtener lista de mensajes para moderación",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "20"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795250000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_messages_delete",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/messages/{{ _.message_id }}",
+			"name": "Eliminar Mensaje",
+			"description": "Eliminar un mensaje por moderación",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795240000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_questions_update",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/questions/{{ _.question_id }}",
+			"name": "Actualizar Pregunta",
+			"description": "Actualizar una pregunta existente",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"question\": \"¿Cuál es la capital de Italia?\",\n\t\"options\": [\"Milán\", \"Nápoles\", \"Roma\", \"Turín\"],\n\t\"correctAnswer\": 2,\n\t\"category\": \"geography\",\n\t\"difficulty\": \"medium\",\n\t\"points\": 15,\n\t\"isActive\": true\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795230000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_questions_delete",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/questions/{{ _.question_id }}",
+			"name": "Eliminar Pregunta",
+			"description": "Eliminar una pregunta del sistema",
+			"method": "DELETE",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795220000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
 			"_id": "env_base",
 			"parentId": "wrk_chatysp",
 			"modified": 1698796800000,
@@ -574,10 +816,14 @@
 			"data": {
 				"base_url": "http://localhost:5000",
 				"jwt_token": "",
-				"admin_token": ""
+				"admin_token": "",
+				"user_id": "example-user-uuid",
+				"room_id": "example-room-uuid",
+				"message_id": "example-message-uuid",
+				"question_id": "example-question-uuid"
 			},
 			"dataPropertyOrder": {
-				"&": ["base_url", "jwt_token", "admin_token"]
+				"&": ["base_url", "jwt_token", "admin_token", "user_id", "room_id", "message_id", "question_id"]
 			},
 			"color": "#7d69cb",
 			"isPrivate": false,
