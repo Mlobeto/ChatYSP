@@ -1,6 +1,7 @@
 const { Op } = require('sequelize');
+const bcrypt = require('bcryptjs');
 const {
-  User, Room, Message, Question, Tip, RoomParticipant,
+  User, Room, Message, Question, Tip,
 } = require('../models');
 
 const getStats = async (req, res) => {
@@ -117,7 +118,7 @@ const getUsers = async (req, res) => {
       where: whereClause,
       attributes: { exclude: ['password'] },
       order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
+      limit: parseInt(limit, 10),
       offset,
     });
 
@@ -125,7 +126,7 @@ const getUsers = async (req, res) => {
       success: true,
       users: users.rows,
       pagination: {
-        currentPage: parseInt(page),
+        currentPage: parseInt(page, 10),
         totalPages: Math.ceil(users.count / limit),
         totalUsers: users.count,
         hasNext: offset + users.rows.length < users.count,
@@ -261,7 +262,7 @@ const getRooms = async (req, res) => {
         },
       ],
       order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
+      limit: parseInt(limit, 10),
       offset,
     });
 
@@ -269,7 +270,7 @@ const getRooms = async (req, res) => {
       success: true,
       rooms: rooms.rows,
       pagination: {
-        currentPage: parseInt(page),
+        currentPage: parseInt(page, 10),
         totalPages: Math.ceil(rooms.count / limit),
         totalRooms: rooms.count,
         hasNext: offset + rooms.rows.length < rooms.count,
@@ -315,6 +316,228 @@ const deactivateRoom = async (req, res) => {
   }
 };
 
+// Create Room (Admin Only)
+const createRoom = async (req, res) => {
+  try {
+    console.log('🏠 [ADMIN CREATE ROOM] Iniciando creación de sala...');
+    console.log('📋 Body recibido:', req.body);
+    console.log('👤 Usuario admin:', {
+      id: req.user.id,
+      username: req.user.username,
+      role: req.user.role,
+    });
+
+    const {
+      name, description, roomType = 'public', maxUsers = 50, password, country,
+    } = req.body;
+    const userId = req.user.id;
+
+    console.log('🔧 Datos procesados:', {
+      name,
+      description,
+      roomType,
+      maxUsers,
+      hasPassword: !!password,
+      country,
+      userId,
+    });
+
+    // Hash password if provided
+    let hashedPassword = null;
+    if (password) {
+      console.log('🔐 Hasheando contraseña...');
+      const salt = await bcrypt.genSalt(10);
+      hashedPassword = await bcrypt.hash(password, salt);
+      console.log('✅ Contraseña hasheada exitosamente');
+    }
+
+    console.log('💾 Creando sala en base de datos...');
+    // Create room with country assignment
+    const room = await Room.create({
+      name,
+      description,
+      roomType,
+      maxUsers,
+      password: hashedPassword,
+      createdById: userId,
+      userCount: 0, // Admin doesn't auto-join
+      country: country || null, // Country-specific room
+    });
+
+    console.log('✅ Sala creada con ID:', room.id);
+    console.log('🔍 Obteniendo datos completos de la sala...');
+
+    // Get room with creator info
+    const fullRoom = await Room.findByPk(room.id, {
+      include: [
+        {
+          model: User,
+          as: 'creator',
+          attributes: ['id', 'username', 'email'],
+        },
+      ],
+    });
+
+    console.log('📊 Sala completa obtenida:', fullRoom ? 'SÍ' : 'NO');
+
+    const roomData = fullRoom.toJSON();
+
+    console.log('📤 Enviando respuesta exitosa...');
+    res.status(201).json({
+      success: true,
+      message: 'Sala creada exitosamente por administrador',
+      room: {
+        ...roomData,
+        password: !!room.password,
+      },
+    });
+
+    console.log('🎉 [ADMIN CREATE ROOM] Proceso completado exitosamente');
+  } catch (error) {
+    console.error('❌ [ADMIN CREATE ROOM] Error:', error);
+    console.error('📍 Stack trace:', error.stack);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+// Assign moderator role to user
+const assignModerator = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { country, roomId } = req.body;
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    // If roomId is provided, validate the room and check if it already has a moderator
+    if (roomId) {
+      const room = await Room.findByPk(roomId);
+      if (!room) {
+        return res.status(404).json({
+          success: false,
+          message: 'Sala no encontrada',
+        });
+      }
+
+      if (room.moderatorId) {
+        return res.status(400).json({
+          success: false,
+          message: 'Esta sala ya tiene un moderador asignado',
+        });
+      }
+
+      // Verify that the room country matches the moderator country
+      if (room.country && room.country !== country) {
+        return res.status(400).json({
+          success: false,
+          message: 'El país del moderador debe coincidir con el país de la sala',
+        });
+      }
+
+      // Update room with moderator
+      await room.update({ moderatorId: userId });
+    }
+
+    // Update user role and country
+    await user.update({
+      role: 'moderator',
+      country,
+    });
+
+    const successMessage = `Usuario ${user.username} asignado como moderador para ${country}`;
+    const roomMessage = roomId ? ' y asignado a la sala especificada' : '';
+
+    res.json({
+      success: true,
+      message: successMessage + roomMessage,
+    });
+  } catch (error) {
+    console.error('Assign moderator error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+// Create country-specific room with moderator
+const createCountryRoom = async (req, res) => {
+  try {
+    const {
+      name, description, country, moderatorId,
+    } = req.body;
+    const userId = req.user.id;
+
+    // Validate moderator if provided
+    if (moderatorId) {
+      const moderator = await User.findByPk(moderatorId);
+      if (!moderator || moderator.role !== 'moderator' || moderator.country !== country) {
+        return res.status(400).json({
+          success: false,
+          message: 'Moderador inválido para este país',
+        });
+      }
+
+      // Check if moderator is already assigned to another room
+      const existingRoom = await Room.findOne({
+        where: { moderatorId, isActive: true },
+      });
+      if (existingRoom) {
+        return res.status(400).json({
+          success: false,
+          message: 'Este moderador ya está asignado a otra sala activa',
+        });
+      }
+    }
+
+    // Create country-specific room
+    const room = await Room.create({
+      name: `${name} (${country})`,
+      description: description || `Sala oficial para ${country}`,
+      roomType: 'public',
+      maxUsers: 100,
+      createdById: userId,
+      userCount: 0,
+      country,
+      moderatorId: moderatorId || null,
+    });
+
+    // Get room with creator info
+    const fullRoom = await Room.findByPk(room.id, {
+      include: [
+        {
+          model: User,
+          as: 'creator',
+          attributes: ['id', 'username', 'email'],
+        },
+      ],
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Sala para ${country} creada exitosamente`,
+      room: fullRoom,
+    });
+  } catch (error) {
+    console.error('Create country room error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
 const getMessages = async (req, res) => {
   try {
     const {
@@ -347,7 +570,7 @@ const getMessages = async (req, res) => {
         },
       ],
       order: [['createdAt', 'DESC']],
-      limit: parseInt(limit),
+      limit: parseInt(limit, 10),
       offset,
     });
 
@@ -355,7 +578,7 @@ const getMessages = async (req, res) => {
       success: true,
       messages: messages.rows,
       pagination: {
-        currentPage: parseInt(page),
+        currentPage: parseInt(page, 10),
         totalPages: Math.ceil(messages.count / limit),
         totalMessages: messages.count,
         hasNext: offset + messages.rows.length < messages.count,
@@ -504,12 +727,57 @@ const deleteQuestion = async (req, res) => {
   }
 };
 
+// Get rooms without moderator assigned
+const getUnassignedRooms = async (req, res) => {
+  try {
+    const { country } = req.query;
+
+    const whereClause = {
+      moderatorId: null,
+      isActive: true,
+    };
+
+    if (country) {
+      whereClause.country = country;
+    }
+
+    const rooms = await Room.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: User,
+          as: 'creator',
+          attributes: ['id', 'username', 'email'],
+        },
+      ],
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.json({
+      success: true,
+      rooms,
+      message: `${rooms.length} salas sin moderador asignado`,
+    });
+  } catch (error) {
+    console.error('Get unassigned rooms error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getStats,
   getUsers,
   updateUserRole,
   deactivateUser,
   getRooms,
+  createRoom,
+  assignModerator,
+  createCountryRoom,
+  getUnassignedRooms,
   deactivateRoom,
   getMessages,
   deleteMessage,

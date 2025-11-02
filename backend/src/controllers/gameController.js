@@ -1,76 +1,82 @@
-const { Op } = require('sequelize');
-const { Question, User, Room } = require('../models');
+const {
+  Question, User, GameRoom,
+} = require('../models');
 
 // Game session storage (in production, use Redis)
 const gameSessions = new Map();
 
 const createGame = async (req, res) => {
   try {
-    const { roomId } = req.params;
-    const {
-      gameType = 'trivia', questionCount = 10, difficulty = 'medium', category,
-    } = req.body;
+    const { gameRoomId } = req.params;
     const userId = req.user.id;
 
-    // Check if user is admin/moderator of the room
-    const room = await Room.findByPk(roomId, {
-      include: [{
-        model: User,
-        as: 'participants',
-        where: { id: userId },
-        through: {
-          attributes: ['role'],
-          where: { role: ['admin', 'moderator'] },
+    // Check if user has joined the game room
+    const gameRoom = await GameRoom.findByPk(gameRoomId, {
+      include: [
+        {
+          model: User,
+          as: 'creator',
+          attributes: ['id', 'username'],
         },
-        required: false,
-      }],
+      ],
     });
 
-    if (!room) {
+    if (!gameRoom || !gameRoom.isActive) {
       return res.status(404).json({
         success: false,
-        message: 'Sala no encontrada',
+        message: 'Sala de juego no encontrada',
       });
     }
 
-    if (room.createdById !== userId && !room.participants.length) {
+    if (gameRoom.status !== 'waiting') {
+      return res.status(400).json({
+        success: false,
+        message: 'Esta sala de juego ya ha comenzado o terminado',
+      });
+    }
+
+    // Only creator can start the game
+    if (gameRoom.createdById !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'No tienes permisos para crear juegos en esta sala',
+        message: 'Solo el creador puede iniciar el juego',
       });
     }
 
-    // Check if there's already an active game
-    if (gameSessions.has(roomId)) {
+    // Check if there's already an active game session
+    if (gameSessions.has(gameRoomId)) {
       return res.status(400).json({
         success: false,
         message: 'Ya hay un juego activo en esta sala',
       });
     }
 
-    // Get questions based on criteria
+    // Get questions based on game room configuration
     const whereClause = { isActive: true };
-    if (difficulty) whereClause.difficulty = difficulty;
-    if (category) whereClause.category = category;
+    if (gameRoom.difficulty) whereClause.difficulty = gameRoom.difficulty;
+    if (gameRoom.category) whereClause.category = gameRoom.category;
 
     const questions = await Question.findAll({
       where: whereClause,
-      order: [['timesUsed', 'ASC'], ['createdAt', 'DESC']],
-      limit: questionCount,
+      order: [
+        ['timesUsed', 'ASC'],
+        ['createdAt', 'DESC'],
+      ],
+      limit: gameRoom.questionCount,
     });
 
-    if (questions.length < questionCount) {
+    if (questions.length < gameRoom.questionCount) {
       return res.status(400).json({
         success: false,
-        message: `No hay suficientes preguntas disponibles. Solo hay ${questions.length} preguntas.`,
+        message: `Preguntas insuficientes. Solo hay ${questions.length} disponibles.`,
       });
     }
 
     // Create game session
     const gameSession = {
       id: `game_${Date.now()}`,
-      roomId,
-      gameType,
+      gameRoomId,
+      gameType: gameRoom.gameType,
       questions: questions.map((q) => ({
         id: q.id,
         question: q.question,
@@ -86,19 +92,22 @@ const createGame = async (req, res) => {
       status: 'waiting', // waiting, active, finished
       createdBy: userId,
       createdAt: new Date(),
-      timePerQuestion: 30000, // 30 seconds
+      timePerQuestion: gameRoom.timePerQuestion,
       currentQuestionStartTime: null,
     };
 
-    gameSessions.set(roomId, gameSession);
+    gameSessions.set(gameRoomId, gameSession);
+
+    // Update game room status
+    await gameRoom.update({ status: 'starting' });
 
     res.status(201).json({
       success: true,
       message: 'Juego creado exitosamente',
       game: {
         id: gameSession.id,
-        roomId,
-        gameType,
+        gameRoomId,
+        gameType: gameRoom.gameType,
         questionCount: questions.length,
         status: gameSession.status,
         timePerQuestion: gameSession.timePerQuestion,
@@ -116,10 +125,10 @@ const createGame = async (req, res) => {
 
 const joinGame = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
     const userId = req.user.id;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -162,10 +171,10 @@ const joinGame = async (req, res) => {
 
 const startGame = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
     const userId = req.user.id;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -227,11 +236,11 @@ const startGame = async (req, res) => {
 
 const submitAnswer = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
     const { answerIndex } = req.body;
     const userId = req.user.id;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -282,7 +291,7 @@ const submitAnswer = async (req, res) => {
     if (isCorrect) {
       // Calculate points based on speed (bonus for quick answers)
       const speedBonus = Math.max(0, (gameSession.timePerQuestion - timeElapsed) / 1000);
-      points = Math.round(currentQuestion.points + (speedBonus * 0.1));
+      points = Math.round(currentQuestion.points + speedBonus * 0.1);
     }
 
     player.answers[questionIndex] = {
@@ -322,10 +331,10 @@ const submitAnswer = async (req, res) => {
 
 const nextQuestion = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
     const userId = req.user.id;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -349,7 +358,7 @@ const nextQuestion = async (req, res) => {
     }
 
     // Move to next question
-    gameSession.currentQuestionIndex++;
+    gameSession.currentQuestionIndex += 1;
 
     // Check if game is finished
     if (gameSession.currentQuestionIndex >= gameSession.questions.length) {
@@ -357,23 +366,27 @@ const nextQuestion = async (req, res) => {
 
       // Calculate final scores and rankings
       const finalScores = Array.from(gameSession.scores.entries())
-        .map(([userId, score]) => ({
-          userId,
-          username: gameSession.players.get(userId).username,
+        .map(([playerId, score]) => ({
+          userId: playerId,
+          username: gameSession.players.get(playerId).username,
           score,
-          correctAnswers: gameSession.players.get(userId).answers.filter((a) => a && a.isCorrect).length,
+          correctAnswers: gameSession.players.get(playerId).answers.filter((a) => a && a.isCorrect)
+            .length,
         }))
         .sort((a, b) => b.score - a.score);
 
       // Update user stats
-      for (const player of finalScores) {
+      await Promise.all(finalScores.map(async (player) => {
         const isWinner = player === finalScores[0];
-        await User.increment({
-          gamesPlayed: 1,
-          ...(isWinner && { gamesWon: 1 }),
-          points: player.score,
-        }, { where: { id: player.userId } });
-      }
+        return User.increment(
+          {
+            gamesPlayed: 1,
+            ...(isWinner && { gamesWon: 1 }),
+            points: player.score,
+          },
+          { where: { id: player.userId } },
+        );
+      }));
 
       return res.json({
         success: true,
@@ -411,9 +424,9 @@ const nextQuestion = async (req, res) => {
 
 const getGameStatus = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -431,7 +444,10 @@ const getGameStatus = async (req, res) => {
       .sort((a, b) => b.score - a.score);
 
     let currentQuestion = null;
-    if (gameSession.status === 'active' && gameSession.currentQuestionIndex < gameSession.questions.length) {
+    if (
+      gameSession.status === 'active'
+      && gameSession.currentQuestionIndex < gameSession.questions.length
+    ) {
       const question = gameSession.questions[gameSession.currentQuestionIndex];
       currentQuestion = {
         index: gameSession.currentQuestionIndex + 1,
@@ -448,7 +464,7 @@ const getGameStatus = async (req, res) => {
       success: true,
       game: {
         id: gameSession.id,
-        roomId,
+        gameRoomId,
         status: gameSession.status,
         playersCount: gameSession.players.size,
         currentQuestionIndex: gameSession.currentQuestionIndex + 1,
@@ -469,10 +485,10 @@ const getGameStatus = async (req, res) => {
 
 const endGame = async (req, res) => {
   try {
-    const { roomId } = req.params;
+    const { gameRoomId } = req.params;
     const userId = req.user.id;
 
-    const gameSession = gameSessions.get(roomId);
+    const gameSession = gameSessions.get(gameRoomId);
 
     if (!gameSession) {
       return res.status(404).json({
@@ -489,7 +505,7 @@ const endGame = async (req, res) => {
     }
 
     // Remove game session
-    gameSessions.delete(roomId);
+    gameSessions.delete(gameRoomId);
 
     res.json({
       success: true,

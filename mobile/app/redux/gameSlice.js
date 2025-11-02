@@ -4,6 +4,13 @@ import socketService from '../services/socketService';
 
 // Estados iniciales
 const initialState = {
+  // GameRooms terapéuticas
+  gameRooms: [],
+  currentGameRoom: null,
+  joinedGameRooms: [],
+  invitations: [],
+  
+  // Estado del juego en progreso
   currentGame: null,
   gameState: 'waiting', // 'waiting', 'playing', 'finished'
   currentQuestion: null,
@@ -11,30 +18,174 @@ const initialState = {
   score: 0,
   totalScore: 0,
   leaderboard: [],
-  availableGames: [],
-  gameHistory: [],
   players: [],
   userAnswers: [],
-  isLoading: false,
-  error: null,
+  
+  // Disponibilidad y configuración
+  availableGames: [],
+  gameHistory: [],
+  
+  // Categorías terapéuticas actualizadas
   categories: [
-    { id: 'general', name: 'Conocimiento General' },
-    { id: 'sports', name: 'Deportes' },
-    { id: 'history', name: 'Historia' },
-    { id: 'science', name: 'Ciencia' },
-    { id: 'entertainment', name: 'Entretenimiento' },
-    { id: 'geography', name: 'Geografía' },
-    { id: 'art', name: 'Arte y Literatura' },
-    { id: 'technology', name: 'Tecnología' },
+    { id: 'bienestar', name: 'Bienestar Emocional', description: 'Técnicas para el manejo de ansiedad y mindfulness', icon: '🧘‍♀️' },
+    { id: 'coaching', name: 'Coaching Personal', description: 'Crecimiento personal y desarrollo', icon: '🌱' },
+    { id: 'general', name: 'Conocimiento General', description: 'Cultura general y entretenimiento', icon: '🧠' },
+    { id: 'sports', name: 'Deportes', description: 'Deportes y actividad física', icon: '⚽' },
+    { id: 'science', name: 'Ciencia', description: 'Ciencias y tecnología', icon: '🔬' },
+    { id: 'history', name: 'Historia', description: 'Historia y cultura', icon: '📚' },
   ],
   difficulties: [
-    { id: 'easy', name: 'Fácil' },
-    { id: 'medium', name: 'Medio' },
-    { id: 'hard', name: 'Difícil' },
-  ]
+    { id: 'easy', name: 'Fácil', points: 10 },
+    { id: 'medium', name: 'Medio', points: 15 },
+    { id: 'hard', name: 'Difícil', points: 20 },
+  ],
+  
+  // Estados de carga y error
+  isLoading: false,
+  error: null,
+  
+  // Filtros y búsqueda
+  filters: {
+    category: 'all',
+    difficulty: 'all',
+    status: 'all',
+  },
 };
 
-// Async thunks
+// Async thunks para GameRooms
+
+// Obtener lista de GameRooms disponibles
+export const fetchGameRooms = createAsyncThunk(
+  'game/fetchGameRooms',
+  async ({ page = 1, limit = 10, ...filters } = {}, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/gamerooms', {
+        params: { page, limit, ...filters }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error cargando salas de juego');
+    }
+  }
+);
+
+// Crear nueva GameRoom
+export const createGameRoom = createAsyncThunk(
+  'game/createGameRoom',
+  async (gameRoomData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/gamerooms', gameRoomData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error creando sala de juego');
+    }
+  }
+);
+
+// Unirse a una GameRoom
+export const joinGameRoom = createAsyncThunk(
+  'game/joinGameRoom',
+  async (gameRoomId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/gamerooms/${gameRoomId}/join`);
+      
+      // Conectar a la sala via socket
+      socketService.joinGameRoom(gameRoomId);
+      
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error uniéndose a la sala');
+    }
+  }
+);
+
+// Salir de una GameRoom
+export const leaveGameRoom = createAsyncThunk(
+  'game/leaveGameRoom',
+  async (gameRoomId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/gamerooms/${gameRoomId}/leave`);
+      
+      // Desconectar de la sala via socket
+      socketService.leaveGameRoom(gameRoomId);
+      
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error saliendo de la sala');
+    }
+  }
+);
+
+// Obtener detalles de una GameRoom específica
+export const fetchGameRoomDetails = createAsyncThunk(
+  'game/fetchGameRoomDetails',
+  async (gameRoomId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/gamerooms/${gameRoomId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error obteniendo detalles de la sala');
+    }
+  }
+);
+
+// Iniciar juego en GameRoom
+export const startGameRoomGame = createAsyncThunk(
+  'game/startGameRoomGame',
+  async (gameRoomId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/gamerooms/${gameRoomId}/start`);
+      
+      // Notificar via socket que el juego ha iniciado
+      socketService.startGame(gameRoomId);
+      
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error iniciando el juego');
+    }
+  }
+);
+
+// Obtener invitaciones a GameRooms
+export const fetchGameRoomInvitations = createAsyncThunk(
+  'game/fetchGameRoomInvitations',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/gamerooms/invitations');
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error obteniendo invitaciones');
+    }
+  }
+);
+
+// Aceptar invitación a GameRoom
+export const acceptGameRoomInvitation = createAsyncThunk(
+  'game/acceptGameRoomInvitation',
+  async (invitationId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/gamerooms/invitations/${invitationId}/accept`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error aceptando invitación');
+    }
+  }
+);
+
+// Declinar invitación a GameRoom
+export const declineGameRoomInvitation = createAsyncThunk(
+  'game/declineGameRoomInvitation',
+  async (invitationId, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/gamerooms/invitations/${invitationId}/decline`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Error declinando invitación');
+    }
+  }
+);
+
+// Async thunks existentes (mantener compatibilidad)
 export const startGame = createAsyncThunk(
   'game/startGame',
   async (gameConfig, { rejectWithValue }) => {
@@ -272,7 +423,63 @@ const gameSlice = createSlice({
         totalScore: state.totalScore,
         gameHistory: state.gameHistory,
       });
-    }
+    },
+    
+    // Nuevos reducers para GameRooms
+    setFilters: (state, action) => {
+      state.filters = { ...state.filters, ...action.payload };
+    },
+    
+    clearCurrentGameRoom: (state) => {
+      state.currentGameRoom = null;
+    },
+    
+    updateGameRoomStatus: (state, action) => {
+      const { gameRoomId, status } = action.payload;
+      
+      // Actualizar en la lista de GameRooms
+      const gameRoom = state.gameRooms.find(room => room.id === gameRoomId);
+      if (gameRoom) {
+        gameRoom.status = status;
+      }
+      
+      // Actualizar GameRoom actual si coincide
+      if (state.currentGameRoom && state.currentGameRoom.id === gameRoomId) {
+        state.currentGameRoom.status = status;
+      }
+    },
+    
+    updateGameRoomPlayers: (state, action) => {
+      const { gameRoomId, players, currentPlayers } = action.payload;
+      
+      // Actualizar en la lista de GameRooms
+      const gameRoom = state.gameRooms.find(room => room.id === gameRoomId);
+      if (gameRoom) {
+        gameRoom.currentPlayers = currentPlayers || players?.length || gameRoom.currentPlayers;
+      }
+      
+      // Actualizar GameRoom actual si coincide
+      if (state.currentGameRoom && state.currentGameRoom.id === gameRoomId) {
+        state.currentGameRoom.currentPlayers = currentPlayers || players?.length || state.currentGameRoom.currentPlayers;
+        if (players) {
+          state.players = players;
+        }
+      }
+    },
+    
+    addGameRoomInvitation: (state, action) => {
+      const invitation = action.payload;
+      const existingInvitation = state.invitations.find(inv => inv.id === invitation.id);
+      
+      if (!existingInvitation) {
+        state.invitations.unshift(invitation);
+      }
+    },
+    
+    removeGameRoomInvitation: (state, action) => {
+      const invitationId = action.payload;
+      state.invitations = state.invitations.filter(inv => inv.id !== invitationId);
+    },
   },
   
   extraReducers: (builder) => {
@@ -365,6 +572,170 @@ const gameSlice = createSlice({
       })
       .addCase(loadLeaderboard.rejected, (state, action) => {
         state.error = action.payload;
+      })
+      
+      // Nuevos casos para GameRooms
+      // Fetch GameRooms
+      .addCase(fetchGameRooms.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchGameRooms.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.gameRooms = action.payload.gameRooms || action.payload;
+      })
+      .addCase(fetchGameRooms.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Create GameRoom
+      .addCase(createGameRoom.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(createGameRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const newGameRoom = action.payload.gameRoom || action.payload;
+        state.gameRooms.unshift(newGameRoom);
+        state.currentGameRoom = newGameRoom;
+      })
+      .addCase(createGameRoom.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Join GameRoom
+      .addCase(joinGameRoom.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(joinGameRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const gameRoom = action.payload.gameRoom || action.payload;
+        state.currentGameRoom = gameRoom;
+        
+        // Agregar a salas unidas si no está ya
+        const isAlreadyJoined = state.joinedGameRooms.find(room => room.id === gameRoom.id);
+        if (!isAlreadyJoined) {
+          state.joinedGameRooms.push(gameRoom);
+        }
+        
+        // Actualizar en la lista general
+        const index = state.gameRooms.findIndex(room => room.id === gameRoom.id);
+        if (index !== -1) {
+          state.gameRooms[index] = gameRoom;
+        }
+      })
+      .addCase(joinGameRoom.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Leave GameRoom
+      .addCase(leaveGameRoom.fulfilled, (state, action) => {
+        const gameRoom = action.payload.gameRoom || action.payload;
+        
+        // Remover de salas unidas
+        state.joinedGameRooms = state.joinedGameRooms.filter(room => room.id !== gameRoom.id);
+        
+        // Limpiar GameRoom actual si es la misma
+        if (state.currentGameRoom && state.currentGameRoom.id === gameRoom.id) {
+          state.currentGameRoom = null;
+        }
+        
+        // Actualizar en la lista general
+        const index = state.gameRooms.findIndex(room => room.id === gameRoom.id);
+        if (index !== -1) {
+          state.gameRooms[index] = gameRoom;
+        }
+      })
+      .addCase(leaveGameRoom.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+      // Fetch GameRoom Details
+      .addCase(fetchGameRoomDetails.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchGameRoomDetails.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const gameRoom = action.payload.gameRoom || action.payload;
+        state.currentGameRoom = gameRoom;
+        
+        // Actualizar en la lista si existe
+        const index = state.gameRooms.findIndex(room => room.id === gameRoom.id);
+        if (index !== -1) {
+          state.gameRooms[index] = gameRoom;
+        }
+      })
+      .addCase(fetchGameRoomDetails.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Start GameRoom Game
+      .addCase(startGameRoomGame.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(startGameRoomGame.fulfilled, (state, action) => {
+        state.isLoading = false;
+        const gameRoom = action.payload.gameRoom || action.payload;
+        
+        state.currentGameRoom = gameRoom;
+        state.gameState = 'playing';
+        state.score = 0;
+        state.userAnswers = [];
+        
+        // Actualizar en la lista
+        const index = state.gameRooms.findIndex(room => room.id === gameRoom.id);
+        if (index !== -1) {
+          state.gameRooms[index] = gameRoom;
+        }
+      })
+      .addCase(startGameRoomGame.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      
+      // Fetch GameRoom Invitations
+      .addCase(fetchGameRoomInvitations.fulfilled, (state, action) => {
+        state.invitations = action.payload.invitations || action.payload;
+      })
+      .addCase(fetchGameRoomInvitations.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+      // Accept GameRoom Invitation
+      .addCase(acceptGameRoomInvitation.fulfilled, (state, action) => {
+        const { invitation, gameRoom } = action.payload;
+        
+        // Remover invitación aceptada
+        if (invitation) {
+          state.invitations = state.invitations.filter(inv => inv.id !== invitation.id);
+        }
+        
+        // Agregar GameRoom a salas unidas
+        if (gameRoom) {
+          const isAlreadyJoined = state.joinedGameRooms.find(room => room.id === gameRoom.id);
+          if (!isAlreadyJoined) {
+            state.joinedGameRooms.push(gameRoom);
+          }
+        }
+      })
+      .addCase(acceptGameRoomInvitation.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+      // Decline GameRoom Invitation
+      .addCase(declineGameRoomInvitation.fulfilled, (state, action) => {
+        const invitationId = action.meta.arg;
+        state.invitations = state.invitations.filter(inv => inv.id !== invitationId);
+      })
+      .addCase(declineGameRoomInvitation.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });
@@ -383,7 +754,52 @@ export const {
   setGameResults,
   resetGame,
   clearError,
-  resetGameState
+  resetGameState,
+  // Nuevas acciones para GameRooms
+  setFilters,
+  clearCurrentGameRoom,
+  updateGameRoomStatus,
+  updateGameRoomPlayers,
+  addGameRoomInvitation,
+  removeGameRoomInvitation,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;
+
+// Selectores
+export const selectGameRooms = (state) => state.game.gameRooms;
+export const selectCurrentGameRoom = (state) => state.game.currentGameRoom;
+export const selectJoinedGameRooms = (state) => state.game.joinedGameRooms;
+export const selectGameRoomInvitations = (state) => state.game.invitations;
+export const selectGameFilters = (state) => state.game.filters;
+
+export const selectCurrentGame = (state) => state.game.currentGame;
+export const selectGameState = (state) => state.game.gameState;
+export const selectCurrentQuestion = (state) => state.game.currentQuestion;
+export const selectTimeRemaining = (state) => state.game.timeRemaining;
+export const selectScore = (state) => state.game.score;
+export const selectTotalScore = (state) => state.game.totalScore;
+export const selectLeaderboard = (state) => state.game.leaderboard;
+export const selectPlayers = (state) => state.game.players;
+export const selectUserAnswers = (state) => state.game.userAnswers;
+export const selectAvailableGames = (state) => state.game.availableGames;
+export const selectGameHistory = (state) => state.game.gameHistory;
+export const selectGameLoading = (state) => state.game.isLoading;
+export const selectGameError = (state) => state.game.error;
+export const selectGameCategories = (state) => state.game.categories;
+export const selectGameDifficulties = (state) => state.game.difficulties;
+
+// Selectores computados
+export const selectTherapeuticCategories = (state) => 
+  state.game.categories.filter(cat => ['bienestar', 'coaching'].includes(cat.id));
+
+export const selectActiveGameRooms = (state) => 
+  state.game.gameRooms.filter(room => room.status === 'waiting' || room.status === 'playing');
+
+export const selectGameRoomsByCategory = (state, category) => 
+  state.game.gameRooms.filter(room => 
+    category === 'all' || room.category === category
+  );
+
+export const selectPendingInvitations = (state) => 
+  state.game.invitations.filter(inv => inv.status === 'pending');

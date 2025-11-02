@@ -67,12 +67,10 @@ const GameStats = sequelize.define('GameStats', {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0,
-    comment: 'Tiempo en segundos',
   },
   answers: {
     type: DataTypes.JSON,
     allowNull: true,
-    comment: 'Array con detalles de cada respuesta',
   },
   completedAt: {
     type: DataTypes.DATE,
@@ -82,7 +80,6 @@ const GameStats = sequelize.define('GameStats', {
   metadata: {
     type: DataTypes.JSON,
     allowNull: true,
-    comment: 'Información adicional del juego',
   },
 }, {
   tableName: 'game_stats',

@@ -27,29 +27,7 @@ const roomIdValidation = [
     .withMessage('ID de sala inválido'),
 ];
 
-const createRoomValidation = [
-  body('name')
-    .trim()
-    .isLength({ min: 2, max: 50 })
-    .withMessage('El nombre de la sala debe tener entre 2 y 50 caracteres'),
-  body('description')
-    .optional()
-    .trim()
-    .isLength({ max: 500 })
-    .withMessage('La descripción no puede exceder 500 caracteres'),
-  body('roomType')
-    .optional()
-    .isIn(['public', 'private', 'game'])
-    .withMessage('Tipo de sala inválido'),
-  body('maxUsers')
-    .optional()
-    .isInt({ min: 2, max: 500 })
-    .withMessage('Número máximo de usuarios debe estar entre 2 y 500'),
-  body('password')
-    .optional()
-    .isLength({ min: 4, max: 50 })
-    .withMessage('La contraseña debe tener entre 4 y 50 caracteres'),
-];
+// Room creation validation removed - now handled in admin routes
 
 const updateRoomValidation = [
   ...roomIdValidation,
@@ -106,13 +84,8 @@ router.get(
   roomController.getRooms,
 );
 
-router.post(
-  '/',
-  authMiddleware,
-  createRoomValidation,
-  validateRequest,
-  roomController.createRoom,
-);
+// Note: Room creation moved to admin routes for security
+// Only administrators can create rooms now
 
 router.get(
   '/:roomId',

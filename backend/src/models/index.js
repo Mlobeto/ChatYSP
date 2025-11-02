@@ -6,6 +6,9 @@ const Room = require('./Room');
 const Tip = require('./Tip');
 const Question = require('./Question');
 const GameStats = require('./GameStats');
+const GameRoom = require('./GameRoom');
+const GameInvitation = require('./GameInvitation');
+const GameRoomMember = require('./GameRoomMember');
 
 // Define associations
 // User associations
@@ -14,6 +17,9 @@ User.hasMany(Room, { foreignKey: 'createdById', as: 'createdRooms' });
 User.hasMany(Tip, { foreignKey: 'createdById', as: 'tips' });
 User.hasMany(Question, { foreignKey: 'createdById', as: 'questions' });
 User.hasMany(GameStats, { foreignKey: 'userId', as: 'gameStats' });
+User.hasMany(GameRoom, { foreignKey: 'createdById', as: 'createdGameRooms' });
+User.hasMany(GameInvitation, { foreignKey: 'inviterId', as: 'sentInvitations' });
+User.hasMany(GameInvitation, { foreignKey: 'invitedId', as: 'receivedInvitations' });
 
 // Message associations
 Message.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
@@ -33,6 +39,34 @@ Question.belongsTo(User, { foreignKey: 'createdById', as: 'creator' });
 
 // GameStats associations
 GameStats.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+
+// GameRoom associations
+GameRoom.belongsTo(User, { foreignKey: 'createdById', as: 'creator' });
+GameRoom.hasMany(GameInvitation, { foreignKey: 'gameRoomId', as: 'invitations' });
+
+// GameInvitation associations
+GameInvitation.belongsTo(User, { foreignKey: 'inviterId', as: 'inviter' });
+GameInvitation.belongsTo(User, { foreignKey: 'invitedId', as: 'invited' });
+GameInvitation.belongsTo(GameRoom, { foreignKey: 'gameRoomId', as: 'gameRoom' });
+
+// GameRoomMember associations
+GameRoomMember.belongsTo(User, { foreignKey: 'userId', as: 'user' });
+GameRoomMember.belongsTo(GameRoom, { foreignKey: 'gameRoomId', as: 'gameRoom' });
+
+// Many-to-many associations through GameRoomMember
+User.belongsToMany(GameRoom, {
+  through: GameRoomMember,
+  foreignKey: 'userId',
+  otherKey: 'gameRoomId',
+  as: 'joinedGameRooms',
+});
+
+GameRoom.belongsToMany(User, {
+  through: GameRoomMember,
+  foreignKey: 'gameRoomId',
+  otherKey: 'userId',
+  as: 'members',
+});
 
 // Many-to-many association for Room participants
 const RoomParticipant = sequelize.define('RoomParticipant', {
@@ -89,5 +123,8 @@ module.exports = {
   Tip,
   Question,
   GameStats,
+  GameRoom,
+  GameInvitation,
+  GameRoomMember,
   RoomParticipant,
 };

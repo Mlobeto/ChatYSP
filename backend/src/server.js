@@ -13,7 +13,9 @@ const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const gameRoomRoutes = require('./routes/gameRoomRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const moderatorRoutes = require('./routes/moderatorRoutes');
 const minigameRoutes = require('./routes/minigame');
 
 // Import socket handlers
@@ -26,7 +28,12 @@ const server = http.createServer(app);
 // Socket.IO setup with CORS
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      process.env.CLIENT_URL,
+    ].filter(Boolean),
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -53,7 +60,12 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+      process.env.CLIENT_URL,
+    ].filter(Boolean),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -62,6 +74,21 @@ app.use(
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// General request logging middleware
+app.use((req, res, next) => {
+  console.log('📨 INCOMING REQUEST:', {
+    method: req.method,
+    url: req.url,
+    headers: {
+      authorization: req.headers.authorization ? 'Bearer [HIDDEN]' : 'No Auth',
+      contentType: req.headers['content-type'] || 'No Content-Type',
+    },
+    body: req.method === 'POST' ? Object.keys(req.body || {}) : 'No Body',
+    timestamp: new Date().toISOString(),
+  });
+  next();
+});
 
 // Rate limiting
 const limiter = rateLimit({
@@ -73,6 +100,24 @@ const limiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  onLimitReached: (req) => {
+    console.log('🚨 RATE LIMIT REACHED:', {
+      ip: req.ip,
+      method: req.method,
+      url: req.url,
+      timestamp: new Date().toISOString(),
+    });
+  },
+  skip: (req) => {
+    // Log all requests that pass through rate limiter
+    console.log('🔄 RATE LIMITER - Request received:', {
+      method: req.method,
+      url: req.url,
+      ip: req.ip,
+      timestamp: new Date().toISOString(),
+    });
+    return false; // Don't skip any requests
+  },
 });
 
 app.use('/api/', limiter);
@@ -102,8 +147,10 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use('/api/games', gameRoutes);
+app.use('/api/gamerooms', gameRoomRoutes);
 app.use('/api/minigame', minigameRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/moderator', moderatorRoutes);
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

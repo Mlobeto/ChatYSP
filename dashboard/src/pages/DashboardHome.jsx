@@ -28,7 +28,7 @@ const DashboardHome = () => {
   const statsCards = [
     {
       name: 'Total Usuarios',
-      value: stats.totalUsers,
+      value: stats?.totalUsers || 0,
       change: '+12%',
       changeType: 'increase',
       icon: UsersIcon,
@@ -36,7 +36,7 @@ const DashboardHome = () => {
     },
     {
       name: 'Usuarios Activos',
-      value: stats.activeUsers,
+      value: stats?.activeUsers || 0,
       change: '+8%',
       changeType: 'increase',
       icon: UsersIcon,
@@ -44,7 +44,7 @@ const DashboardHome = () => {
     },
     {
       name: 'Total Salas',
-      value: stats.totalRooms,
+      value: stats?.totalRooms || 0,
       change: '-2%',
       changeType: 'decrease',
       icon: ChatBubbleLeftRightIcon,
@@ -52,7 +52,7 @@ const DashboardHome = () => {
     },
     {
       name: 'Mensajes',
-      value: stats.totalMessages,
+      value: stats?.totalMessages || 0,
       change: '+24%',
       changeType: 'increase',
       icon: ChatBubbleLeftRightIcon,
@@ -60,7 +60,7 @@ const DashboardHome = () => {
     },
     {
       name: 'Tips Publicados',
-      value: stats.totalTips,
+      value: stats?.totalTips || 0,
       change: '+5%',
       changeType: 'increase',
       icon: LightBulbIcon,
@@ -68,7 +68,7 @@ const DashboardHome = () => {
     },
     {
       name: 'Videos Subidos',
-      value: stats.totalVideos,
+      value: stats?.totalVideos || 0,
       change: '+15%',
       changeType: 'increase',
       icon: FilmIcon,
@@ -156,7 +156,7 @@ const DashboardHome = () => {
                       {stat.name}
                     </p>
                     <p className="text-2xl font-semibold text-gray-900">
-                      {stat.value.toLocaleString()}
+                      {(stat.value || 0).toLocaleString()}
                     </p>
                   </div>
                 </div>

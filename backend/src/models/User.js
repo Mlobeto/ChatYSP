@@ -46,8 +46,27 @@ const User = sequelize.define('User', {
     defaultValue: DataTypes.NOW,
   },
   role: {
-    type: DataTypes.ENUM('user', 'admin'),
+    type: DataTypes.ENUM('user', 'moderator', 'admin'),
     defaultValue: 'user',
+  },
+  country: {
+    type: DataTypes.ENUM('AR', 'PE', 'MX', 'CO', 'ES'),
+    allowNull: true,
+  },
+  phone: {
+    type: DataTypes.STRING(20),
+    allowNull: true,
+    validate: {
+      isPhoneNumber(value) {
+        if (value && !value.match(/^\+[1-9]\d{1,14}$/)) {
+          throw new Error('Formato de teléfono inválido. Use formato internacional: +54911234567');
+        }
+      },
+    },
+  },
+  phoneVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
   points: {
     type: DataTypes.INTEGER,
@@ -72,20 +91,20 @@ const User = sequelize.define('User', {
     beforeCreate: async (user) => {
       if (user.password) {
         const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
+        user.setDataValue('password', await bcrypt.hash(user.password, salt));
       }
     },
     beforeUpdate: async (user) => {
       if (user.changed('password')) {
         const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(user.password, salt);
+        user.setDataValue('password', await bcrypt.hash(user.password, salt));
       }
     },
   },
 });
 
 // Instance method to compare password
-User.prototype.comparePassword = async function (candidatePassword) {
+User.prototype.comparePassword = async function comparePassword(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

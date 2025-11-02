@@ -189,6 +189,63 @@ export const dashboardApi = {
     });
     return response;
   },
+
+  // GameRooms - Salas de juego terapéuticas
+  getGameRooms: async (params = {}) => {
+    const response = await dashboardAPI.get('/gamerooms', { params });
+    return response;
+  },
+
+  createGameRoom: async (gameRoomData) => {
+    const response = await dashboardAPI.post('/gamerooms', gameRoomData);
+    return response;
+  },
+
+  getGameRoomById: async (gameRoomId) => {
+    const response = await dashboardAPI.get(`/gamerooms/${gameRoomId}`);
+    return response;
+  },
+
+  updateGameRoom: async (gameRoomId, updateData) => {
+    const response = await dashboardAPI.put(`/gamerooms/${gameRoomId}`, updateData);
+    return response;
+  },
+
+  deleteGameRoom: async (gameRoomId) => {
+    const response = await dashboardAPI.delete(`/gamerooms/${gameRoomId}`);
+    return response;
+  },
+
+  joinGameRoom: async (gameRoomId) => {
+    const response = await dashboardAPI.post(`/gamerooms/${gameRoomId}/join`);
+    return response;
+  },
+
+  leaveGameRoom: async (gameRoomId) => {
+    const response = await dashboardAPI.post(`/gamerooms/${gameRoomId}/leave`);
+    return response;
+  },
+
+  startGame: async (gameRoomId) => {
+    const response = await dashboardAPI.post(`/gamerooms/${gameRoomId}/start`);
+    return response;
+  },
+
+  // Invitaciones a GameRooms
+  sendGameRoomInvitation: async (gameRoomId, invitationData) => {
+    const response = await dashboardAPI.post(`/gamerooms/${gameRoomId}/invitations`, invitationData);
+    return response;
+  },
+
+  acceptGameRoomInvitation: async (invitationId) => {
+    const response = await dashboardAPI.post(`/gamerooms/invitations/${invitationId}/accept`);
+    return response;
+  },
+
+  declineGameRoomInvitation: async (invitationId) => {
+    const response = await dashboardAPI.post(`/gamerooms/invitations/${invitationId}/decline`);
+    return response;
+  },
 };
 
 export default dashboardAPI;

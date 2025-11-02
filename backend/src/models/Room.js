@@ -56,6 +56,18 @@ const Room = sequelize.define('Room', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  country: {
+    type: DataTypes.ENUM('AR', 'PE', 'MX', 'CO', 'ES'),
+    allowNull: true,
+  },
+  moderatorId: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'users',
+      key: 'id',
+    },
+  },
 }, {
   tableName: 'rooms',
   timestamps: true,

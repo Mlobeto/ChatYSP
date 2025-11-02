@@ -15,7 +15,7 @@
 			"method": "POST",
 			"body": {
 				"mimeType": "application/json",
-				"text": "{\n\t\"username\": \"johndoe\",\n\t\"email\": \"john@example.com\",\n\t\"password\": \"Password123!\",\n\t\"avatar\": \"https://avatar.url/john.jpg\"\n}"
+				"text": "{\n\t\"username\": \"johndoe\",\n\t\"email\": \"john@example.com\",\n\t\"password\": \"Password123!\",\n\t\"phone\": \"+5491123456789\",\n\t\"country\": \"AR\",\n\t\"avatar\": \"https://avatar.url/john.jpg\"\n}"
 			},
 			"parameters": [],
 			"headers": [
@@ -808,6 +808,470 @@
 			"_type": "request"
 		},
 		{
+			"_id": "req_admin_assign_moderator",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/users/{{ _.user_id }}/moderator",
+			"name": "Asignar Moderador",
+			"description": "Asignar rol de moderador a un usuario por país y opcionalmente a una sala específica",
+			"method": "PUT",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"country\": \"AR\",\n\t\"roomId\": \"{{ _.room_id }}\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795210000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_get_unassigned_rooms",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/rooms/unassigned",
+			"name": "Obtener Salas sin Moderador",
+			"description": "Obtener salas activas que no tienen moderador asignado",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "country",
+					"value": "AR"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795205000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_admin_create_country_room",
+			"parentId": "fld_admin",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/admin/rooms/country",
+			"name": "Crear Sala por País",
+			"description": "Crear sala específica para un país con moderador asignado",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Coaching Argentina\",\n\t\"description\": \"Sala oficial para usuarios de Argentina\",\n\t\"country\": \"AR\",\n\t\"moderatorId\": \"{{ _.moderator_id }}\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.admin_token }}"
+			},
+			"metaSortKey": -1698795200000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_moderator_create_report",
+			"parentId": "fld_moderator",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/moderator/reports",
+			"name": "Crear Reporte",
+			"description": "Crear reporte de moderación para administradores",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"type\": \"user\",\n\t\"targetId\": \"{{ _.user_id }}\",\n\t\"reason\": \"inappropriate\",\n\t\"description\": \"Usuario publicando contenido inapropiado\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.moderator_token }}"
+			},
+			"metaSortKey": -1698795100000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_moderator_get_users",
+			"parentId": "fld_moderator",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/moderator/users",
+			"name": "Obtener Usuarios del País",
+			"description": "Obtener usuarios del país del moderador para moderación",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "20"
+				},
+				{
+					"name": "search",
+					"value": ""
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.moderator_token }}"
+			},
+			"metaSortKey": -1698795090000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_moderator_get_rooms",
+			"parentId": "fld_moderator",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/moderator/rooms",
+			"name": "Obtener Salas Asignadas",
+			"description": "Obtener salas asignadas específicamente al moderador",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "20"
+				},
+				{
+					"name": "search",
+					"value": ""
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.moderator_token }}"
+			},
+			"metaSortKey": -1698795080000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_moderator_get_messages",
+			"parentId": "fld_moderator",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/moderator/messages",
+			"name": "Obtener Mensajes de Salas Asignadas",
+			"description": "Obtener mensajes solo de las salas asignadas al moderador",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "50"
+				},
+				{
+					"name": "roomId",
+					"value": ""
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.moderator_token }}"
+			},
+			"metaSortKey": -1698795070000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "fld_gamerooms",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "🎮 Salas de Juego",
+			"description": "Sistema global de juegos sin restricción geográfica",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796300000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "req_gameroom_create",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms",
+			"name": "Crear Sala de Juego",
+			"description": "Crear nueva sala de juego global",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"name\": \"Trivia Relajante\",\n\t\"description\": \"Juego para manejar ansiedad\",\n\t\"gameType\": \"trivia\",\n\t\"category\": \"bienestar\",\n\t\"difficulty\": \"medium\",\n\t\"maxPlayers\": 8,\n\t\"questionCount\": 10,\n\t\"timePerQuestion\": 30000,\n\t\"isPrivate\": false\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796290000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_gameroom_list",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms",
+			"name": "Listar Salas de Juego",
+			"description": "Obtener salas de juego públicas disponibles",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "page",
+					"value": "1"
+				},
+				{
+					"name": "limit",
+					"value": "20"
+				},
+				{
+					"name": "gameType",
+					"value": "trivia"
+				},
+				{
+					"name": "difficulty",
+					"value": "medium"
+				},
+				{
+					"name": "status",
+					"value": "waiting"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796280000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_gameroom_join",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms/{{ _.game_room_id }}/join",
+			"name": "Unirse a Sala de Juego",
+			"description": "Unirse a una sala de juego específica",
+			"method": "POST",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796270000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_gameroom_invite",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms/{{ _.game_room_id }}/invite",
+			"name": "Enviar Invitación",
+			"description": "Invitar a otro usuario a jugar",
+			"method": "POST",
+			"body": {
+				"mimeType": "application/json",
+				"text": "{\n\t\"invitedUserId\": \"{{ _.user_id }}\",\n\t\"message\": \"¡Ven a jugar conmigo! Te ayudará a relajarte 😊\"\n}"
+			},
+			"parameters": [],
+			"headers": [
+				{
+					"name": "Content-Type",
+					"value": "application/json"
+				}
+			],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796260000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_gameroom_members",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms/{{ _.game_room_id }}/members",
+			"name": "Ver Miembros",
+			"description": "Ver quién está en la sala de juego",
+			"method": "GET",
+			"body": {},
+			"parameters": [],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796255000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
+			"_id": "req_gameroom_leaderboard",
+			"parentId": "fld_gamerooms",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"url": "{{ _.base_url }}/api/gamerooms/leaderboard",
+			"name": "Ranking Global",
+			"description": "Obtener ranking global de jugadores",
+			"method": "GET",
+			"body": {},
+			"parameters": [
+				{
+					"name": "timeframe",
+					"value": "weekly"
+				},
+				{
+					"name": "limit",
+					"value": "50"
+				}
+			],
+			"headers": [],
+			"authentication": {
+				"type": "bearer",
+				"token": "{{ _.jwt_token }}"
+			},
+			"metaSortKey": -1698796250000,
+			"isPrivate": false,
+			"settingStoreCookies": true,
+			"settingSendCookies": true,
+			"settingDisableRenderRequestBody": false,
+			"settingEncodeUrl": true,
+			"settingRebuildPath": true,
+			"settingFollowRedirects": "global",
+			"_type": "request"
+		},
+		{
 			"_id": "env_base",
 			"parentId": "wrk_chatysp",
 			"modified": 1698796800000,
@@ -817,13 +1281,16 @@
 				"base_url": "http://localhost:5000",
 				"jwt_token": "",
 				"admin_token": "",
+				"moderator_token": "",
+				"moderator_id": "example-moderator-uuid",
 				"user_id": "example-user-uuid",
 				"room_id": "example-room-uuid",
+				"game_room_id": "example-gameroom-uuid",
 				"message_id": "example-message-uuid",
 				"question_id": "example-question-uuid"
 			},
 			"dataPropertyOrder": {
-				"&": ["base_url", "jwt_token", "admin_token", "user_id", "room_id", "message_id", "question_id"]
+				"&": ["base_url", "jwt_token", "admin_token", "moderator_token", "moderator_id", "user_id", "room_id", "game_room_id", "message_id", "question_id"]
 			},
 			"color": "#7d69cb",
 			"isPrivate": false,
@@ -897,6 +1364,18 @@
 			"environment": {},
 			"environmentPropertyOrder": null,
 			"metaSortKey": -1698796400000,
+			"_type": "request_group"
+		},
+		{
+			"_id": "fld_moderator",
+			"parentId": "wrk_chatysp",
+			"modified": 1698796800000,
+			"created": 1698796800000,
+			"name": "🛡️ Moderación",
+			"description": "Herramientas de moderación por país",
+			"environment": {},
+			"environmentPropertyOrder": null,
+			"metaSortKey": -1698796350000,
 			"_type": "request_group"
 		},
 		{

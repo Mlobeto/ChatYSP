@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const { User } = require('../models');
+const { validatePhoneForCountry, getCountryFromPhone } = require('../utils/phoneValidation');
 
 const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, {
   expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -8,7 +9,29 @@ const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, {
 
 const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const {
+      username, email, password, phone, country,
+    } = req.body;
+
+    // Validate phone and country if provided
+    if (phone && country) {
+      const phoneValidation = validatePhoneForCountry(phone, country);
+      if (!phoneValidation.success) {
+        return res.status(400).json({
+          success: false,
+          message: phoneValidation.message,
+        });
+      }
+    } else if (phone && !country) {
+      // Try to detect country from phone
+      const detectedCountry = getCountryFromPhone(phone);
+      if (!detectedCountry) {
+        return res.status(400).json({
+          success: false,
+          message: 'No se pudo determinar el país del teléfono. Especifica el país.',
+        });
+      }
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({
@@ -29,6 +52,8 @@ const register = async (req, res) => {
       username,
       email,
       password,
+      phone: phone || null,
+      country: country || (phone ? getCountryFromPhone(phone) : null),
     });
 
     // Remove password from response
