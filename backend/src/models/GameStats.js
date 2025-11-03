@@ -217,17 +217,17 @@ GameStats.getLeaderboard = async function getLeaderboard(options = {}) {
   let startDate;
 
   switch (period) {
-    case 'daily':
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      break;
-    case 'weekly':
-      startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      break;
-    case 'monthly':
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      break;
-    default:
-      startDate = new Date(0); // Todos los tiempos
+  case 'daily':
+    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    break;
+  case 'weekly':
+    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    break;
+  case 'monthly':
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    break;
+  default:
+    startDate = new Date(0); // Todos los tiempos
   }
 
   const whereClause = {

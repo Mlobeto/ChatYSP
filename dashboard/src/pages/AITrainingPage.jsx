@@ -30,32 +30,31 @@ const AITrainingPage = () => {
   });
 
   useEffect(() => {
-    // Cargar estadísticas de Fede
-    fetchFedeStats();
+    const loadStats = async () => {
+      try {
+        const response = await fedeApi.getStats();
+        setStats(response.data || {
+          totalConversations: 1250,
+          totalKnowledge: 845,
+          averageRating: 4.7,
+          responseTime: 1.2,
+          activeUsers: 89
+        });
+      } catch (error) {
+        console.error('Error cargando estadísticas:', error);
+        // Usar datos de ejemplo si hay error
+        setStats({
+          totalConversations: 1250,
+          totalKnowledge: 845,
+          averageRating: 4.7,
+          responseTime: 1.2,
+          activeUsers: 89
+        });
+      }
+    };
+    
+    loadStats();
   }, []);
-
-  const fetchFedeStats = async () => {
-    try {
-      const response = await fedeApi.getStats();
-      setStats(response.data || {
-        totalConversations: 1250,
-        totalKnowledge: 845,
-        averageRating: 4.7,
-        responseTime: 1.2,
-        activeUsers: 89
-      });
-    } catch (error) {
-      console.error('Error cargando estadísticas:', error);
-      // Usar datos de ejemplo si hay error
-      setStats({
-        totalConversations: 1250,
-        totalKnowledge: 845,
-        averageRating: 4.7,
-        responseTime: 1.2,
-        activeUsers: 89
-      });
-    }
-  };
 
   const tabs = [
     { id: 'overview', label: 'Resumen', icon: BarChart3 },

@@ -236,8 +236,8 @@ export const gameRoomsApi = {
   },
 
   // Obtener estadísticas de salas de juego
-  getStats: async () => {
-    const response = await api.get(`/gamerooms/${id}/stats`);
+  getStats: async (gameRoomId) => {
+    const response = await api.get(`/gamerooms/${gameRoomId}/stats`);
     return response.data;
   }
 };

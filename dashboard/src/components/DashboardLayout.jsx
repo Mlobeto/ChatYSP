@@ -56,7 +56,10 @@ const DashboardLayout = () => {
 
   // Cerrar menú móvil al cambiar de ruta
   useEffect(() => {
-    setMobileMenuOpen(false);
+    const timer = setTimeout(() => {
+      setMobileMenuOpen(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [location.pathname]);
 
   const handleLogout = () => {

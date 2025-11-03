@@ -317,14 +317,14 @@ class GameService {
         let startDate;
 
         switch (timeframe) {
-          case 'week':
-            startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-            break;
-          case 'month':
-            startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-            break;
-          default:
-            startDate = null;
+        case 'week':
+          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          break;
+        case 'month':
+          startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          break;
+        default:
+          startDate = null;
         }
 
         if (startDate) {
@@ -334,20 +334,20 @@ class GameService {
 
       // Set ordering
       switch (type) {
-        case 'points':
-          orderBy = [['points', 'DESC'], ['level', 'DESC']];
-          break;
-        case 'wins':
-          orderBy = [['gamesWon', 'DESC'], ['points', 'DESC']];
-          break;
-        case 'winrate':
-          orderBy = [
-            [{ $col: 'gamesWon / NULLIF(gamesPlayed, 0)' }, 'DESC'],
-            ['gamesWon', 'DESC'],
-          ];
-          break;
-        default:
-          orderBy = [['points', 'DESC']];
+      case 'points':
+        orderBy = [['points', 'DESC'], ['level', 'DESC']];
+        break;
+      case 'wins':
+        orderBy = [['gamesWon', 'DESC'], ['points', 'DESC']];
+        break;
+      case 'winrate':
+        orderBy = [
+          [{ $col: 'gamesWon / NULLIF(gamesPlayed, 0)' }, 'DESC'],
+          ['gamesWon', 'DESC'],
+        ];
+        break;
+      default:
+        orderBy = [['points', 'DESC']];
       }
 
       const users = await User.findAll({

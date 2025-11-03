@@ -562,30 +562,30 @@ const getLeaderboard = async (req, res) => {
     let dateFilter = {};
     const now = new Date();
     switch (timeframe) {
-      case 'daily':
-        dateFilter = {
-          updatedAt: {
-            [Op.gte]: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
-          },
-        };
-        break;
-      case 'weekly': {
-        const weekStart = new Date(now);
-        weekStart.setDate(now.getDate() - now.getDay());
-        weekStart.setHours(0, 0, 0, 0);
-        dateFilter = { updatedAt: { [Op.gte]: weekStart } };
-        break;
-      }
-      case 'monthly':
-        dateFilter = {
-          updatedAt: {
-            [Op.gte]: new Date(now.getFullYear(), now.getMonth(), 1),
-          },
-        };
-        break;
-      default:
-        // allTime - no filter
-        break;
+    case 'daily':
+      dateFilter = {
+        updatedAt: {
+          [Op.gte]: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+        },
+      };
+      break;
+    case 'weekly': {
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - now.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+      dateFilter = { updatedAt: { [Op.gte]: weekStart } };
+      break;
+    }
+    case 'monthly':
+      dateFilter = {
+        updatedAt: {
+          [Op.gte]: new Date(now.getFullYear(), now.getMonth(), 1),
+        },
+      };
+      break;
+    default:
+      // allTime - no filter
+      break;
     }
 
     const users = await User.findAll({
