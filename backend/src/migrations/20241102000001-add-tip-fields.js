@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     // Agregar el campo title
@@ -30,19 +28,19 @@ module.exports = {
     // Generar títulos para los tips existentes basados en el contenido
     const tips = await queryInterface.sequelize.query(
       'SELECT id, content FROM tips WHERE title = \'Tip sin título\'',
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
 
     for (const tip of tips) {
       const title = tip.content.substring(0, 80).trim();
       const cleanTitle = title.endsWith('.') ? title : `${title}...`;
-      
+
       await queryInterface.sequelize.query(
         'UPDATE tips SET title = :title WHERE id = :id',
         {
           replacements: { title: cleanTitle, id: tip.id },
           type: Sequelize.QueryTypes.UPDATE,
-        }
+        },
       );
     }
   },

@@ -3,8 +3,7 @@ const axios = require('axios');
 const API_BASE = 'http://localhost:5000/api';
 
 // Token - reemplaza con uno válido
-const ADMIN_TOKEN =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZWQ2NjJhYi03YTcxLTRlNmYtYWRhYi1hNWM4NzNlMWQ1NDgiLCJpYXQiOjE3NjIwNDk1OTgsImV4cCI6MTc2MjY1NDM5OH0.N7pA_H5LxH9zviredf2TiJmu9DHHwJGBhuRC6EVjzdE';
+const ADMIN_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZWQ2NjJhYi03YTcxLTRlNmYtYWRhYi1hNWM4NzNlMWQ1NDgiLCJpYXQiOjE3NjIwNDk1OTgsImV4cCI6MTc2MjY1NDM5OH0.N7pA_H5LxH9zviredf2TiJmu9DHHwJGBhuRC6EVjzdE';
 
 const additionalBienestarQuestions = [
   {
@@ -105,7 +104,7 @@ async function createAdditionalQuestions() {
     try {
       console.log(
         `📝 Creando pregunta 
-        ${i + 1}/${additionalBienestarQuestions.length}: "${question.question.substring(0, 50)}..."`
+        ${i + 1}/${additionalBienestarQuestions.length}: "${question.question.substring(0, 50)}..."`,
       );
 
       const response = await axios.post(`${API_BASE}/admin/questions`, question, {
@@ -116,12 +115,12 @@ async function createAdditionalQuestions() {
       });
 
       console.log(
-        `✅ Pregunta creada exitosamente (ID: ${response.data.question ? response.data.question.id : 'N/A'})`
+        `✅ Pregunta creada exitosamente (ID: ${response.data.question ? response.data.question.id : 'N/A'})`,
       );
       success++;
     } catch (error) {
       console.log(
-        `❌ Error creando pregunta: ${error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message}`
+        `❌ Error creando pregunta: ${error.response && error.response.data && error.response.data.message ? error.response.data.message : error.message}`,
       );
       if (error.response && error.response.data && error.response.data.errors) {
         console.log('   Detalles:', error.response.data.errors);
@@ -140,7 +139,7 @@ async function createAdditionalQuestions() {
 
   if (success > 0) {
     console.log(
-      '\n🎮 ¡Ahora deberías tener suficientes preguntas de bienestar para crear GameRooms!'
+      '\n🎮 ¡Ahora deberías tener suficientes preguntas de bienestar para crear GameRooms!',
     );
   }
 }

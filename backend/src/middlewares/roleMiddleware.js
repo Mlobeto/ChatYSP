@@ -19,24 +19,22 @@ const adminMiddleware = (req, res, next) => {
 };
 
 // Middleware genérico para roles específicos
-const roleMiddleware = (allowedRoles) => {
-  return (req, res, next) => {
-    if (!req.user || !req.user.role) {
-      return res.status(401).json({
-        success: false,
-        message: 'Usuario no autenticado.',
-      });
-    }
+const roleMiddleware = (allowedRoles) => (req, res, next) => {
+  if (!req.user || !req.user.role) {
+    return res.status(401).json({
+      success: false,
+      message: 'Usuario no autenticado.',
+    });
+  }
 
-    if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({
-        success: false,
-        message: `Acceso denegado. Se requieren permisos: ${allowedRoles.join(' o ')}.`,
-      });
-    }
+  if (!allowedRoles.includes(req.user.role)) {
+    return res.status(403).json({
+      success: false,
+      message: `Acceso denegado. Se requieren permisos: ${allowedRoles.join(' o ')}.`,
+    });
+  }
 
-    next();
-  };
+  next();
 };
 
 const countryMiddleware = (req, res, next) => {

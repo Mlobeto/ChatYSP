@@ -7,7 +7,7 @@ const tipController = {
   async getAllTips(req, res) {
     try {
       console.log('📝 getAllTips - Query params:', req.query);
-      
+
       const {
         page = 1,
         limit = 10,

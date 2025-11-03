@@ -6,7 +6,7 @@ const { Notification, User } = require('../src/models');
 async function createTestNotifications() {
   try {
     console.log('🔍 Buscando usuarios administradores...');
-    
+
     // Buscar usuarios admin
     const admins = await User.findAll({
       where: { role: 'admin' },
@@ -100,7 +100,7 @@ async function createTestNotifications() {
     const createdNotifications = await Notification.bulkCreate(notifications);
 
     console.log(`✅ Se crearon ${createdNotifications.length} notificaciones de prueba`);
-    
+
     // Mostrar resumen
     const notificationsByType = {};
     createdNotifications.forEach((notification) => {

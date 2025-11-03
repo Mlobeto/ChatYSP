@@ -314,13 +314,13 @@ class FedeController {
       const config = await this.fedeService.getConfiguration();
       res.json({
         success: true,
-        data: config
+        data: config,
       });
     } catch (error) {
       console.error('Error obteniendo configuración:', error);
       res.status(500).json({
         success: false,
-        error: 'Error obteniendo configuración'
+        error: 'Error obteniendo configuración',
       });
     }
   }
@@ -334,13 +334,13 @@ class FedeController {
       await this.fedeService.updateConfiguration(config);
       res.json({
         success: true,
-        message: 'Configuración actualizada exitosamente'
+        message: 'Configuración actualizada exitosamente',
       });
     } catch (error) {
       console.error('Error actualizando configuración:', error);
       res.status(500).json({
         success: false,
-        error: 'Error actualizando configuración'
+        error: 'Error actualizando configuración',
       });
     }
   }
@@ -353,13 +353,13 @@ class FedeController {
       const status = await this.fedeService.getTrainingStatus();
       res.json({
         success: true,
-        data: status
+        data: status,
       });
     } catch (error) {
       console.error('Error obteniendo estado de entrenamiento:', error);
       res.status(500).json({
         success: false,
-        error: 'Error obteniendo estado de entrenamiento'
+        error: 'Error obteniendo estado de entrenamiento',
       });
     }
   }
@@ -369,24 +369,24 @@ class FedeController {
    */
   async uploadTrainingData(req, res) {
     try {
-      const files = req.files;
+      const { files } = req;
       if (!files || files.length === 0) {
         return res.status(400).json({
           success: false,
-          error: 'No se han proporcionado archivos'
+          error: 'No se han proporcionado archivos',
         });
       }
 
       const result = await this.fedeService.uploadTrainingData(files);
       res.json({
         success: true,
-        data: result
+        data: result,
       });
     } catch (error) {
       console.error('Error subiendo datos de entrenamiento:', error);
       res.status(500).json({
         success: false,
-        error: 'Error subiendo datos de entrenamiento'
+        error: 'Error subiendo datos de entrenamiento',
       });
     }
   }
@@ -400,13 +400,13 @@ class FedeController {
       const result = await this.fedeService.startTraining(config);
       res.json({
         success: true,
-        data: result
+        data: result,
       });
     } catch (error) {
       console.error('Error iniciando entrenamiento:', error);
       res.status(500).json({
         success: false,
-        error: 'Error iniciando entrenamiento'
+        error: 'Error iniciando entrenamiento',
       });
     }
   }
@@ -419,13 +419,13 @@ class FedeController {
       await this.fedeService.stopTraining();
       res.json({
         success: true,
-        message: 'Entrenamiento detenido exitosamente'
+        message: 'Entrenamiento detenido exitosamente',
       });
     } catch (error) {
       console.error('Error deteniendo entrenamiento:', error);
       res.status(500).json({
         success: false,
-        error: 'Error deteniendo entrenamiento'
+        error: 'Error deteniendo entrenamiento',
       });
     }
   }
@@ -438,13 +438,13 @@ class FedeController {
       const data = await this.fedeService.exportTrainingData();
       res.json({
         success: true,
-        data: data
+        data,
       });
     } catch (error) {
       console.error('Error exportando datos:', error);
       res.status(500).json({
         success: false,
-        error: 'Error exportando datos'
+        error: 'Error exportando datos',
       });
     }
   }
@@ -457,13 +457,13 @@ class FedeController {
       const metrics = await this.fedeService.getEvaluationMetrics();
       res.json({
         success: true,
-        data: metrics
+        data: metrics,
       });
     } catch (error) {
       console.error('Error obteniendo métricas:', error);
       res.status(500).json({
         success: false,
-        error: 'Error obteniendo métricas'
+        error: 'Error obteniendo métricas',
       });
     }
   }
@@ -476,13 +476,13 @@ class FedeController {
       const versions = await this.fedeService.getModelVersions();
       res.json({
         success: true,
-        data: versions
+        data: versions,
       });
     } catch (error) {
       console.error('Error obteniendo versiones:', error);
       res.status(500).json({
         success: false,
-        error: 'Error obteniendo versiones'
+        error: 'Error obteniendo versiones',
       });
     }
   }
@@ -496,13 +496,13 @@ class FedeController {
       await this.fedeService.deployModel(versionId);
       res.json({
         success: true,
-        message: 'Modelo desplegado exitosamente'
+        message: 'Modelo desplegado exitosamente',
       });
     } catch (error) {
       console.error('Error desplegando modelo:', error);
       res.status(500).json({
         success: false,
-        error: 'Error desplegando modelo'
+        error: 'Error desplegando modelo',
       });
     }
   }
@@ -514,10 +514,10 @@ class FedeController {
     try {
       const { message } = req.body;
       const startTime = Date.now();
-      
+
       const response = await this.fedeService.generateResponse(message, [], {
         userId: 'test-admin',
-        sessionId: 'test-session'
+        sessionId: 'test-session',
       });
 
       const processingTime = Date.now() - startTime;
@@ -525,13 +525,13 @@ class FedeController {
       res.json({
         success: true,
         message: response,
-        processingTime
+        processingTime,
       });
     } catch (error) {
       console.error('Error probando mensaje:', error);
       res.status(500).json({
         success: false,
-        error: 'Error probando mensaje'
+        error: 'Error probando mensaje',
       });
     }
   }

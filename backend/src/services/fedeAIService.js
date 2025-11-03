@@ -5,9 +5,9 @@ class FedeAIService {
   constructor() {
     // Configurar OpenAI API
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: process.env.OPENAI_API_KEY,
     });
-    
+
     // Configuración base de Fede
     this.fedePersonality = `Eres Federico Hirigoyen, un coach ontológico argentino especializado en ayudar a personas que atraviesan rupturas de pareja. 
 
@@ -38,7 +38,7 @@ TONO:
     // Configuraciones del modelo (usando el más económico de GPT-5)
     this.modelConfig = {
       model: 'gpt-5-nano', // Modelo más económico y rápido de GPT-5
-      max_completion_tokens: 500
+      max_completion_tokens: 500,
     };
   }
 
@@ -49,36 +49,35 @@ TONO:
     try {
       // 1. Buscar contenido relevante en el knowledge base
       const relevantContent = await this.findRelevantKnowledge(userMessage);
-      
+
       // 2. Construir el contexto con el contenido encontrado
       const contextualInfo = this.buildContextFromKnowledge(relevantContent);
-      
+
       // 3. Generar la respuesta usando OpenAI
       const response = await this.generateFedeResponse(
-        userMessage, 
-        contextualInfo, 
-        conversationHistory
+        userMessage,
+        contextualInfo,
+        conversationHistory,
       );
-      
+
       // 4. Actualizar estadísticas de uso del knowledge base
       await this.updateKnowledgeUsage(relevantContent);
-      
+
       return {
         success: true,
         message: response,
-        sources: relevantContent.map(item => ({
+        sources: relevantContent.map((item) => ({
           title: item.title,
           type: item.contentType,
-          category: item.category
-        }))
+          category: item.category,
+        })),
       };
-      
     } catch (error) {
       console.error('Error en FedeAIService:', error);
       return {
         success: false,
-        message: "Disculpá, estoy teniendo algunas dificultades técnicas. ¿Podés intentar de nuevo en un momento?",
-        error: error.message
+        message: 'Disculpá, estoy teniendo algunas dificultades técnicas. ¿Podés intentar de nuevo en un momento?',
+        error: error.message,
       };
     }
   }
@@ -102,18 +101,18 @@ TONO:
    */
   buildContextFromKnowledge(knowledgeItems) {
     if (!knowledgeItems || knowledgeItems.length === 0) {
-      return "Basate en tu experiencia como coach ontológico especializado en rupturas de pareja.";
+      return 'Basate en tu experiencia como coach ontológico especializado en rupturas de pareja.';
     }
 
-    let context = "CONTEXTO RELEVANTE DE TU CONOCIMIENTO:\n\n";
-    
+    let context = 'CONTEXTO RELEVANTE DE TU CONOCIMIENTO:\n\n';
+
     knowledgeItems.forEach((item, index) => {
       context += `${index + 1}. ${item.title} (${item.contentType}):\n`;
       context += `${item.content.substring(0, 300)}...\n\n`;
     });
-    
-    context += "Usá esta información para enriquecer tu respuesta, pero mantené tu estilo personal y agrega tu experiencia.";
-    
+
+    context += 'Usá esta información para enriquecer tu respuesta, pero mantené tu estilo personal y agrega tu experiencia.';
+
     return context;
   }
 
@@ -123,29 +122,29 @@ TONO:
   async generateFedeResponse(userMessage, contextualInfo, conversationHistory) {
     const messages = [
       {
-        role: "system",
-        content: `${this.fedePersonality}\n\n${contextualInfo}`
-      }
+        role: 'system',
+        content: `${this.fedePersonality}\n\n${contextualInfo}`,
+      },
     ];
 
     // Agregar historial de conversación (últimos 6 mensajes)
     const recentHistory = conversationHistory.slice(-6);
-    recentHistory.forEach(msg => {
+    recentHistory.forEach((msg) => {
       messages.push({
         role: msg.role,
-        content: msg.content
+        content: msg.content,
       });
     });
 
     // Agregar el mensaje actual del usuario
     messages.push({
-      role: "user",
-      content: userMessage
+      role: 'user',
+      content: userMessage,
     });
 
     const completion = await this.openai.chat.completions.create({
       ...this.modelConfig,
-      messages: messages
+      messages,
     });
 
     return completion.choices[0].message.content;
@@ -169,13 +168,11 @@ TONO:
       'separación', 'divorcio', 'autoestima', 'emociones', 'tristeza',
       'dolor', 'superación', 'coaching', 'crecimiento', 'personal',
       'ansiedad', 'depresión', 'soledad', 'perdón', 'sanar',
-      'proceso', 'duelo', 'terapia', 'ayuda', 'consejo'
+      'proceso', 'duelo', 'terapia', 'ayuda', 'consejo',
     ];
 
     const messageWords = message.toLowerCase().split(' ');
-    return allowedTopics.some(topic => 
-      messageWords.some(word => word.includes(topic))
-    );
+    return allowedTopics.some((topic) => messageWords.some((word) => word.includes(topic)));
   }
 
   /**
@@ -183,13 +180,13 @@ TONO:
    */
   getOutOfScopeResponse() {
     const responses = [
-      "Hola! Soy Fede, tu coach especializado en rupturas de pareja y crecimiento personal. Me enfoco en ayudarte con temas relacionados a relaciones, autoestima y procesos emocionales. ¿En qué puedo ayudarte hoy?",
-      
-      "Mi especialidad es acompañarte en procesos de ruptura de pareja y desarrollo personal. ¿Hay algo de tu vida emocional o relaciones en lo que te pueda ayudar?",
-      
-      "Como coach ontológico, mi área es el trabajo con emociones, relaciones y crecimiento personal. ¿Te gustaría que conversemos sobre algún tema relacionado con tu bienestar emocional?"
+      'Hola! Soy Fede, tu coach especializado en rupturas de pareja y crecimiento personal. Me enfoco en ayudarte con temas relacionados a relaciones, autoestima y procesos emocionales. ¿En qué puedo ayudarte hoy?',
+
+      'Mi especialidad es acompañarte en procesos de ruptura de pareja y desarrollo personal. ¿Hay algo de tu vida emocional o relaciones en lo que te pueda ayudar?',
+
+      'Como coach ontológico, mi área es el trabajo con emociones, relaciones y crecimiento personal. ¿Te gustaría que conversemos sobre algún tema relacionado con tu bienestar emocional?',
     ];
-    
+
     return responses[Math.floor(Math.random() * responses.length)];
   }
 
@@ -208,28 +205,28 @@ TONO:
         expertise_areas: [
           'ruptura_pareja',
           'coaching_ontologico',
-          'metodologia_7_pasos'
-        ]
+          'metodologia_7_pasos',
+        ],
       },
       behavior: {
         max_response_length: 500,
         use_examples: true,
         ask_clarifying_questions: true,
         remember_context: true,
-        suggest_next_steps: true
+        suggest_next_steps: true,
       },
       safety: {
         filter_inappropriate: true,
         require_coaching_scope: true,
         escalate_crisis: true,
-        max_conversation_length: 50
+        max_conversation_length: 50,
       },
       performance: {
         response_timeout: 30,
         max_knowledge_sources: 5,
         confidence_threshold: 0.7,
-        fallback_enabled: true
-      }
+        fallback_enabled: true,
+      },
     };
   }
 
@@ -242,7 +239,7 @@ TONO:
     if (!config.personality || !config.behavior || !config.safety || !config.performance) {
       throw new Error('Configuración incompleta');
     }
-    
+
     // En una implementación real, esto se guardaría en la base de datos
     console.log('Configuración actualizada:', config);
     return true;
@@ -257,7 +254,7 @@ TONO:
       progress: 0,
       logs: [],
       lastTraining: null,
-      estimatedTimeRemaining: null
+      estimatedTimeRemaining: null,
     };
   }
 
@@ -267,27 +264,27 @@ TONO:
   async uploadTrainingData(files) {
     // Procesar archivos de entrenamiento
     const processedFiles = [];
-    
+
     for (const file of files) {
       // Validar tipo de archivo
       const allowedTypes = ['.json', '.csv', '.txt'];
       const fileExtension = file.originalname.toLowerCase().slice(-4);
-      
+
       if (!allowedTypes.includes(fileExtension)) {
         throw new Error(`Tipo de archivo no permitido: ${fileExtension}`);
       }
-      
+
       processedFiles.push({
         name: file.originalname,
         size: file.size,
         type: fileExtension,
-        uploaded: new Date().toISOString()
+        uploaded: new Date().toISOString(),
       });
     }
-    
+
     return {
       message: `${processedFiles.length} archivos procesados exitosamente`,
-      files: processedFiles
+      files: processedFiles,
     };
   }
 
@@ -296,12 +293,12 @@ TONO:
    */
   async startTraining(config) {
     console.log('Iniciando entrenamiento con configuración:', config);
-    
+
     return {
       trainingId: `training_${Date.now()}`,
       status: 'starting',
-      config: config,
-      startTime: new Date().toISOString()
+      config,
+      startTime: new Date().toISOString(),
     };
   }
 
@@ -323,8 +320,8 @@ TONO:
       metadata: {
         exportDate: new Date().toISOString(),
         totalConversations: 0,
-        totalKnowledgeEntries: 0
-      }
+        totalKnowledgeEntries: 0,
+      },
     };
   }
 
@@ -338,7 +335,7 @@ TONO:
       satisfaction_score: 4.7,
       total_conversations: 1250,
       successful_resolutions: 1178,
-      escalated_cases: 12
+      escalated_cases: 12,
     };
   }
 
@@ -352,22 +349,22 @@ TONO:
         version: '1.0.0',
         created_at: '2024-01-15T10:00:00Z',
         accuracy: 0.89,
-        is_active: false
+        is_active: false,
       },
       {
         id: 'v1.1.0',
         version: '1.1.0',
         created_at: '2024-02-01T10:00:00Z',
         accuracy: 0.92,
-        is_active: false
+        is_active: false,
       },
       {
         id: 'v1.2.0',
         version: '1.2.0',
         created_at: '2024-02-15T10:00:00Z',
         accuracy: 0.942,
-        is_active: true
-      }
+        is_active: true,
+      },
     ];
   }
 
@@ -392,27 +389,26 @@ TONO:
       // Preparar el prompt con contexto de la conversación
       const messages = [
         {
-          role: "system",
-          content: this.fedePersonality
+          role: 'system',
+          content: this.fedePersonality,
         },
         ...conversationHistory,
         {
-          role: "user",
-          content: message
-        }
+          role: 'user',
+          content: message,
+        },
       ];
 
       // Llamar a OpenAI
       const response = await this.openai.chat.completions.create({
         ...this.modelConfig,
-        messages: messages
+        messages,
       });
 
       return response.choices[0].message.content;
-
     } catch (error) {
       console.error('Error generando respuesta:', error);
-      return "Disculpá, estoy teniendo dificultades técnicas en este momento. ¿Podrías intentar de nuevo en unos minutos?";
+      return 'Disculpá, estoy teniendo dificultades técnicas en este momento. ¿Podrías intentar de nuevo en unos minutos?';
     }
   }
 }

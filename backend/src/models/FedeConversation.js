@@ -175,7 +175,7 @@ const FedeConversation = sequelize.define(
       },
     ],
     comment: 'Almacena todas las conversaciones entre usuarios y Fede (IA)',
-  }
+  },
 );
 
 // Asociaciones
@@ -213,13 +213,11 @@ FedeConversation.getSessionStats = async function (sessionId) {
   });
 
   const totalMessages = conversations.length;
-  const avgRating =
-    conversations.filter((c) => c.userRating).reduce((sum, c) => sum + c.userRating, 0) /
-      conversations.filter((c) => c.userRating).length || 0;
+  const avgRating = conversations.filter((c) => c.userRating).reduce((sum, c) => sum + c.userRating, 0)
+      / conversations.filter((c) => c.userRating).length || 0;
 
-  const avgProcessingTime =
-    conversations.filter((c) => c.processingTime).reduce((sum, c) => sum + c.processingTime, 0) /
-      conversations.filter((c) => c.processingTime).length || 0;
+  const avgProcessingTime = conversations.filter((c) => c.processingTime).reduce((sum, c) => sum + c.processingTime, 0)
+      / conversations.filter((c) => c.processingTime).length || 0;
 
   return {
     totalMessages,

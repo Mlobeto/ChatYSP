@@ -14,7 +14,8 @@ class EmailService {
   }
 
   async sendEmail({
-    to, subject, html, text }) {
+    to, subject, html, text,
+  }) {
     try {
       const mailOptions = {
         from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM_EMAIL}>`,

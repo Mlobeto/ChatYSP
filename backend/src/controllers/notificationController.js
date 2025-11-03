@@ -1,5 +1,5 @@
-const { Notification, User } = require('../models');
 const { Op } = require('sequelize');
+const { Notification, User } = require('../models');
 
 // Obtener notificaciones del usuario
 const getUserNotifications = async (req, res) => {
@@ -10,7 +10,7 @@ const getUserNotifications = async (req, res) => {
     const offset = (page - 1) * limit;
     const unreadOnly = req.query.unreadOnly === 'true';
 
-    let whereClause = { userId };
+    const whereClause = { userId };
 
     if (unreadOnly) {
       whereClause.isRead = false;
@@ -19,7 +19,7 @@ const getUserNotifications = async (req, res) => {
     // Filtrar notificaciones no expiradas
     whereClause[Op.or] = [
       { expiresAt: null },
-      { expiresAt: { [Op.gt]: new Date() } }
+      { expiresAt: { [Op.gt]: new Date() } },
     ];
 
     const { count, rows: notifications } = await Notification.findAndCountAll({
@@ -71,7 +71,7 @@ const getUnreadCount = async (req, res) => {
         isRead: false,
         [Op.or]: [
           { expiresAt: null },
-          { expiresAt: { [Op.gt]: new Date() } }
+          { expiresAt: { [Op.gt]: new Date() } },
         ],
       },
     });
@@ -139,7 +139,7 @@ const markAllAsRead = async (req, res) => {
           userId,
           isRead: false,
         },
-      }
+      },
     );
 
     res.json({
@@ -195,7 +195,9 @@ const deleteNotification = async (req, res) => {
 // Crear notificación (para admins)
 const createNotification = async (req, res) => {
   try {
-    const { userId, type, title, message, priority, relatedId, relatedType, metadata, expiresAt } = req.body;
+    const {
+      userId, type, title, message, priority, relatedId, relatedType, metadata, expiresAt,
+    } = req.body;
 
     // Validar campos requeridos
     if (!userId || !title || !message) {
@@ -244,7 +246,9 @@ const createNotification = async (req, res) => {
 // Crear notificación masiva (para admins)
 const createBulkNotification = async (req, res) => {
   try {
-    const { userIds, type, title, message, priority, relatedId, relatedType, metadata, expiresAt } = req.body;
+    const {
+      userIds, type, title, message, priority, relatedId, relatedType, metadata, expiresAt,
+    } = req.body;
 
     // Validar campos requeridos
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0 || !title || !message) {
@@ -268,7 +272,7 @@ const createBulkNotification = async (req, res) => {
     }
 
     // Crear notificaciones para todos los usuarios
-    const notificationsData = userIds.map(userId => ({
+    const notificationsData = userIds.map((userId) => ({
       userId,
       type: type || 'general',
       title,

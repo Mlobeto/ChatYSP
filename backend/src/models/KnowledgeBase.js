@@ -174,7 +174,7 @@ const KnowledgeBase = sequelize.define(
       },
     ],
     comment: 'Almacena todo el knowledge base de Federico para el sistema de IA',
-  }
+  },
 );
 
 // Método para búsqueda de contenido relevante
