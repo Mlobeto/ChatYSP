@@ -44,9 +44,38 @@ export const dashboardApi = {
   // Gestión de usuarios
   getUsers: async (params = {}) => {
     const { page = 1, limit = 10, search = '' } = params;
-    const response = await dashboardAPI.get('/admin/users', {
+    
+    console.log('🌐 dashboardApi.getUsers - Enviando petición:', {
+      url: '/admin/users',
       params: { page, limit, search },
+      baseURL: dashboardAPI.defaults.baseURL
     });
+    
+    try {
+      const response = await dashboardAPI.get('/admin/users', {
+        params: { page, limit, search },
+      });
+      
+      console.log('✅ dashboardApi.getUsers - Respuesta exitosa:', {
+        status: response.status,
+        data: response.data,
+        url: response.config.url
+      });
+      
+      return response;
+    } catch (error) {
+      console.error('❌ dashboardApi.getUsers - Error:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url
+      });
+      throw error;
+    }
+  },
+
+  createUser: async (userData) => {
+    const response = await dashboardAPI.post('/admin/users', userData);
     return response;
   },
 

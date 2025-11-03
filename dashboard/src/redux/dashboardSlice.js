@@ -76,10 +76,52 @@ export const fetchUsers = createAsyncThunk(
   'dashboard/fetchUsers',
   async ({ page = 1, limit = 10, search = '' }, { rejectWithValue }) => {
     try {
+      console.log('🔄 fetchUsers thunk - Iniciando con parámetros:', { page, limit, search });
+      
       const response = await dashboardApi.getUsers({ page, limit, search });
+      
+      console.log('✅ fetchUsers thunk - Respuesta exitosa:', {
+        status: response.status,
+        data: response.data,
+        headers: response.headers
+      });
+      
       return response.data;
     } catch (error) {
+      console.error('❌ fetchUsers thunk - Error:', {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config
+      });
+      
       const message = error.response?.data?.message || 'Error al obtener usuarios';
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const createUser = createAsyncThunk(
+  'dashboard/createUser',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await dashboardApi.createUser(userData);
+      return response.data.user;
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error al crear usuario';
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  'dashboard/updateUser',
+  async ({ userId, userData }, { rejectWithValue }) => {
+    try {
+      const response = await dashboardApi.updateUser(userId, userData);
+      return { userId, user: response.data.user };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error al actualizar usuario';
       return rejectWithValue(message);
     }
   }
@@ -296,6 +338,16 @@ const dashboardSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.usersLoading = false;
         state.usersError = action.payload;
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.users.unshift(action.payload);
+        state.stats.totalUsers += 1;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        const index = state.users.findIndex(user => user.id === action.payload.userId);
+        if (index !== -1) {
+          state.users[index] = action.payload.user;
+        }
       })
       .addCase(updateUserStatus.fulfilled, (state, action) => {
         const index = state.users.findIndex(user => user.id === action.payload.userId);

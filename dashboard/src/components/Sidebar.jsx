@@ -4,7 +4,6 @@ import {
   HomeIcon,
   UsersIcon,
   ChatBubbleLeftRightIcon,
-  FilmIcon,
   LightBulbIcon,
   CogIcon,
   ChartBarIcon,
@@ -32,11 +31,6 @@ const Sidebar = ({ collapsed, mobileMenuOpen, isMobile, onToggle, onLogout }) =>
       name: 'Tips',
       href: '/tips',
       icon: LightBulbIcon,
-    },
-    {
-      name: 'Videos',
-      href: '/videos',
-      icon: FilmIcon,
     },
     {
       name: 'Salas',

@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const { User } = require('../models');
 const { validatePhoneForCountry, getCountryFromPhone } = require('../utils/phoneValidation');
+const emailService = require('../services/emailService');
+const PasswordUtils = require('../utils/passwordUtils');
 
 const generateToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET, {
   expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -81,11 +83,15 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log('🔐 Login attempt:', { email, password: password ? '[HIDDEN]' : 'NO PASSWORD' });
 
     // Find user by email
     const user = await User.findOne({ where: { email } });
+    console.log('👤 User found:', user
+      ? { id: user.id, email: user.email, role: user.role } : 'NOT FOUND');
 
     if (!user) {
+      console.log('❌ User not found for email:', email);
       return res.status(401).json({
         success: false,
         message: 'Credenciales inválidas',
@@ -94,8 +100,10 @@ const login = async (req, res) => {
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
+    console.log('🔑 Password validation:', isPasswordValid ? 'VALID' : 'INVALID');
 
     if (!isPasswordValid) {
+      console.log('❌ Invalid password for user:', email);
       return res.status(401).json({
         success: false,
         message: 'Credenciales inválidas',
@@ -113,6 +121,7 @@ const login = async (req, res) => {
 
     // Generate token
     const token = generateToken(user.id);
+    console.log('🎫 Token generated successfully for user:', user.email);
 
     res.json({
       success: true,
@@ -300,6 +309,140 @@ const registerAdmin = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    // Generate reset token
+    const resetToken = PasswordUtils.generateResetToken();
+    const resetExpires = PasswordUtils.getExpirationTime(24); // 24 horas
+
+    // Save reset token
+    await user.update({
+      resetPasswordToken: resetToken,
+      resetPasswordExpires: resetExpires,
+    });
+
+    // Send reset email
+    try {
+      const resetLink = PasswordUtils.generateResetLink(resetToken);
+      await emailService.sendPasswordResetEmail({
+        to: email,
+        username: user.username,
+        resetLink,
+        expirationTime: 24,
+      });
+
+      res.json({
+        success: true,
+        message: 'Email de recuperación enviado',
+      });
+    } catch (emailError) {
+      console.error('❌ Error enviando email de reset:', emailError);
+      res.status(500).json({
+        success: false,
+        message: 'Error enviando email de recuperación',
+      });
+    }
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    console.log('🔧 resetPassword - Datos recibidos:', {
+      token: token ? `${token.substring(0, 10)}...` : 'no token',
+      passwordLength: newPassword ? newPassword.length : 0,
+    });
+
+    if (!token || !newPassword) {
+      console.log('❌ resetPassword - Faltan datos requeridos');
+      return res.status(400).json({
+        success: false,
+        message: 'Token y nueva contraseña son requeridos',
+      });
+    }
+
+    if (newPassword.length < 6) {
+      console.log('❌ resetPassword - Contraseña muy corta');
+      return res.status(400).json({
+        success: false,
+        message: 'La contraseña debe tener al menos 6 caracteres',
+      });
+    }
+
+    console.log('🔍 resetPassword - Buscando usuario con token...');
+    console.log('Token recibido:', token);
+    console.log('Fecha actual:', new Date());
+
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: { [Op.gt]: new Date() },
+      },
+    });
+
+    console.log('👤 resetPassword - Usuario encontrado:', !!user);
+    // También busquemos sin la restricción de fecha para ver si el token existe
+    const userWithoutDateCheck = await User.findOne({
+      where: {
+        resetPasswordToken: token,
+      },
+    });
+    console.log('🕐 Usuario con token (sin verificar fecha):', !!userWithoutDateCheck);
+    if (userWithoutDateCheck) {
+      console.log('🕐 Token expira:', userWithoutDateCheck.resetPasswordExpires);
+      const isExpired = userWithoutDateCheck.resetPasswordExpires < new Date();
+      console.log('🕐 ¿Token expirado?:', isExpired);
+    }
+
+    if (!user) {
+      console.log('❌ resetPassword - Token inválido o expirado');
+      return res.status(400).json({
+        success: false,
+        message: 'Token inválido o expirado',
+      });
+    }
+
+    console.log('🔄 resetPassword - Actualizando contraseña...');
+    // Update password and clear reset fields
+    await user.update({
+      password: newPassword, // Será hasheada por el hook
+      resetPasswordToken: null,
+      resetPasswordExpires: null,
+      isTemporaryPassword: false,
+    });
+
+    res.json({
+      success: true,
+      message: 'Contraseña actualizada exitosamente',
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   register,
   registerAdmin,
@@ -307,4 +450,6 @@ module.exports = {
   logout,
   getProfile,
   updateProfile,
+  forgotPassword,
+  resetPassword,
 };

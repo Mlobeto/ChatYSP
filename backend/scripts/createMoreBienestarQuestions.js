@@ -108,8 +108,7 @@ async function createAdditionalQuestions() {
         ${i + 1}/${additionalBienestarQuestions.length}: "${question.question.substring(0, 50)}..."`
       );
 
-      const response = 
-      await axios.post(`${API_BASE}/admin/questions`, question, {
+      const response = await axios.post(`${API_BASE}/admin/questions`, question, {
         headers: {
           Authorization: `Bearer ${ADMIN_TOKEN}`,
           'Content-Type': 'application/json',

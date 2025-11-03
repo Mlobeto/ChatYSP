@@ -28,49 +28,49 @@ const DashboardHome = () => {
   const statsCards = [
     {
       name: 'Total Usuarios',
-      value: stats?.totalUsers || 0,
-      change: '+12%',
+      value: stats?.general?.totalUsers || 0,
+      change: `+${stats?.lastWeek?.newUsers || 0} esta semana`,
       changeType: 'increase',
       icon: UsersIcon,
       color: 'blue',
     },
     {
       name: 'Usuarios Activos',
-      value: stats?.activeUsers || 0,
-      change: '+8%',
-      changeType: 'increase',
+      value: stats?.general?.onlineUsers || 0,
+      change: 'Conectados ahora',
+      changeType: 'neutral',
       icon: UsersIcon,
       color: 'green',
     },
     {
       name: 'Total Salas',
-      value: stats?.totalRooms || 0,
-      change: '-2%',
-      changeType: 'decrease',
+      value: stats?.general?.totalRooms || 0,
+      change: `+${stats?.lastWeek?.newRooms || 0} esta semana`,
+      changeType: 'increase',
       icon: ChatBubbleLeftRightIcon,
       color: 'purple',
     },
     {
       name: 'Mensajes',
-      value: stats?.totalMessages || 0,
-      change: '+24%',
+      value: stats?.general?.totalMessages || 0,
+      change: `+${stats?.lastWeek?.messages || 0} esta semana`,
       changeType: 'increase',
       icon: ChatBubbleLeftRightIcon,
       color: 'indigo',
     },
     {
       name: 'Tips Publicados',
-      value: stats?.totalTips || 0,
-      change: '+5%',
-      changeType: 'increase',
+      value: stats?.general?.totalTips || 0,
+      change: 'Tips disponibles',
+      changeType: 'neutral',
       icon: LightBulbIcon,
       color: 'yellow',
     },
     {
-      name: 'Videos Subidos',
-      value: stats?.totalVideos || 0,
-      change: '+15%',
-      changeType: 'increase',
+      name: 'Preguntas',
+      value: stats?.general?.totalQuestions || 0,
+      change: 'Banco de preguntas',
+      changeType: 'neutral',
       icon: FilmIcon,
       color: 'red',
     },
@@ -125,20 +125,20 @@ const DashboardHome = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Resumen general de la plataforma ChatYSP</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600">Resumen general de la plataforma ChatYSP</p>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-xs sm:text-sm text-gray-500 mt-2 sm:mt-0">
           Última actualización: {new Date().toLocaleString()}
         </div>
       </div>
 
-      {/* Tarjetas de estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Tarjetas de estadísticas responsive */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {statsCards.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -146,34 +146,35 @@ const DashboardHome = () => {
               key={stat.name}
               className="bg-white overflow-hidden shadow rounded-lg hover:shadow-lg transition-shadow"
             >
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center">
-                  <div className={`p-3 rounded-md ${getColorClasses(stat.color)}`}>
-                    <Icon className="h-6 w-6" />
+                  <div className={`p-2 sm:p-3 rounded-md ${getColorClasses(stat.color)}`}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
-                  <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium text-gray-500 truncate">
+                  <div className="ml-3 sm:ml-4 flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">
                       {stat.name}
                     </p>
-                    <p className="text-2xl font-semibold text-gray-900">
+                    <p className="text-lg sm:text-2xl font-semibold text-gray-900">
                       {(stat.value || 0).toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <div className="mt-4 flex items-center">
-                  <div className={`flex items-center text-sm ${
+                <div className="mt-3 sm:mt-4 flex items-center">
+                  <div className={`flex items-center text-xs sm:text-sm ${
                     stat.changeType === 'increase' 
                       ? 'text-green-600' 
-                      : 'text-red-600'
+                      : stat.changeType === 'decrease'
+                      ? 'text-red-600'
+                      : 'text-blue-600'
                   }`}>
                     {stat.changeType === 'increase' ? (
-                      <ArrowUpIcon className="h-4 w-4 mr-1" />
-                    ) : (
-                      <ArrowDownIcon className="h-4 w-4 mr-1" />
-                    )}
+                      <ArrowUpIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                    ) : stat.changeType === 'decrease' ? (
+                      <ArrowDownIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                    ) : null}
                     <span className="font-medium">{stat.change}</span>
                   </div>
-                  <span className="text-gray-500 text-sm ml-2">vs mes anterior</span>
                 </div>
               </div>
             </div>
@@ -181,68 +182,89 @@ const DashboardHome = () => {
         })}
       </div>
 
-      {/* Actividad reciente */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Usuarios recientes */}
+      {/* Actividad reciente responsive */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        {/* Top Usuarios por Puntos */}
         <div className="bg-white shadow rounded-lg">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Usuarios Recientes</h3>
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900">🏆 Top Usuarios por Puntos</h3>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="flex items-center space-x-3">
-                  <div className="h-8 w-8 bg-gray-200 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      Usuario {i + 1}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Registrado hace {i + 1} hora{i !== 0 ? 's' : ''}
-                    </p>
+          <div className="p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
+              {stats?.topUsers?.length > 0 ? (
+                stats.topUsers.slice(0, 5).map((user, index) => (
+                  <div key={user.id} className="flex items-center space-x-3">
+                    <div className={`h-6 w-6 sm:h-8 sm:w-8 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm ${
+                      index === 0 ? 'bg-yellow-500' : 
+                      index === 1 ? 'bg-gray-400' : 
+                      index === 2 ? 'bg-amber-600' : 'bg-blue-500'
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-gray-900 truncate">
+                        {user.username}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Nivel {user.level} • {user.gamesWon}/{user.gamesPlayed} juegos
+                      </p>
+                    </div>
+                    <div className="text-xs sm:text-sm text-green-600 font-bold flex-shrink-0">
+                      {user.points.toLocaleString()} pts
+                    </div>
                   </div>
-                  <div className="text-sm text-green-600 font-medium">
-                    Activo
-                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-500 py-4 text-sm">
+                  No hay usuarios registrados aún
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>
 
-        {/* Actividad del sistema */}
+        {/* Resumen de Actividad Semanal */}
         <div className="bg-white shadow rounded-lg">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Actividad del Sistema</h3>
+          <div className="p-4 sm:p-6 border-b border-gray-200">
+            <h3 className="text-base sm:text-lg font-medium text-gray-900">📊 Actividad Esta Semana</h3>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="h-2 w-2 bg-green-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-900">Nuevo tip creado</p>
-                  <p className="text-sm text-gray-500">hace 2 minutos</p>
+          <div className="p-4 sm:p-6">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                  <UsersIcon className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-900 truncate">Nuevos Usuarios</span>
                 </div>
+                <span className="text-sm sm:text-lg font-bold text-blue-600 flex-shrink-0">
+                  {stats?.lastWeek?.newUsers || 0}
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-900">Usuario conectado</p>
-                  <p className="text-sm text-gray-500">hace 5 minutos</p>
+              
+              <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                  <ChatBubbleLeftRightIcon className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-900 truncate">Nuevas Salas</span>
                 </div>
+                <span className="text-sm sm:text-lg font-bold text-purple-600 flex-shrink-0">
+                  {stats?.lastWeek?.newRooms || 0}
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="h-2 w-2 bg-purple-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-900">Video subido</p>
-                  <p className="text-sm text-gray-500">hace 15 minutos</p>
+              
+              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                  <ChatBubbleLeftRightIcon className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm font-medium text-gray-900 truncate">Mensajes Enviados</span>
                 </div>
+                <span className="text-sm sm:text-lg font-bold text-green-600 flex-shrink-0">
+                  {stats?.lastWeek?.messages?.toLocaleString() || 0}
+                </span>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="h-2 w-2 bg-yellow-400 rounded-full"></div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-900">Sala creada</p>
-                  <p className="text-sm text-gray-500">hace 30 minutos</p>
+              
+              <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
+                <div className="text-center">
+                  <p className="text-xs text-gray-500">
+                    Datos de los últimos 7 días
+                  </p>
                 </div>
               </div>
             </div>

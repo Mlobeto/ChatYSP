@@ -79,6 +79,57 @@ const updateUserRoleValidation = [
     .withMessage('Rol inválido'),
 ];
 
+const createUserValidation = [
+  body('username')
+    .trim()
+    .isLength({ min: 3, max: 20 })
+    .withMessage('Username debe tener entre 3 y 20 caracteres'),
+  body('email')
+    .isEmail()
+    .withMessage('Email inválido'),
+  body('role')
+    .optional()
+    .isIn(['user', 'moderator', 'admin'])
+    .withMessage('Rol inválido'),
+  body('country')
+    .optional()
+    .isIn(['AR', 'PE', 'MX', 'CO', 'ES'])
+    .withMessage('País inválido'),
+  body('phone')
+    .optional()
+    .isMobilePhone()
+    .withMessage('Número de teléfono inválido'),
+  body('sendWelcomeEmail')
+    .optional()
+    .isBoolean()
+    .withMessage('sendWelcomeEmail debe ser booleano'),
+];
+
+const updateUserValidation = [
+  ...userIdValidation,
+  body('username')
+    .optional()
+    .trim()
+    .isLength({ min: 3, max: 20 })
+    .withMessage('Username debe tener entre 3 y 20 caracteres'),
+  body('email')
+    .optional()
+    .isEmail()
+    .withMessage('Email inválido'),
+  body('role')
+    .optional()
+    .isIn(['user', 'moderator', 'admin'])
+    .withMessage('Rol inválido'),
+  body('country')
+    .optional()
+    .isIn(['AR', 'PE', 'MX', 'CO', 'ES'])
+    .withMessage('País inválido'),
+  body('phone')
+    .optional()
+    .isMobilePhone()
+    .withMessage('Número de teléfono inválido'),
+];
+
 const paginationValidation = [
   query('page')
     .optional()
@@ -163,13 +214,25 @@ router.get('/stats', adminController.getStats);
 
 // User management routes
 router.get('/users', paginationValidation, validateRequest, adminController.getUsers);
+router.post(
+  '/users',
+  createUserValidation,
+  validateRequest,
+  adminController.createUser,
+);
+router.put(
+  '/users/:userId',
+  updateUserValidation,
+  validateRequest,
+  adminController.updateUser,
+);
 router.put(
   '/users/:userId/role',
   updateUserRoleValidation,
   validateRequest,
   adminController.updateUserRole,
 );
-router.delete('/users/:userId', userIdValidation, validateRequest, adminController.deactivateUser);
+router.delete('/users/:userId', userIdValidation, validateRequest, adminController.deleteUser);
 
 // Room management routes
 router.get('/rooms', paginationValidation, validateRequest, adminController.getRooms);

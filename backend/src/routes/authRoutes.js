@@ -84,6 +84,24 @@ const updateProfileValidation = [
     .withMessage('El avatar debe ser una URL válida'),
 ];
 
+// Forgot password validation rules
+const forgotPasswordValidation = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Debe proporcionar un email válido'),
+];
+
+// Reset password validation rules
+const resetPasswordValidation = [
+  body('token')
+    .notEmpty()
+    .withMessage('Token es requerido'),
+  body('newPassword')
+    .isLength({ min: 6 })
+    .withMessage('La nueva contraseña debe tener al menos 6 caracteres'),
+];
+
 // Routes
 router.post('/register', registerValidation, validateRequest, authController.register);
 router.post(
@@ -101,6 +119,18 @@ router.put(
   updateProfileValidation,
   validateRequest,
   authController.updateProfile,
+);
+router.post(
+  '/forgot-password',
+  forgotPasswordValidation,
+  validateRequest,
+  authController.forgotPassword,
+);
+router.post(
+  '/reset-password',
+  resetPasswordValidation,
+  validateRequest,
+  authController.resetPassword,
 );
 
 module.exports = router;

@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const {
   User, Room, Message, Question, Tip,
 } = require('../models');
+const emailService = require('../services/emailService');
+const PasswordUtils = require('../utils/passwordUtils');
 
 const getStats = async (req, res) => {
   try {
@@ -227,6 +229,229 @@ const deactivateUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Deactivate user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+const createUser = async (req, res) => {
+  try {
+    const {
+      username, email, role = 'user', country, phone, sendWelcomeEmail = true,
+    } = req.body;
+
+    // Validation
+    if (!username || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Username y email son requeridos',
+      });
+    }
+
+    if (!['user', 'moderator', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rol inválido',
+      });
+    }
+
+    // Check if user already exists
+    const existingUser = await User.findOne({
+      where: {
+        [Op.or]: [{ email }, { username }],
+      },
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'El usuario o email ya existe',
+      });
+    }
+
+    // Generate temporary password and reset token
+    const tempPassword = PasswordUtils.generateTempPassword();
+    const resetToken = PasswordUtils.generateResetToken();
+    const resetExpires = PasswordUtils.getExpirationTime(24); // 24 horas
+
+    console.log('🔧 createUser - Datos generados:', {
+      tempPassword: `${tempPassword.substring(0, 4)}...`,
+      resetToken: `${resetToken.substring(0, 10)}...`,
+      resetExpires,
+    });
+
+    // Create new user
+    const user = await User.create({
+      username,
+      email,
+      password: tempPassword, // Será hasheada automáticamente por el hook
+      role,
+      country: country || null,
+      phone: phone || null,
+      isTemporaryPassword: true,
+      resetPasswordToken: resetToken,
+      resetPasswordExpires: resetExpires,
+    });
+
+    console.log('👤 createUser - Usuario creado:', {
+      id: user.id,
+      username: user.username,
+      resetPasswordToken: user.resetPasswordToken ? 'Sí guardado' : 'NO guardado',
+      resetPasswordExpires: user.resetPasswordExpires,
+    });
+
+    // Send welcome email if requested
+    if (sendWelcomeEmail) {
+      try {
+        const resetLink = PasswordUtils.generateResetLink(resetToken);
+
+        await emailService.sendWelcomeEmail({
+          to: email,
+          username,
+          tempPassword,
+          resetLink,
+        });
+
+        console.log(`📧 Email de bienvenida enviado a: ${email}`);
+      } catch (emailError) {
+        console.error('❌ Error enviando email de bienvenida:', emailError);
+        // No fallar la creación del usuario por un error de email
+      }
+    }
+
+    // Remove password from response
+    const { password: userPassword, ...userWithoutPassword } = user.toJSON();
+
+    res.status(201).json({
+      success: true,
+      message: sendWelcomeEmail
+        ? 'Usuario creado exitosamente. Email de bienvenida enviado.'
+        : 'Usuario creado exitosamente',
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.error('Create user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const {
+      username, email, role, country, phone,
+    } = req.body;
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    // Don't allow changing own role to non-admin
+    if (user.id === req.user.id && role && role !== 'admin') {
+      return res.status(400).json({
+        success: false,
+        message: 'No puedes cambiar tu propio rol de administrador',
+      });
+    }
+
+    // Validate role
+    if (role && !['user', 'moderator', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rol inválido',
+      });
+    }
+
+    // Check if username or email already exists (excluding current user)
+    if (username || email) {
+      const whereClause = {
+        id: { [Op.ne]: userId },
+        [Op.or]: [],
+      };
+
+      if (username) whereClause[Op.or].push({ username });
+      if (email) whereClause[Op.or].push({ email });
+
+      if (whereClause[Op.or].length > 0) {
+        const existingUser = await User.findOne({ where: whereClause });
+        if (existingUser) {
+          return res.status(400).json({
+            success: false,
+            message: 'El username o email ya existe',
+          });
+        }
+      }
+    }
+
+    // Update user
+    const updateData = {};
+    if (username) updateData.username = username;
+    if (email) updateData.email = email;
+    if (role) updateData.role = role;
+    if (country !== undefined) updateData.country = country || null;
+    if (phone !== undefined) updateData.phone = phone || null;
+
+    await user.update(updateData);
+
+    // Remove password from response
+    const { password: userPassword, ...userWithoutPassword } = user.toJSON();
+
+    res.json({
+      success: true,
+      message: 'Usuario actualizado exitosamente',
+      user: userWithoutPassword,
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    // Don't allow deleting own account
+    if (user.id === req.user.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'No puedes eliminar tu propia cuenta',
+      });
+    }
+
+    await user.destroy();
+
+    res.json({
+      success: true,
+      message: 'Usuario eliminado exitosamente',
+    });
+  } catch (error) {
+    console.error('Delete user error:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
@@ -771,6 +996,9 @@ const getUnassignedRooms = async (req, res) => {
 module.exports = {
   getStats,
   getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
   updateUserRole,
   deactivateUser,
   getRooms,

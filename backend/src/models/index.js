@@ -9,6 +9,7 @@ const GameStats = require('./GameStats');
 const GameRoom = require('./GameRoom');
 const GameInvitation = require('./GameInvitation');
 const GameRoomMember = require('./GameRoomMember');
+const Notification = require('./Notification');
 
 // Define associations
 // User associations
@@ -20,6 +21,7 @@ User.hasMany(GameStats, { foreignKey: 'userId', as: 'gameStats' });
 User.hasMany(GameRoom, { foreignKey: 'createdById', as: 'createdGameRooms' });
 User.hasMany(GameInvitation, { foreignKey: 'inviterId', as: 'sentInvitations' });
 User.hasMany(GameInvitation, { foreignKey: 'invitedId', as: 'receivedInvitations' });
+User.hasMany(Notification, { foreignKey: 'userId', as: 'notifications' });
 
 // Message associations
 Message.belongsTo(User, { foreignKey: 'senderId', as: 'sender' });
@@ -48,6 +50,9 @@ GameRoom.hasMany(GameInvitation, { foreignKey: 'gameRoomId', as: 'invitations' }
 GameInvitation.belongsTo(User, { foreignKey: 'inviterId', as: 'inviter' });
 GameInvitation.belongsTo(User, { foreignKey: 'invitedId', as: 'invited' });
 GameInvitation.belongsTo(GameRoom, { foreignKey: 'gameRoomId', as: 'gameRoom' });
+
+// Notification associations
+Notification.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
 // GameRoomMember associations
 GameRoomMember.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -127,4 +132,5 @@ module.exports = {
   GameInvitation,
   GameRoomMember,
   RoomParticipant,
+  Notification,
 };

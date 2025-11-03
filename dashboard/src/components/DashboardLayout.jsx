@@ -116,7 +116,7 @@ const DashboardLayout = () => {
         />
 
         {/* Contenido de la página */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6 min-h-[calc(100vh-4rem)]">
           <Outlet />
         </main>
       </div>

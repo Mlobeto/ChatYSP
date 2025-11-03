@@ -17,6 +17,9 @@ const gameRoomRoutes = require('./routes/gameRoomRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const moderatorRoutes = require('./routes/moderatorRoutes');
 const minigameRoutes = require('./routes/minigame');
+const tipRoutes = require('./routes/tipRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const fedeRoutes = require('./routes/fedeRoutes');
 
 // Import socket handlers
 const chatSocket = require('./sockets/chatSocket');
@@ -151,6 +154,109 @@ app.use('/api/gamerooms', gameRoomRoutes);
 app.use('/api/minigame', minigameRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/moderator', moderatorRoutes);
+app.use('/api/tips', tipRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/fede', fedeRoutes);
+
+// API Documentation endpoint
+app.get('/api', (req, res) => {
+  const apiDocs = {
+    name: 'ChatYSP API',
+    version: '1.0.0',
+    description: 'API para la plataforma ChatYSP - Comunidad de Bienestar y Crecimiento Personal',
+    baseUrl: `${req.protocol}://${req.get('host')}/api`,
+    endpoints: {
+      authentication: {
+        login: 'POST /auth/login',
+        register: 'POST /auth/register',
+        resetPassword: 'POST /auth/reset-password',
+        forgotPassword: 'POST /auth/forgot-password',
+        refreshToken: 'POST /auth/refresh',
+        logout: 'POST /auth/logout',
+      },
+      users: {
+        getCurrentUser: 'GET /auth/me',
+        updateProfile: 'PUT /auth/profile',
+      },
+      chat: {
+        getMessages: 'GET /chat/messages',
+        sendMessage: 'POST /chat/messages',
+        deleteMessage: 'DELETE /chat/messages/:id',
+      },
+      rooms: {
+        getRooms: 'GET /rooms',
+        createRoom: 'POST /rooms',
+        joinRoom: 'POST /rooms/:id/join',
+        leaveRoom: 'POST /rooms/:id/leave',
+        getRoomDetails: 'GET /rooms/:id',
+      },
+      games: {
+        getQuestions: 'GET /games/questions',
+        submitAnswer: 'POST /games/answers',
+        getStats: 'GET /games/stats',
+      },
+      gameRooms: {
+        getGameRooms: 'GET /gamerooms',
+        createGameRoom: 'POST /gamerooms',
+        joinGameRoom: 'POST /gamerooms/:id/join',
+        leaveGameRoom: 'POST /gamerooms/:id/leave',
+      },
+      admin: {
+        getStats: 'GET /admin/stats',
+        getUsers: 'GET /admin/users',
+        createUser: 'POST /admin/users',
+        updateUser: 'PUT /admin/users/:id',
+        deleteUser: 'DELETE /admin/users/:id',
+        getRooms: 'GET /admin/rooms',
+        getTips: 'GET /admin/tips',
+        createTip: 'POST /admin/tips',
+      },
+      moderator: {
+        getReports: 'GET /moderator/reports',
+        moderateContent: 'POST /moderator/moderate',
+      },
+      minigame: {
+        start: 'POST /minigame/start',
+        answer: 'POST /minigame/answer',
+        getResults: 'GET /minigame/results',
+      },
+    },
+    websockets: {
+      chat: 'ws://localhost:5000/chat',
+      game: 'ws://localhost:5000/game',
+    },
+    status: {
+      health: 'GET /health',
+      version: 'GET /version',
+    },
+    authentication: {
+      note: 'La mayoría de endpoints requieren autenticación JWT',
+      header: 'Authorization: Bearer <token>',
+    },
+    rateLimit: {
+      general: '100 requests per 15 minutes',
+      auth: '20 requests per 5 minutes',
+    },
+  };
+
+  res.json({
+    success: true,
+    message: 'ChatYSP API Documentation',
+    data: apiDocs,
+  });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'ChatYSP API is running',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: '1.0.0',
+  });
+});
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {

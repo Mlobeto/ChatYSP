@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import dashboardReducer from './dashboardSlice';
 import authReducer from './authSlice';
 import gameRoomsReducer from './gameRoomsSlice';
+import tipsReducer from './tipsSlice';
 
 export const store = configureStore({
   reducer: {
     dashboard: dashboardReducer,
     auth: authReducer,
     gameRooms: gameRoomsReducer,
+    tips: tipsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

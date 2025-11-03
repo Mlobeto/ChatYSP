@@ -50,7 +50,7 @@ export const authApi = {
 
   // Verificar token
   verifyToken: async () => {
-    const response = await authAPI.get('/auth/me');
+    const response = await authAPI.get('/auth/profile');
     return response;
   },
 

@@ -18,6 +18,27 @@ const adminMiddleware = (req, res, next) => {
   next();
 };
 
+// Middleware genérico para roles específicos
+const roleMiddleware = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!req.user || !req.user.role) {
+      return res.status(401).json({
+        success: false,
+        message: 'Usuario no autenticado.',
+      });
+    }
+
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `Acceso denegado. Se requieren permisos: ${allowedRoles.join(' o ')}.`,
+      });
+    }
+
+    next();
+  };
+};
+
 const countryMiddleware = (req, res, next) => {
   // Allow admin to access all countries
   if (req.user.role === 'admin') {
@@ -41,4 +62,5 @@ module.exports = {
   moderatorMiddleware,
   adminMiddleware,
   countryMiddleware,
+  roleMiddleware,
 };
