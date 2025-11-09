@@ -344,7 +344,7 @@ class FedeController {
   /**
    * Obtener estado del entrenamiento
    */
-  async getTrainingStatus(req, res) {
+  getTrainingStatus = async (req, res) => {
     try {
       const status = await this.fedeService.getTrainingStatus();
       res.json({
@@ -358,12 +358,12 @@ class FedeController {
         error: 'Error obteniendo estado de entrenamiento',
       });
     }
-  }
+  };
 
   /**
    * Subir datos de entrenamiento
    */
-  async uploadTrainingData(req, res) {
+  uploadTrainingData = async (req, res) => {
     try {
       const { files } = req;
       if (!files || files.length === 0) {
@@ -385,12 +385,12 @@ class FedeController {
         error: 'Error subiendo datos de entrenamiento',
       });
     }
-  }
+  };
 
   /**
    * Iniciar entrenamiento
    */
-  async startTraining(req, res) {
+  startTraining = async (req, res) => {
     try {
       const config = req.body;
       const result = await this.fedeService.startTraining(config);
@@ -405,12 +405,12 @@ class FedeController {
         error: 'Error iniciando entrenamiento',
       });
     }
-  }
+  };
 
   /**
    * Detener entrenamiento
    */
-  async stopTraining(req, res) {
+  stopTraining = async (req, res) => {
     try {
       await this.fedeService.stopTraining();
       res.json({
@@ -424,12 +424,12 @@ class FedeController {
         error: 'Error deteniendo entrenamiento',
       });
     }
-  }
+  };
 
   /**
    * Exportar datos de entrenamiento
    */
-  async exportTrainingData(req, res) {
+  exportTrainingData = async (req, res) => {
     try {
       const data = await this.fedeService.exportTrainingData();
       res.json({
@@ -443,12 +443,12 @@ class FedeController {
         error: 'Error exportando datos',
       });
     }
-  }
+  };
 
   /**
    * Obtener métricas de evaluación
    */
-  async getEvaluationMetrics(req, res) {
+  getEvaluationMetrics = async (req, res) => {
     try {
       const metrics = await this.fedeService.getEvaluationMetrics();
       res.json({
@@ -462,12 +462,12 @@ class FedeController {
         error: 'Error obteniendo métricas',
       });
     }
-  }
+  };
 
   /**
    * Obtener versiones del modelo
    */
-  async getModelVersions(req, res) {
+  getModelVersions = async (req, res) => {
     try {
       const versions = await this.fedeService.getModelVersions();
       res.json({
@@ -481,12 +481,12 @@ class FedeController {
         error: 'Error obteniendo versiones',
       });
     }
-  }
+  };
 
   /**
    * Desplegar modelo
    */
-  async deployModel(req, res) {
+  deployModel = async (req, res) => {
     try {
       const { versionId } = req.params;
       await this.fedeService.deployModel(versionId);
@@ -501,12 +501,12 @@ class FedeController {
         error: 'Error desplegando modelo',
       });
     }
-  }
+  };
 
   /**
    * Probar mensaje
    */
-  async testMessage(req, res) {
+  testMessage = async (req, res) => {
     try {
       const { message } = req.body;
       const startTime = Date.now();
@@ -530,12 +530,12 @@ class FedeController {
         error: 'Error probando mensaje',
       });
     }
-  }
+  };
 
   /**
    * Obtener estadísticas generales de Fede
    */
-  async getStats(req, res) {
+  getStats = async (req, res) => {
     try {
       const { KnowledgeBase } = require('../models');
       
@@ -583,12 +583,12 @@ class FedeController {
         error: 'Error obteniendo estadísticas'
       });
     }
-  }
+  };
 
   /**
    * Obtener base de conocimiento
    */
-  async getKnowledgeBase(req, res) {
+  getKnowledgeBase = async (req, res) => {
     try {
       const { KnowledgeBase } = require('../models');
       const { page = 1, limit = 20, category, contentType, search } = req.query;
@@ -636,12 +636,12 @@ class FedeController {
         error: 'Error obteniendo base de conocimiento'
       });
     }
-  }
+  };
 
   /**
    * Subir contenido a la base de conocimiento
    */
-  async uploadKnowledge(req, res) {
+  uploadKnowledge = async (req, res) => {
     try {
       const { KnowledgeBase } = require('../models');
       const {
@@ -686,12 +686,12 @@ class FedeController {
         error: 'Error subiendo contenido'
       });
     }
-  }
+  };
 
   /**
    * Actualizar entrada de conocimiento
    */
-  async updateKnowledge(req, res) {
+  updateKnowledge = async (req, res) => {
     try {
       const { KnowledgeBase } = require('../models');
       const { id } = req.params;
@@ -719,12 +719,12 @@ class FedeController {
         error: 'Error actualizando contenido'
       });
     }
-  }
+  };
 
   /**
    * Eliminar entrada de conocimiento
    */
-  async deleteKnowledge(req, res) {
+  deleteKnowledge = async (req, res) => {
     try {
       const { KnowledgeBase } = require('../models');
       const { id } = req.params;
@@ -752,12 +752,12 @@ class FedeController {
         error: 'Error eliminando contenido'
       });
     }
-  }
+  };
 
   /**
    * Obtener lista de conversaciones
    */
-  async getConversations(req, res) {
+  getConversations = async (req, res) => {
     try {
       const { page = 1, limit = 20, userId, sessionId } = req.query;
       
@@ -804,12 +804,12 @@ class FedeController {
         error: 'Error obteniendo conversaciones'
       });
     }
-  }
+  };
 
   /**
    * Obtener detalles de una conversación
    */
-  async getConversationDetails(req, res) {
+  getConversationDetails = async (req, res) => {
     try {
       const { id } = req.params;
       
@@ -841,7 +841,7 @@ class FedeController {
         error: 'Error obteniendo detalles'
       });
     }
-  }
+  };
 }
 
 module.exports = new FedeController();
