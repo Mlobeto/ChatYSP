@@ -6,6 +6,7 @@ import ResetPasswordPage from '../pages/ResetPasswordPage';
 import DashboardHome from '../pages/DashboardHome';
 import UsersPage from '../pages/UsersPage';
 import TipsPage from '../pages/TipsPage';
+import DailyTipsPage from '../pages/DailyTipsPage';
 import VideosPage from '../pages/VideosPage';
 import RoomsPage from '../pages/RoomsPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: 'tips',
         element: <TipsPage />,
+      },
+      {
+        path: 'daily-tips',
+        element: <DailyTipsPage />,
       },
       {
         path: 'videos',

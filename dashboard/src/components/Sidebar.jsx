@@ -1,4 +1,3 @@
-import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   HomeIcon,
@@ -12,6 +11,7 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const Sidebar = ({ collapsed, mobileMenuOpen, isMobile, onToggle, onLogout }) => {
   const location = useLocation();
@@ -31,6 +31,11 @@ const Sidebar = ({ collapsed, mobileMenuOpen, isMobile, onToggle, onLogout }) =>
       name: 'Tips',
       href: '/tips',
       icon: LightBulbIcon,
+    },
+    {
+      name: 'Tips Diarios',
+      href: '/daily-tips',
+      icon: FaWhatsapp,
     },
     {
       name: 'Salas',

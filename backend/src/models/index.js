@@ -10,6 +10,7 @@ const GameRoom = require('./GameRoom');
 const GameInvitation = require('./GameInvitation');
 const GameRoomMember = require('./GameRoomMember');
 const Notification = require('./Notification');
+const KnowledgeBase = require('./KnowledgeBase');
 
 // Define associations
 // User associations
@@ -133,4 +134,5 @@ module.exports = {
   GameRoomMember,
   RoomParticipant,
   Notification,
+  KnowledgeBase,
 };

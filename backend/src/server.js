@@ -20,10 +20,14 @@ const minigameRoutes = require('./routes/minigame');
 const tipRoutes = require('./routes/tipRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const fedeRoutes = require('./routes/fedeRoutes');
+const dailyTipRoutes = require('./routes/dailyTipRoutes');
 
 // Import socket handlers
 const chatSocket = require('./sockets/chatSocket');
 const gameSocket = require('./sockets/gameSocket');
+
+// Import scheduler
+const dailyTipScheduler = require('./services/dailyTipScheduler');
 
 const app = express();
 const server = http.createServer(app);
@@ -103,12 +107,17 @@ const limiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  onLimitReached: (req) => {
+  // Usar handler en lugar de onLimitReached (deprecado en v7)
+  handler: (req, res) => {
     console.log('🚨 RATE LIMIT REACHED:', {
       ip: req.ip,
       method: req.method,
       url: req.url,
       timestamp: new Date().toISOString(),
+    });
+    res.status(429).json({
+      success: false,
+      message: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.',
     });
   },
   skip: (req) => {
@@ -157,6 +166,7 @@ app.use('/api/moderator', moderatorRoutes);
 app.use('/api/tips', tipRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/fede', fedeRoutes);
+app.use('/api/daily-tips', dailyTipRoutes);
 
 // API Documentation endpoint
 app.get('/api', (req, res) => {
@@ -409,6 +419,14 @@ Socket Namespaces:
 💬 Chat: ws://${HOST}:${PORT}/chat
 🎮 Game: ws://${HOST}:${PORT}/game
       `);
+
+      // Start daily tip scheduler
+      try {
+        dailyTipScheduler.start();
+        console.log('📅 Daily Tip Scheduler: Started');
+      } catch (error) {
+        console.error('⚠️  Daily Tip Scheduler: Failed to start', error);
+      }
     });
   } catch (error) {
     console.error('Failed to start server:', error);
