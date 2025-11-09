@@ -1,0 +1,49 @@
+{
+  "postData": [
+    {
+      "type": "libro",
+      "templates": [
+        "📚 *PD:* Si este tip resonó con vos, te recomiendo mi libro \"El Arte de Soltar\" donde profundizo sobre este tema.",
+        "📖 *PD:* En mi libro \"Renacer después del Adiós\" hablo más sobre esto. Dale una mirada si querés seguir trabajando en vos.",
+        "📚 *PD:* Este concepto lo desarrollo en profundidad en \"Tu Mejor Versión Post-Ruptura\". Ahí encontrás ejercicios prácticos."
+      ]
+    },
+    {
+      "type": "video",
+      "templates": [
+        "🎥 *PD:* Tengo un video en mi canal de YouTube sobre este tema. Buscalo como \"[TEMA] - Fede Hirigoyen\"",
+        "📹 *PD:* En mi último video hablo de esto con más detalle. Te invito a verlo en mi canal.",
+        "🎬 *PD:* Si querés profundizar, tengo varios videos sobre esto en mi canal de YouTube. Dale un vistazo."
+      ]
+    },
+    {
+      "type": "app",
+      "templates": [
+        "📱 *PD:* ¿Sabías que tenemos una app? Descargala gratis y accedé a contenido exclusivo, ejercicios y comunidad de apoyo.",
+        "💫 *PD:* Descargá nuestra app \"Yo Soy el Premio\" y llevá tu proceso de sanación al siguiente nivel. Es gratis para miembros de YouTube!",
+        "🚀 *PD:* Nuestra app tiene herramientas que te van a ayudar a aplicar estos conceptos. Descargala y probala gratis."
+      ]
+    },
+    {
+      "type": "youtube_membership",
+      "templates": [
+        "⭐ *PD:* Hacete miembro del canal de YouTube y obtené acceso gratuito a la app + contenido exclusivo semanal.",
+        "👑 *PD:* Los miembros de mi canal tienen acceso completo a la app y sesiones en vivo mensuales. ¡Unite a la comunidad!",
+        "💎 *PD:* Membresía YouTube = App gratis + videos exclusivos + comunidad privada. Es una inversión en vos mismo."
+      ]
+    },
+    {
+      "type": "reflexion",
+      "templates": [
+        "💭 *PD:* La clave está en recordar que \"{frase}\". No lo olvides.",
+        "✨ *PD:* Como dije antes, \"{frase}\". Llevá eso en el corazón hoy.",
+        "🎯 *PD:* Quedate con esto: \"{frase}\". Es la base de todo."
+      ]
+    }
+  ],
+  "firmas": [
+    "Fede \"{frase}\" Hirigoyen",
+    "Federico Hirigoyen\n💭 \"{frase}\"",
+    "Fede Hirigoyen\n🦁 \"{frase}\""
+  ]
+}
