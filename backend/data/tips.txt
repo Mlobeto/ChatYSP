@@ -1,0 +1,46 @@
+---
+TITLE: Cómo ganar en el juego de trivia
+CATEGORY: game
+DIFFICULTY: beginner
+TAGS: trivia, juegos, estrategia
+CONTENT:
+Para tener éxito en el juego de trivia, es importante leer atentamente cada pregunta.
+Tómate tu tiempo para pensar antes de responder.
+Recuerda que la velocidad también cuenta, así que encuentra un balance entre precisión y rapidez.
+---
+TITLE: Mejora tu comunicación en el chat
+CATEGORY: chat
+DIFFICULTY: beginner
+TAGS: chat, comunicación, etiqueta
+CONTENT:
+Sé respetuoso con otros usuarios en el chat.
+Usa un lenguaje apropiado y evita el spam.
+Las conversaciones fluyen mejor cuando escuchas y respondes de manera considerada.
+---
+TITLE: Configura tu perfil
+CATEGORY: general
+DIFFICULTY: beginner
+TAGS: perfil, configuración, personalización
+CONTENT:
+Personaliza tu perfil para destacar en la comunidad.
+Elige un avatar que te represente y escribe una biografía interesante.
+Un perfil completo genera más confianza con otros usuarios.
+---
+TITLE: Estrategias avanzadas de juego
+CATEGORY: game
+DIFFICULTY: advanced
+TAGS: estrategia, competitivo, avanzado
+CONTENT:
+Los jugadores experimentados saben cuándo arriesgar y cuándo ser conservadores.
+Estudia los patrones de preguntas frecuentes y prepárate para temas recurrentes.
+La práctica constante es clave para mejorar tu rendimiento.
+---
+TITLE: Interacción con el asistente AI
+CATEGORY: ai
+DIFFICULTY: intermediate
+TAGS: ai, fede, coaching, conversación
+CONTENT:
+Fede, nuestro coach AI, está entrenado para ayudarte con temas de relaciones y crecimiento personal.
+Sé específico en tus preguntas para obtener respuestas más útiles.
+El asistente mejora con el tiempo según las conversaciones que tiene.
+---
