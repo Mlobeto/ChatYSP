@@ -43,9 +43,11 @@ const KnowledgeBaseManager = () => {
     try {
       setLoading(true);
       const response = await fedeApi.getKnowledgeBase();
-      setKnowledgeItems(response.data || []);
+      // El backend devuelve { success, data: { knowledge: [], pagination: {} } }
+      setKnowledgeItems(response.data?.knowledge || response.knowledge || []);
     } catch (error) {
       console.error('Error cargando knowledge base:', error);
+      setKnowledgeItems([]);
     } finally {
       setLoading(false);
     }
