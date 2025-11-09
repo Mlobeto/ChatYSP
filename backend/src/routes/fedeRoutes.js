@@ -103,6 +103,94 @@ router.get('/admin/training/export', roleMiddleware(['admin']), fedeController.e
 router.get('/admin/metrics/evaluation', roleMiddleware(['admin']), fedeController.getEvaluationMetrics);
 
 /**
+ * @route GET /api/fede/admin/models
+ * @description Obtener versiones de modelos
+ * @access Admin
+ */
+router.get('/admin/models', roleMiddleware(['admin']), fedeController.getModelVersions);
+
+/**
+ * @route POST /api/fede/admin/models/deploy
+ * @description Desplegar modelo
+ * @access Admin
+ */
+router.post('/admin/models/deploy', roleMiddleware(['admin']), fedeController.deployModel);
+
+/**
+ * @route POST /api/fede/admin/test
+ * @description Probar mensaje con Fede
+ * @access Admin
+ */
+router.post('/admin/test', roleMiddleware(['admin']), fedeController.testMessage);
+
+// ===== RUTAS DE KNOWLEDGE BASE =====
+
+/**
+ * @route GET /api/fede/stats
+ * @description Obtener estadísticas generales de Fede
+ * @access Private
+ */
+router.get('/stats', fedeController.getStats);
+
+/**
+ * @route GET /api/fede/admin/knowledge
+ * @description Obtener base de conocimiento
+ * @access Admin
+ */
+router.get('/admin/knowledge', roleMiddleware(['admin']), fedeController.getKnowledgeBase);
+
+/**
+ * @route POST /api/fede/admin/knowledge
+ * @description Subir contenido a la base de conocimiento
+ * @access Admin
+ */
+router.post('/admin/knowledge', roleMiddleware(['admin']), fedeController.uploadKnowledge);
+
+/**
+ * @route PUT /api/fede/admin/knowledge/:id
+ * @description Actualizar entrada de conocimiento
+ * @access Admin
+ */
+router.put('/admin/knowledge/:id', roleMiddleware(['admin']), fedeController.updateKnowledge);
+
+/**
+ * @route DELETE /api/fede/admin/knowledge/:id
+ * @description Eliminar entrada de conocimiento
+ * @access Admin
+ */
+router.delete('/admin/knowledge/:id', roleMiddleware(['admin']), fedeController.deleteKnowledge);
+
+/**
+ * @route GET /api/fede/admin/conversations
+ * @description Obtener lista de conversaciones
+ * @access Admin
+ */
+router.get('/admin/conversations', roleMiddleware(['admin']), fedeController.getConversations);
+
+/**
+ * @route GET /api/fede/admin/conversations/:id
+ * @description Obtener detalles de una conversación
+ * @access Admin
+ */
+router.get('/admin/conversations/:id', roleMiddleware(['admin']), fedeController.getConversationDetails);
+
+module.exports = router;
+
+/**
+ * @route GET /api/fede/admin/training/export
+ * @description Exportar datos de entrenamiento
+ * @access Admin
+ */
+router.get('/admin/training/export', roleMiddleware(['admin']), fedeController.exportTrainingData);
+
+/**
+ * @route GET /api/fede/admin/metrics/evaluation
+ * @description Obtener métricas de evaluación
+ * @access Admin
+ */
+router.get('/admin/metrics/evaluation', roleMiddleware(['admin']), fedeController.getEvaluationMetrics);
+
+/**
  * @route GET /api/fede/admin/models/versions
  * @description Obtener versiones del modelo
  * @access Admin

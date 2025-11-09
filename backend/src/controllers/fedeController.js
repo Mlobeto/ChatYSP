@@ -531,6 +531,317 @@ class FedeController {
       });
     }
   }
+
+  /**
+   * Obtener estadísticas generales de Fede
+   */
+  async getStats(req, res) {
+    try {
+      const { KnowledgeBase } = require('../models');
+      
+      // Contar conversaciones
+      const conversationCount = await FedeConversation.count();
+      
+      // Contar knowledge base entries
+      const knowledgeCount = await KnowledgeBase.count({
+        where: { isActive: true }
+      });
+      
+      // Calcular rating promedio
+      const avgRating = await FedeConversation.findOne({
+        attributes: [
+          [require('sequelize').fn('AVG', require('sequelize').col('rating')), 'avgRating']
+        ],
+        where: {
+          rating: { [require('sequelize').Op.ne]: null }
+        },
+        raw: true
+      });
+      
+      // Conversaciones recientes (últimas 24h)
+      const recentConversations = await FedeConversation.count({
+        where: {
+          createdAt: {
+            [require('sequelize').Op.gte]: new Date(Date.now() - 24 * 60 * 60 * 1000)
+          }
+        }
+      });
+
+      res.json({
+        success: true,
+        data: {
+          conversationCount,
+          knowledgeCount,
+          avgRating: avgRating?.avgRating ? parseFloat(avgRating.avgRating).toFixed(2) : 0,
+          recentConversations
+        }
+      });
+    } catch (error) {
+      console.error('Error obteniendo estadísticas:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo estadísticas'
+      });
+    }
+  }
+
+  /**
+   * Obtener base de conocimiento
+   */
+  async getKnowledgeBase(req, res) {
+    try {
+      const { KnowledgeBase } = require('../models');
+      const { page = 1, limit = 20, category, contentType, search } = req.query;
+      
+      const where = {};
+      
+      if (category) {
+        where.category = category;
+      }
+      
+      if (contentType) {
+        where.contentType = contentType;
+      }
+      
+      if (search) {
+        where[require('sequelize').Op.or] = [
+          { title: { [require('sequelize').Op.iLike]: `%${search}%` } },
+          { content: { [require('sequelize').Op.iLike]: `%${search}%` } }
+        ];
+      }
+      
+      const { count, rows } = await KnowledgeBase.findAndCountAll({
+        where,
+        limit: parseInt(limit),
+        offset: (parseInt(page) - 1) * parseInt(limit),
+        order: [['priority', 'DESC'], ['createdAt', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        data: {
+          knowledge: rows,
+          pagination: {
+            total: count,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            pages: Math.ceil(count / parseInt(limit))
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error obteniendo knowledge base:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo base de conocimiento'
+      });
+    }
+  }
+
+  /**
+   * Subir contenido a la base de conocimiento
+   */
+  async uploadKnowledge(req, res) {
+    try {
+      const { KnowledgeBase } = require('../models');
+      const {
+        title,
+        content,
+        contentType,
+        category,
+        tags,
+        metadata,
+        priority,
+        isActive
+      } = req.body;
+
+      // Validaciones
+      if (!title || !content || !contentType) {
+        return res.status(400).json({
+          success: false,
+          error: 'Título, contenido y tipo de contenido son requeridos'
+        });
+      }
+
+      // Crear entrada de conocimiento
+      const knowledge = await KnowledgeBase.create({
+        title,
+        content,
+        contentType,
+        category: category || 'general',
+        tags: tags || [],
+        metadata: metadata || {},
+        priority: priority || 0,
+        isActive: isActive !== undefined ? isActive : true
+      });
+
+      res.status(201).json({
+        success: true,
+        data: knowledge
+      });
+    } catch (error) {
+      console.error('Error subiendo conocimiento:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error subiendo contenido'
+      });
+    }
+  }
+
+  /**
+   * Actualizar entrada de conocimiento
+   */
+  async updateKnowledge(req, res) {
+    try {
+      const { KnowledgeBase } = require('../models');
+      const { id } = req.params;
+      const updates = req.body;
+
+      const knowledge = await KnowledgeBase.findByPk(id);
+      
+      if (!knowledge) {
+        return res.status(404).json({
+          success: false,
+          error: 'Entrada de conocimiento no encontrada'
+        });
+      }
+
+      await knowledge.update(updates);
+
+      res.json({
+        success: true,
+        data: knowledge
+      });
+    } catch (error) {
+      console.error('Error actualizando conocimiento:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error actualizando contenido'
+      });
+    }
+  }
+
+  /**
+   * Eliminar entrada de conocimiento
+   */
+  async deleteKnowledge(req, res) {
+    try {
+      const { KnowledgeBase } = require('../models');
+      const { id } = req.params;
+
+      const knowledge = await KnowledgeBase.findByPk(id);
+      
+      if (!knowledge) {
+        return res.status(404).json({
+          success: false,
+          error: 'Entrada de conocimiento no encontrada'
+        });
+      }
+
+      // Soft delete: marcar como inactivo
+      await knowledge.update({ isActive: false });
+
+      res.json({
+        success: true,
+        message: 'Contenido desactivado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error eliminando conocimiento:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error eliminando contenido'
+      });
+    }
+  }
+
+  /**
+   * Obtener lista de conversaciones
+   */
+  async getConversations(req, res) {
+    try {
+      const { page = 1, limit = 20, userId, sessionId } = req.query;
+      
+      const where = {};
+      
+      if (userId) {
+        where.userId = userId;
+      }
+      
+      if (sessionId) {
+        where.sessionId = sessionId;
+      }
+      
+      const { count, rows } = await FedeConversation.findAndCountAll({
+        where,
+        include: [
+          {
+            model: require('../models').User,
+            as: 'user',
+            attributes: ['id', 'username', 'email']
+          }
+        ],
+        limit: parseInt(limit),
+        offset: (parseInt(page) - 1) * parseInt(limit),
+        order: [['createdAt', 'DESC']]
+      });
+
+      res.json({
+        success: true,
+        data: {
+          conversations: rows,
+          pagination: {
+            total: count,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            pages: Math.ceil(count / parseInt(limit))
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error obteniendo conversaciones:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo conversaciones'
+      });
+    }
+  }
+
+  /**
+   * Obtener detalles de una conversación
+   */
+  async getConversationDetails(req, res) {
+    try {
+      const { id } = req.params;
+      
+      const conversation = await FedeConversation.findByPk(id, {
+        include: [
+          {
+            model: require('../models').User,
+            as: 'user',
+            attributes: ['id', 'username', 'email', 'fullName']
+          }
+        ]
+      });
+      
+      if (!conversation) {
+        return res.status(404).json({
+          success: false,
+          error: 'Conversación no encontrada'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: conversation
+      });
+    } catch (error) {
+      console.error('Error obteniendo detalles de conversación:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error obteniendo detalles'
+      });
+    }
+  }
 }
 
 module.exports = new FedeController();
