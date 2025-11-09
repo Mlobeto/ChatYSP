@@ -1,11 +1,48 @@
 const express = require('express');
 const { body, query, param } = require('express-validator');
+const multer = require('multer');
+const path = require('path');
 const tipController = require('../controllers/tipController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const { roleMiddleware } = require('../middlewares/roleMiddleware');
 const { validate } = require('../utils/validation');
 
 const router = express.Router();
+
+// Configuración de Multer para subida de archivos
+const fs = require('fs');
+
+// Asegurar que el directorio existe
+const uploadDir = path.join(__dirname, '../../uploads/tips');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    cb(null, `tips-${uniqueSuffix}${path.extname(file.originalname)}`);
+  },
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    // Solo permitir archivos de texto
+    const allowedMimes = ['text/plain', 'application/txt'];
+    if (allowedMimes.includes(file.mimetype) || file.originalname.endsWith('.txt')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos de texto (.txt)'));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB máximo
+  },
+});
 
 // Middleware de autenticación para todas las rutas
 router.use(authMiddleware);
@@ -192,6 +229,30 @@ router.post(
   validateUUID,
   validate,
   tipController.likeTip,
+);
+
+/**
+ * @route POST /api/tips/upload
+ * @desc Cargar tips desde archivo TXT
+ * @access Private (Admin)
+ */
+router.post(
+  '/upload',
+  roleMiddleware(['admin']),
+  upload.single('file'),
+  tipController.uploadTipsFromFile,
+);
+
+/**
+ * @route POST /api/tips/upload-multiple
+ * @desc Cargar múltiples tips desde archivos TXT
+ * @access Private (Admin)
+ */
+router.post(
+  '/upload-multiple',
+  roleMiddleware(['admin']),
+  upload.array('files', 200), // Hasta 200 archivos
+  tipController.uploadMultipleTipsFromFiles,
 );
 
 module.exports = router;

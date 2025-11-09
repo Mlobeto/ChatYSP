@@ -1,6 +1,10 @@
 const { Op } = require('sequelize');
 const Tip = require('../models/Tip');
 const User = require('../models/User');
+const { parseTxtFile } = require('../../scripts/loadTipsFromTxt');
+const { parseTipFromText, validateParsedTip } = require('../utils/tipParser');
+const fs = require('fs');
+const path = require('path');
 
 const tipController = {
   // Obtener todos los tips con filtros opcionales
@@ -437,6 +441,249 @@ const tipController = {
       });
     } catch (error) {
       console.error('Error obteniendo estadísticas:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor',
+        error: error.message,
+      });
+    }
+  },
+
+  // Cargar tips desde archivo TXT
+  async uploadTipsFromFile(req, res) {
+    try {
+      console.log('📤 Subiendo tips desde archivo...');
+      
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No se proporcionó ningún archivo',
+        });
+      }
+
+      const userId = req.user.id;
+      const filePath = req.file.path;
+
+      console.log('📄 Archivo recibido:', req.file.originalname);
+      console.log('📂 Path temporal:', filePath);
+
+      // Parsear el archivo TXT
+      const tips = await parseTxtFile(filePath);
+      console.log(`📊 Tips parseados: ${tips.length}`);
+
+      if (tips.length === 0) {
+        // Eliminar archivo temporal
+        fs.unlinkSync(filePath);
+        return res.status(400).json({
+          success: false,
+          message: 'No se encontraron tips válidos en el archivo',
+        });
+      }
+
+      // Insertar los tips en la base de datos
+      let insertedCount = 0;
+      let skippedCount = 0;
+      const errors = [];
+
+      for (const tipData of tips) {
+        try {
+          // Verificar si ya existe un tip con el mismo título
+          const existingTip = await Tip.findOne({
+            where: { title: tipData.title },
+          });
+
+          if (existingTip) {
+            console.log(`⏭️ Omitiendo tip duplicado: "${tipData.title}"`);
+            skippedCount++;
+            continue;
+          }
+
+          await Tip.create({
+            ...tipData,
+            createdById: userId,
+            isActive: true,
+            views: 0,
+            likes: 0,
+          });
+
+          console.log(`✅ Tip creado: "${tipData.title}"`);
+          insertedCount++;
+        } catch (error) {
+          console.error(`❌ Error creando tip "${tipData.title}":`, error.message);
+          errors.push({
+            title: tipData.title,
+            error: error.message,
+          });
+        }
+      }
+
+      // Eliminar archivo temporal
+      fs.unlinkSync(filePath);
+
+      res.json({
+        success: true,
+        message: 'Tips cargados exitosamente',
+        data: {
+          inserted: insertedCount,
+          skipped: skippedCount,
+          total: tips.length,
+          errors: errors.length > 0 ? errors : undefined,
+        },
+      });
+    } catch (error) {
+      console.error('Error cargando tips desde archivo:', error);
+      
+      // Intentar eliminar archivo temporal si existe
+      if (req.file && req.file.path) {
+        try {
+          fs.unlinkSync(req.file.path);
+        } catch (unlinkError) {
+          console.error('Error eliminando archivo temporal:', unlinkError);
+        }
+      }
+
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor',
+        error: error.message,
+      });
+    }
+  },
+
+  // Cargar múltiples tips desde archivos TXT
+  async uploadMultipleTipsFromFiles(req, res) {
+    try {
+      console.log('📤 Subiendo múltiples tips desde archivos...');
+      
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'No se proporcionaron archivos',
+        });
+      }
+
+      const userId = req.user.id;
+      const files = req.files;
+      
+      console.log(`📄 Archivos recibidos: ${files.length}`);
+
+      let totalInserted = 0;
+      let totalSkipped = 0;
+      let totalErrors = 0;
+      const processingResults = [];
+
+      // Procesar cada archivo
+      for (const file of files) {
+        try {
+          console.log(`\n📂 Procesando: ${file.originalname}`);
+          
+          // Leer contenido del archivo
+          const fileContent = fs.readFileSync(file.path, 'utf-8');
+          
+          // Parsear el tip
+          const parsedTip = parseTipFromText(fileContent, file.originalname);
+          
+          // Validar el tip parseado
+          const validation = validateParsedTip(parsedTip);
+          
+          if (!validation.valid) {
+            console.log(`❌ Archivo inválido: ${file.originalname}`);
+            console.log('   Errores:', validation.errors);
+            totalErrors++;
+            processingResults.push({
+              file: file.originalname,
+              status: 'error',
+              errors: validation.errors
+            });
+            continue;
+          }
+
+          // Verificar si ya existe un tip con el mismo título
+          const existingTip = await Tip.findOne({
+            where: { title: parsedTip.title },
+          });
+
+          if (existingTip) {
+            console.log(`⏭️ Tip duplicado: "${parsedTip.title}"`);
+            totalSkipped++;
+            processingResults.push({
+              file: file.originalname,
+              status: 'skipped',
+              reason: 'Título duplicado'
+            });
+            continue;
+          }
+
+          // Crear el tip en la base de datos
+          await Tip.create({
+            title: parsedTip.title,
+            content: parsedTip.content,
+            category: parsedTip.category,
+            difficulty: parsedTip.difficulty,
+            tags: parsedTip.tags,
+            createdById: userId,
+            isActive: true,
+            views: 0,
+            likes: 0,
+          });
+
+          console.log(`✅ Tip creado: "${parsedTip.title}"`);
+          totalInserted++;
+          processingResults.push({
+            file: file.originalname,
+            status: 'success',
+            title: parsedTip.title
+          });
+
+        } catch (error) {
+          console.error(`❌ Error procesando ${file.originalname}:`, error.message);
+          totalErrors++;
+          processingResults.push({
+            file: file.originalname,
+            status: 'error',
+            errors: [error.message]
+          });
+        } finally {
+          // Eliminar archivo temporal
+          try {
+            fs.unlinkSync(file.path);
+          } catch (unlinkError) {
+            console.error(`Error eliminando archivo ${file.originalname}:`, unlinkError);
+          }
+        }
+      }
+
+      console.log('\n📊 Resumen final:');
+      console.log(`   ✅ Insertados: ${totalInserted}`);
+      console.log(`   ⏭️ Omitidos: ${totalSkipped}`);
+      console.log(`   ❌ Errores: ${totalErrors}`);
+
+      res.json({
+        success: true,
+        message: `Procesamiento completado: ${totalInserted} tips creados, ${totalSkipped} omitidos, ${totalErrors} errores`,
+        data: {
+          inserted: totalInserted,
+          skipped: totalSkipped,
+          errors: totalErrors,
+          total: files.length,
+          details: processingResults
+        },
+      });
+
+    } catch (error) {
+      console.error('Error cargando múltiples tips:', error);
+      
+      // Intentar eliminar archivos temporales
+      if (req.files) {
+        for (const file of req.files) {
+          try {
+            fs.unlinkSync(file.path);
+          } catch (unlinkError) {
+            console.error('Error eliminando archivo temporal:', unlinkError);
+          }
+        }
+      }
+
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor',

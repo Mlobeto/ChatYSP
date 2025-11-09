@@ -10,7 +10,7 @@ class FedeController {
   /**
    * Procesar mensaje enviado a Fede
    */
-  async sendMessage(req, res) {
+  sendMessage = async (req, res) => {
     const startTime = Date.now();
 
     try {
@@ -65,7 +65,7 @@ class FedeController {
       const aiResponse = await this.fedeService.processMessage(
         message,
         userId,
-        conversationHistory,
+        conversationHistory
       );
 
       if (!aiResponse.success) {
@@ -124,18 +124,14 @@ class FedeController {
         message: 'Disculpá, estoy teniendo dificultades técnicas. Intentá de nuevo en un momento.',
       });
     }
-  }
+  };
 
   /**
    * Obtener historial de conversaciones
    */
   async getConversationHistory(userId, sessionId = null, limit = 10) {
     try {
-      const conversations = await FedeConversation.getConversationHistory(
-        userId,
-        sessionId,
-        limit,
-      );
+      const conversations = await FedeConversation.getConversationHistory(userId, sessionId, limit);
 
       return conversations.flatMap((conv) => conv.toHistoryFormat());
     } catch (error) {
@@ -155,7 +151,7 @@ class FedeController {
       const conversations = await FedeConversation.getConversationHistory(
         userId,
         sessionId,
-        parseInt(limit, 10),
+        parseInt(limit, 10)
       );
 
       const formattedHistory = conversations.map((conv) => ({

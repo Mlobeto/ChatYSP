@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../config/db');
 
 /**
@@ -189,10 +189,10 @@ KnowledgeBase.findRelevantContent = async function (query, category = null, limi
 
   // Búsqueda básica por texto (luego implementaremos embedding search)
   if (query) {
-    whereClause[sequelize.Op.or] = [
-      { title: { [sequelize.Op.iLike]: `%${query}%` } },
-      { content: { [sequelize.Op.iLike]: `%${query}%` } },
-      { tags: { [sequelize.Op.contains]: [query] } },
+    whereClause[Op.or] = [
+      { title: { [Op.iLike]: `%${query}%` } },
+      { content: { [Op.iLike]: `%${query}%` } },
+      { tags: { [Op.contains]: [query] } },
     ];
   }
 
