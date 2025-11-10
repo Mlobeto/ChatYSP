@@ -1,49 +1,74 @@
 {
   "postData": [
     {
-      "type": "libro",
+      "type": "video_relacionado",
       "templates": [
-        "📚 *PD:* Si este tip resonó con vos, te recomiendo mi libro \"El Arte de Soltar\" donde profundizo sobre este tema.",
-        "📖 *PD:* En mi libro \"Renacer después del Adiós\" hablo más sobre esto. Dale una mirada si querés seguir trabajando en vos.",
-        "📚 *PD:* Este concepto lo desarrollo en profundidad en \"Tu Mejor Versión Post-Ruptura\". Ahí encontrás ejercicios prácticos."
+        "🎥 *PD:* Te dejo un video relacionado: {video_url}\n\"{video_title}\"",
+        "📹 *PD:* Si querés profundizar en esto, mira este video: {video_url}\n{video_title}",
+        "🎬 *PD:* Video recomendado sobre este tema: {video_url}"
+      ],
+      "note": "Se usa cuando hay video relacionado encontrado por búsqueda semántica"
+    },
+    {
+      "type": "app_descarga",
+      "templates": [
+        "📱 *PD:* Descarga nuestra app \"Yo Soy el Premio\" gratis y accede a contenido exclusivo, ejercicios y comunidad de apoyo.\n🔗 [Link de descarga]",
+        "� *PD:* ¿Ya tienes nuestra app? Descárgala gratis y lleva tu proceso de sanación al siguiente nivel con herramientas prácticas.\n📲 [Link de descarga]",
+        "🚀 *PD:* Nuestra app tiene ejercicios para aplicar estos conceptos. Descárgala gratis y empieza hoy.\n📱 [Link de descarga]"
       ]
     },
     {
-      "type": "video",
+      "type": "playlists_youtube",
       "templates": [
-        "🎥 *PD:* Tengo un video en mi canal de YouTube sobre este tema. Buscalo como \"[TEMA] - Fede Hirigoyen\"",
-        "📹 *PD:* En mi último video hablo de esto con más detalle. Te invito a verlo en mi canal.",
-        "🎬 *PD:* Si querés profundizar, tengo varios videos sobre esto en mi canal de YouTube. Dale un vistazo."
+        "📺 *PD:* Tengo listas de reproducción organizadas por tema en mi canal:\n🔗 Los 7 Pasos: [URL]\n🔗 Contacto Cero: [URL]\n🔗 Recuperar tu Ex: [URL]",
+        "🎥 *PD:* Si quieres ver más videos sobre este tema, revisa mis playlists:\n▶️ [Nombre Playlist]: [URL]",
+        "📹 *PD:* Todo mi contenido organizado por temas en YouTube:\n🔗 [URL Playlists]"
       ]
     },
     {
-      "type": "app",
+      "type": "membresia_youtube",
       "templates": [
-        "📱 *PD:* ¿Sabías que tenemos una app? Descargala gratis y accedé a contenido exclusivo, ejercicios y comunidad de apoyo.",
-        "💫 *PD:* Descargá nuestra app \"Yo Soy el Premio\" y llevá tu proceso de sanación al siguiente nivel. Es gratis para miembros de YouTube!",
-        "🚀 *PD:* Nuestra app tiene herramientas que te van a ayudar a aplicar estos conceptos. Descargala y probala gratis."
+        "⭐ *PD:* Únete a la membresía del canal y obtén:\n✅ App gratis completa\n✅ Videos exclusivos semanales\n✅ Sesiones en vivo mensuales\n✅ Comunidad privada\n🔗 [Link membresía]",
+        "� *PD:* Los miembros del canal tienen acceso a contenido exclusivo y la app gratis. ¡Únete a la comunidad!\n🔗 [Link membresía]",
+        "� *PD:* Membresía = Inversión en ti mismo. App + videos exclusivos + comunidad.\n🔗 [Link membresía]"
       ]
     },
     {
-      "type": "youtube_membership",
+      "type": "llamada_coaching",
       "templates": [
-        "⭐ *PD:* Hacete miembro del canal de YouTube y obtené acceso gratuito a la app + contenido exclusivo semanal.",
-        "👑 *PD:* Los miembros de mi canal tienen acceso completo a la app y sesiones en vivo mensuales. ¡Unite a la comunidad!",
-        "💎 *PD:* Membresía YouTube = App gratis + videos exclusivos + comunidad privada. Es una inversión en vos mismo."
+        "📞 *PD:* ¿Necesitas orientación personalizada? Agenda una llamada de coaching individual conmigo.\n🔗 [Link calendario]",
+        "🎯 *PD:* Si quieres trabajar tu caso específico, ofrezco sesiones de coaching 1-a-1.\n📅 [Link agendar]",
+        "� *PD:* Coaching personalizado disponible. Trabajemos juntos en tu proceso.\n🔗 [Link consulta]"
       ]
     },
     {
       "type": "reflexion",
       "templates": [
-        "💭 *PD:* La clave está en recordar que \"{frase}\". No lo olvides.",
-        "✨ *PD:* Como dije antes, \"{frase}\". Llevá eso en el corazón hoy.",
-        "🎯 *PD:* Quedate con esto: \"{frase}\". Es la base de todo."
+        "💭 *PD:* Recuerda: \"{frase}\". No lo olvides.",
+        "✨ *PD:* Como dije antes, \"{frase}\". Llévalo en el corazón hoy.",
+        "🎯 *PD:* Quédate con esto: \"{frase}\". Es la base de todo.",
+        "🦁 *PD:* La clave está en recordar que \"{frase}\"."
+      ]
+    },
+    {
+      "type": "libro",
+      "templates": [
+        "📚 *PD:* Si este tip resonó contigo, te recomiendo mi libro donde profundizo sobre este tema.\n🔗 [Link libro]",
+        "📖 *PD:* Desarrollo este concepto con ejercicios prácticos en mi libro. Dale una mirada.\n🔗 [Link libro]"
+      ]
+    },
+    {
+      "type": "comunidad",
+      "templates": [
+        "🌟 *PD:* Únete a nuestra comunidad en Telegram/Discord donde compartimos experiencias y nos apoyamos mutuamente.\n🔗 [Link comunidad]",
+        "💪 *PD:* No estás solo en este proceso. Únete a la comunidad y conecta con personas que están en el mismo camino.\n🔗 [Link comunidad]"
       ]
     }
   ],
   "firmas": [
     "Fede \"{frase}\" Hirigoyen",
     "Federico Hirigoyen\n💭 \"{frase}\"",
-    "Fede Hirigoyen\n🦁 \"{frase}\""
+    "Fede Hirigoyen\n🦁 \"{frase}\"",
+    "🦁 Fede Hirigoyen\n\"{frase}\""
   ]
 }

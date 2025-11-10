@@ -373,10 +373,22 @@ class FedeController {
         });
       }
 
-      const result = await this.fedeService.uploadTrainingData(files);
+      // Por ahora, solo retornamos info de los archivos subidos
+      // En el futuro, fedeService procesará estos archivos
+      const uploadedFiles = files.map(file => ({
+        filename: file.filename,
+        originalName: file.originalname,
+        size: file.size,
+        path: file.path
+      }));
+
       res.json({
         success: true,
-        data: result,
+        data: {
+          message: 'Archivos subidos exitosamente',
+          files: uploadedFiles,
+          count: files.length
+        },
       });
     } catch (error) {
       console.error('Error subiendo datos de entrenamiento:', error);
@@ -550,10 +562,10 @@ class FedeController {
       // Calcular rating promedio
       const avgRating = await FedeConversation.findOne({
         attributes: [
-          [require('sequelize').fn('AVG', require('sequelize').col('rating')), 'avgRating']
+          [require('sequelize').fn('AVG', require('sequelize').col('userRating')), 'avgRating']
         ],
         where: {
-          rating: { [require('sequelize').Op.ne]: null }
+          userRating: { [require('sequelize').Op.ne]: null }
         },
         raw: true
       });

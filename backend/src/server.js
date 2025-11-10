@@ -21,6 +21,7 @@ const tipRoutes = require('./routes/tipRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const fedeRoutes = require('./routes/fedeRoutes');
 const dailyTipRoutes = require('./routes/dailyTipRoutes');
+const footerRoutes = require('./routes/footerRoutes');
 
 // Import socket handlers
 const chatSocket = require('./sockets/chatSocket');
@@ -167,6 +168,7 @@ app.use('/api/tips', tipRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/fede', fedeRoutes);
 app.use('/api/daily-tips', dailyTipRoutes);
+app.use('/api/footers', footerRoutes);
 
 // API Documentation endpoint
 app.get('/api', (req, res) => {

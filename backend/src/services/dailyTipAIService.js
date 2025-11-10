@@ -1,8 +1,8 @@
 const OpenAI = require('openai');
 const CoachTip = require('../models/CoachTip');
+const FooterTemplate = require('../models/FooterTemplate');
 const { Op } = require('sequelize');
-const fs = require('fs');
-const path = require('path');
+const FedeAIService = require('./FedeAIService');
 
 class DailyTipAIService {
   constructor() {
@@ -10,9 +10,8 @@ class DailyTipAIService {
       apiKey: process.env.OPENAI_API_KEY,
     });
 
-    // Cargar opciones de footer
-    const footerPath = path.join(__dirname, '../../data/footer_options.json');
-    this.footerOptions = JSON.parse(fs.readFileSync(footerPath, 'utf-8'));
+    // Instancia de FedeAIService para búsqueda semántica
+    this.fedeAI = new FedeAIService();
 
     this.fedePersonality = `Eres Federico Hirigoyen, coach ontológico especializado en rupturas de pareja.
 
@@ -153,27 +152,123 @@ Devuelve SOLO la frase, sin nada más.`;
 
   /**
    * Genera un footer aleatorio con PD + firma personalizada
+   * Consulta footers desde la base de datos con probabilidades configurables
    */
-  generateRandomFooter(keyPhrase) {
-    // Seleccionar un tipo de PD aleatorio
-    const pdTypes = this.footerOptions.postData;
-    const selectedPD = pdTypes[Math.floor(Math.random() * pdTypes.length)];
+  async generateRandomFooter(keyPhrase, tipContent = null, tipCategory = null) {
+    let selectedFooter;
+    let relatedVideo = null;
     
-    // Seleccionar un template aleatorio de ese tipo
-    const pdTemplate = selectedPD.templates[Math.floor(Math.random() * selectedPD.templates.length)];
-    
-    // Seleccionar un formato de firma aleatorio
-    const firmaTemplate = this.footerOptions.firmas[Math.floor(Math.random() * this.footerOptions.firmas.length)];
-    
-    // Reemplazar {frase} con la frase clave
-    const pdFinal = pdTemplate.replace('{frase}', keyPhrase);
-    const firmaFinal = firmaTemplate.replace('{frase}', keyPhrase);
-    
-    return {
-      postData: pdFinal,
-      firma: firmaFinal,
-      type: selectedPD.type,
-    };
+    try {
+      // Obtener todos los footers activos con sus probabilidades
+      const activeFooters = await FooterTemplate.findAll({
+        where: {
+          isActive: true,
+        },
+        order: [['probability', 'DESC']],
+      });
+
+      if (activeFooters.length === 0) {
+        // Fallback si no hay footers en BD
+        return {
+          postData: `💭 *PD:* ${keyPhrase}`,
+          firma: `Fede "${keyPhrase}" Hirigoyen`,
+          type: 'reflexion',
+          relatedVideo: null,
+        };
+      }
+
+      // Calcular probabilidad total
+      const totalProbability = activeFooters.reduce((sum, f) => sum + f.probability, 0);
+      
+      // Intentar buscar video relacionado primero
+      const videoFooters = activeFooters.filter(f => f.type === 'video_relacionado');
+      const videoProbability = videoFooters.reduce((sum, f) => sum + f.probability, 0) / totalProbability;
+      
+      if (Math.random() < videoProbability && tipContent && tipCategory) {
+        try {
+          console.log('🎥 Buscando video relacionado con el tip...');
+          relatedVideo = await this.fedeAI.recommendVideoForTip(tipContent, tipCategory);
+          
+          if (relatedVideo && videoFooters.length > 0) {
+            console.log(`✅ Video encontrado: "${relatedVideo.title}"`);
+            selectedFooter = videoFooters[Math.floor(Math.random() * videoFooters.length)];
+          }
+        } catch (error) {
+          console.error('Error buscando video relacionado:', error);
+        }
+      }
+      
+      // Si no hay video, seleccionar por probabilidades ponderadas
+      if (!selectedFooter) {
+        const availableFooters = activeFooters.filter(f => f.type !== 'video_relacionado');
+        
+        if (availableFooters.length === 0) {
+          // Usar video_relacionado sin video como fallback
+          selectedFooter = videoFooters[0];
+        } else {
+          // Selección ponderada por probabilidad
+          const random = Math.random() * availableFooters.reduce((sum, f) => sum + f.probability, 0);
+          let cumulative = 0;
+          
+          for (const footer of availableFooters) {
+            cumulative += footer.probability;
+            if (random <= cumulative) {
+              selectedFooter = footer;
+              break;
+            }
+          }
+          
+          // Fallback
+          if (!selectedFooter) {
+            selectedFooter = availableFooters[0];
+          }
+        }
+      }
+      
+      // Reemplazar placeholders en el template
+      let pdFinal = selectedFooter.template.replace('{frase}', keyPhrase);
+      
+      // Si hay video relacionado, reemplazar sus placeholders
+      if (relatedVideo) {
+        pdFinal = pdFinal
+          .replace('{video_url}', relatedVideo.url)
+          .replace('{video_title}', relatedVideo.title);
+      }
+      
+      // Reemplazar URLs si están configuradas
+      if (selectedFooter.urls) {
+        Object.keys(selectedFooter.urls).forEach(key => {
+          pdFinal = pdFinal.replace(`{${key}}`, selectedFooter.urls[key]);
+        });
+      }
+      
+      // Actualizar estadísticas de uso
+      await selectedFooter.update({
+        usageCount: selectedFooter.usageCount + 1,
+        lastUsedAt: new Date(),
+      });
+      
+      console.log(`📝 Footer seleccionado: ${selectedFooter.type} (prob: ${selectedFooter.probability}%)`);
+      
+      // Firma siempre con la frase clave
+      const firmaFinal = `Fede "${keyPhrase}" Hirigoyen`;
+      
+      return {
+        postData: pdFinal,
+        firma: firmaFinal,
+        type: selectedFooter.type,
+        relatedVideo: relatedVideo,
+      };
+    } catch (error) {
+      console.error('Error generando footer:', error);
+      // Fallback en caso de error
+      return {
+        postData: `💭 *PD:* ${keyPhrase}`,
+        firma: `Fede "${keyPhrase}" Hirigoyen`,
+        type: 'reflexion',
+        relatedVideo: null,
+      };
+    }
   }
 
   formatForWhatsApp(content, footer = null) {
@@ -198,7 +293,14 @@ Devuelve SOLO la frase, sin nada más.`;
 ━━━━━━━━━━━━━━━━━━━`;
 
     if (footer) {
-      footerText += `\n${footer.postData}\n\n${footer.firma}`;
+      footerText += `\n${footer.postData}\n`;
+      
+      // Agregar video relacionado si existe
+      if (footer.relatedVideo) {
+        footerText += `\n📺 *Video relacionado:*\n"${footer.relatedVideo.title}"\n👉 ${footer.relatedVideo.url}\n`;
+      }
+      
+      footerText += `\n${footer.firma}`;
     } else {
       footerText += `
 _Fede - Tu Coach de Rupturas_
@@ -243,7 +345,14 @@ _Fede - Tu Coach de Rupturas_
         .replace(/\*([^*]+)\*/g, '<b>$1</b>')
         .replace(/_([^_]+)_/g, '<i>$1</i>');
       
-      footerText += `\n${pdHtml}\n\n${firmaHtml}`;
+      footerText += `\n${pdHtml}\n`;
+      
+      // Agregar video relacionado si existe
+      if (footer.relatedVideo) {
+        footerText += `\n📺 <b>Video relacionado:</b>\n"${footer.relatedVideo.title}"\n👉 ${footer.relatedVideo.url}\n`;
+      }
+      
+      footerText += `\n${firmaHtml}`;
     } else {
       footerText += `
 <i>Fede - Tu Coach de Rupturas</i>

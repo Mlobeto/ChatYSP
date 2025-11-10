@@ -1,5 +1,14 @@
 const { Sequelize } = require('sequelize');
 
+// Configuración SSL para Neon y otras bases de datos en la nube
+const dialectOptions = {};
+if (process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production') {
+  dialectOptions.ssl = {
+    require: true,
+    rejectUnauthorized: false
+  };
+}
+
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'chatysp',
   process.env.DB_USER || 'postgres',
@@ -8,6 +17,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
+    dialectOptions,
     logging: process.env.NODE_ENV === 'development' ? console.log : false,
     pool: {
       max: 5,

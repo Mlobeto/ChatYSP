@@ -12,6 +12,7 @@ import RoomsPage from '../pages/RoomsPage';
 import AnalyticsPage from '../pages/AnalyticsPage';
 import AITrainingPage from '../pages/AITrainingPage';
 import SettingsPage from '../pages/SettingsPage';
+import FooterManagement from '../pages/FooterManagement';
 import NotFoundPage from '../pages/NotFoundPage';
 
 // Configuración de rutas
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: 'ai-training',
         element: <AITrainingPage />,
+      },
+      {
+        path: 'footers',
+        element: <FooterManagement />,
       },
       {
         path: 'settings',

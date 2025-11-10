@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  postgres-dev:
+    image: pgvector/pgvector:pg16
+    container_name: chatysp-postgres-dev
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 7754
+      POSTGRES_DB: chatysp
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-pgvector.sql:/docker-entrypoint-initdb.d/init-pgvector.sql
+
+volumes:
+  postgres-data:

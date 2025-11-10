@@ -4,12 +4,10 @@
     "slug": "chatysp-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#f3f4f6"
+      "backgroundColor": "#8b5cf6"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -20,8 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#f3f4f6"
+        "backgroundColor": "#8b5cf6"
       },
       "package": "com.chatysp.mobile",
       "permissions": [
@@ -32,18 +29,9 @@
         "android.permission.RECORD_AUDIO"
       ]
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "plugins": [
       "expo-router",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#ffffff"
-        }
-      ],
+      "expo-notifications",
       [
         "expo-location",
         {
@@ -57,9 +45,6 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "chatysp-mobile-project-id"
       }
     }
   }

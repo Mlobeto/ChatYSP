@@ -664,6 +664,131 @@ TONO:
       return 'Disculpá, estoy teniendo dificultades técnicas en este momento. ¿Podrías intentar de nuevo en unos minutos?';
     }
   }
+
+  // ===== BÚSQUEDA SEMÁNTICA CON EMBEDDINGS =====
+
+  /**
+   * Busca contenido relacionado usando embeddings vectoriales
+   * 
+   * @param {string} query - Texto a buscar
+   * @param {number} limit - Cantidad máxima de resultados (default: 5)
+   * @param {string} contentType - Filtrar por tipo (video, article, book)
+   * @returns {Array} - Array de objetos del knowledge base ordenados por similitud
+   */
+  async findSimilarContent(query, limit = 5, contentType = null) {
+    try {
+      console.log(`🔍 Buscando contenido similar a: "${query}"`);
+      
+      // Generar embedding del query
+      const queryEmbedding = await this.generateEmbedding(query);
+      
+      // Construir query SQL para búsqueda vectorial
+      let whereClause = 'WHERE embedding IS NOT NULL AND "isActive" = true';
+      if (contentType) {
+        whereClause += ` AND "contentType" = '${contentType}'`;
+      }
+      
+      // Búsqueda usando distancia coseno (pgvector)
+      // Ordena por similitud (menor distancia = mayor similitud)
+      const sqlQuery = `
+        SELECT 
+          id,
+          title,
+          content,
+          "contentType",
+          category,
+          tags,
+          metadata,
+          priority,
+          "usageCount",
+          "lastUsedAt",
+          (1 - (embedding <=> '[${queryEmbedding.join(',')}]')) AS similarity
+        FROM knowledge_base
+        ${whereClause}
+        ORDER BY embedding <=> '[${queryEmbedding.join(',')}]'
+        LIMIT ${limit}
+      `;
+      
+      const results = await KnowledgeBase.sequelize.query(sqlQuery, {
+        type: KnowledgeBase.sequelize.QueryTypes.SELECT
+      });
+      
+      console.log(`✅ Encontrados ${results.length} resultados similares`);
+      
+      // Filtrar resultados con similaridad mínima (0.7 = 70% similar)
+      const filteredResults = results.filter(r => r.similarity >= 0.7);
+      
+      console.log(`📊 Resultados con similitud >= 70%: ${filteredResults.length}`);
+      
+      return filteredResults;
+      
+    } catch (error) {
+      console.error('❌ Error en búsqueda semántica:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Genera embedding para un texto usando OpenAI
+   */
+  async generateEmbedding(text) {
+    try {
+      const response = await this.openai.embeddings.create({
+        model: 'text-embedding-3-small',
+        input: text,
+        encoding_format: 'float'
+      });
+      
+      return response.data[0].embedding;
+    } catch (error) {
+      console.error('Error generando embedding:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Encuentra videos relacionados con un tema específico
+   * 
+   * @param {string} topic - Tema para buscar videos
+   * @param {number} limit - Cantidad de videos a retornar
+   * @returns {Array} - Array de videos ordenados por relevancia
+   */
+  async findRelatedVideos(topic, limit = 3) {
+    return await this.findSimilarContent(topic, limit, 'video');
+  }
+
+  /**
+   * Recomienda un video basado en el contenido de un tip
+   * 
+   * @param {string} tipContent - Contenido del tip diario
+   * @param {string} tipCategory - Categoría del tip
+   * @returns {Object|null} - Video recomendado o null
+   */
+  async recommendVideoForTip(tipContent, tipCategory) {
+    try {
+      // Combinar contenido y categoría para mejor matching
+      const searchQuery = `${tipCategory} ${tipContent}`;
+      
+      const videos = await this.findRelatedVideos(searchQuery, 1);
+      
+      if (videos.length > 0) {
+        const video = videos[0];
+        console.log(`🎥 Video recomendado: "${video.title}" (similitud: ${(video.similarity * 100).toFixed(1)}%)`);
+        
+        return {
+          title: video.title,
+          url: video.metadata?.url || '',
+          youtubeId: video.metadata?.youtubeId || '',
+          similarity: video.similarity
+        };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error recomendando video:', error);
+      return null;
+    }
+  }
 }
 
 module.exports = FedeAIService;

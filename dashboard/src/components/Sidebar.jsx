@@ -10,6 +10,7 @@ import {
   ArrowLeftOnRectangleIcon,
   Bars3Icon,
   XMarkIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 import { FaWhatsapp } from 'react-icons/fa';
 
@@ -51,6 +52,11 @@ const Sidebar = ({ collapsed, mobileMenuOpen, isMobile, onToggle, onLogout }) =>
       name: 'IA Training',
       href: '/ai-training',
       icon: BeakerIcon,
+    },
+    {
+      name: 'Footers',
+      href: '/footers',
+      icon: DocumentTextIcon,
     },
     {
       name: 'Configuración',

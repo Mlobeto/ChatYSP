@@ -86,35 +86,35 @@ const AITrainingPage = () => {
         <StatCard
           icon={MessageSquare}
           title="Conversaciones"
-          value={stats.totalConversations.toLocaleString()}
+          value={(stats?.totalConversations || 0).toLocaleString()}
           subtitle="Total de chats"
           color="blue"
         />
         <StatCard
           icon={BookOpen}
           title="Knowledge Base"
-          value={stats.totalKnowledge}
+          value={stats?.totalKnowledge || 0}
           subtitle="Documentos activos"
           color="green"
         />
         <StatCard
           icon={Star}
           title="Calificación"
-          value={stats.averageRating.toFixed(1)}
+          value={(stats?.averageRating || 0).toFixed(1)}
           subtitle="Promedio de usuarios"
           color="yellow"
         />
         <StatCard
           icon={Clock}
           title="Tiempo Respuesta"
-          value={`${stats.responseTime}s`}
+          value={`${stats?.responseTime || 0}s`}
           subtitle="Promedio"
           color="purple"
         />
         <StatCard
           icon={Users}
           title="Usuarios Activos"
-          value={stats.activeUsers}
+          value={stats?.activeUsers || 0}
           subtitle="Últimos 30 días"
           color="indigo"
         />

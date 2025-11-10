@@ -36,8 +36,16 @@ const KnowledgeBase = sequelize.define(
     // Categoría temática
     category: {
       type: DataTypes.ENUM(
+        // Los 7 Pasos de la Estrategia
+        'paso_1_contacto_cero',
+        'paso_2_redes_sociales',
+        'paso_3_look_vestuario',
+        'paso_4_vida_social_alfa',
+        'paso_5_responder_alfa',
+        'paso_6_confundido',
+        'paso_7_volver_alfa',
+        // Categorías generales
         'ruptura_pareja',
-        'metodologia_7_pasos',
         'autoestima',
         'comunicacion',
         'emociones',
@@ -49,7 +57,7 @@ const KnowledgeBase = sequelize.define(
       ),
       allowNull: false,
       defaultValue: 'general',
-      comment: 'Categoría temática del contenido',
+      comment: 'Categoría temática del contenido (prioriza los 7 pasos de la estrategia)',
     },
 
     // Metadatos específicos

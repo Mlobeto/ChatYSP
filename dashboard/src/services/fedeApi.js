@@ -103,6 +103,20 @@ export const fedeApi = {
   },
 
   // Entrenamiento
+  async uploadTrainingData(formData) {
+    try {
+      const response = await api.post('/fede/admin/training/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error subiendo datos de entrenamiento:', error);
+      throw error;
+    }
+  },
+
   async trainModel(data) {
     try {
       const response = await api.post('/fede/admin/train', data);
@@ -119,6 +133,26 @@ export const fedeApi = {
       return response.data;
     } catch (error) {
       console.error('Error obteniendo estado de entrenamiento:', error);
+      throw error;
+    }
+  },
+
+  async getModelVersions() {
+    try {
+      const response = await api.get('/fede/admin/models');
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo versiones de modelos:', error);
+      throw error;
+    }
+  },
+
+  async getEvaluationMetrics() {
+    try {
+      const response = await api.get('/fede/admin/metrics/evaluation');
+      return response.data;
+    } catch (error) {
+      console.error('Error obteniendo métricas de evaluación:', error);
       throw error;
     }
   },

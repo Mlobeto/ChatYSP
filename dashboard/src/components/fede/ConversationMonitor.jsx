@@ -49,7 +49,7 @@ const ConversationMonitor = () => {
         search: searchTerm,
         limit: 50
       });
-      setConversations(response.data || []);
+      setConversations(response.data?.conversations || response.conversations || []);
     } catch (error) {
       console.error('Error cargando conversaciones:', error);
     } finally {
@@ -59,8 +59,16 @@ const ConversationMonitor = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fedeApi.getResponseAnalytics(filters);
-      setStats(response.data || {});
+      const response = await fedeApi.getStats();
+      // getStats devuelve {success, data: {conversationCount, knowledgeCount, avgRating, recentConversations}}
+      // Mapear a la estructura que espera el componente
+      const apiStats = response.data || {};
+      setStats({
+        totalConversations: apiStats.conversationCount || 0,
+        averageRating: parseFloat(apiStats.avgRating) || 0,
+        averageResponseTime: 0, // No disponible aún
+        successRate: 0 // No disponible aún
+      });
     } catch (error) {
       console.error('Error cargando estadísticas:', error);
     }

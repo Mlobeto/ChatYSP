@@ -29,10 +29,17 @@ class DailyTipService {
       const title = await this.aiService.generateTitle(generated.content);
       const keyPhrase = await this.aiService.extractKeyPhrase(generated.content);
       
-      // Generar footer aleatorio con la frase
-      const footer = this.aiService.generateRandomFooter(keyPhrase);
+      // Generar footer aleatorio con la frase (puede incluir video relacionado)
+      const footer = await this.aiService.generateRandomFooter(
+        keyPhrase, 
+        generated.content, 
+        generated.category
+      );
       console.log(`📝 Footer tipo: ${footer.type}`);
       console.log(`💭 Frase clave: "${keyPhrase}"`);
+      if (footer.relatedVideo) {
+        console.log(`🎥 Video incluido: "${footer.relatedVideo.title}"`);
+      }
       
       // Formatear con el footer personalizado
       const whatsappFormat = this.aiService.formatForWhatsApp(generated.content, footer);
@@ -51,6 +58,7 @@ class DailyTipService {
           baseTipTitle: generated.baseTipTitle,
           keyPhrase,
           footerType: footer.type,
+          relatedVideo: footer.relatedVideo || null,
         },
       });
 
