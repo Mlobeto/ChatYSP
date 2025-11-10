@@ -319,6 +319,7 @@ const createUser = async (req, res) => {
       } catch (emailError) {
         console.error('❌ Error enviando email de bienvenida:', emailError);
         // No fallar la creación del usuario por un error de email
+        console.warn('⚠️  Usuario creado pero email no pudo enviarse. Contraseña temporal:', tempPassword);
       }
     }
 
@@ -327,10 +328,9 @@ const createUser = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: sendWelcomeEmail
-        ? 'Usuario creado exitosamente. Email de bienvenida enviado.'
-        : 'Usuario creado exitosamente',
+      message: 'Usuario creado exitosamente',
       user: userWithoutPassword,
+      tempPassword: tempPassword, // Incluir la contraseña temporal en la respuesta
     });
   } catch (error) {
     console.error('Create user error:', error);
