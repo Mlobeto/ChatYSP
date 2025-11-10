@@ -2,7 +2,7 @@ const OpenAI = require('openai');
 const CoachTip = require('../models/CoachTip');
 const FooterTemplate = require('../models/FooterTemplate');
 const { Op } = require('sequelize');
-const FedeAIService = require('./FedeAIService');
+const FedeAIService = require('./fedeAIService');
 
 class DailyTipAIService {
   constructor() {
