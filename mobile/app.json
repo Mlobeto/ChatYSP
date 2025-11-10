@@ -28,6 +28,13 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#8b5cf6",
+          "imageWidth": 200
+        }
+      ],
       "expo-notifications",
       [
         "expo-location",
