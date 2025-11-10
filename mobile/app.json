@@ -17,9 +17,6 @@
       "bundleIdentifier": "com.chatysp.mobile"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#8b5cf6"
-      },
       "package": "com.chatysp.mobile",
       "permissions": [
         "android.permission.INTERNET",
@@ -45,6 +42,9 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "0480d390-36c1-4a2a-9e3f-f9c122788f3d"
       }
     }
   }
