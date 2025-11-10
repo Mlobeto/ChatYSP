@@ -270,14 +270,15 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('public'));
-
-  app.get('*', (req, res) => {
-    res.sendFile('index.html', { root: 'public' });
+// Health check endpoint for production
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'ChatYSP API Server',
+    version: '1.0.0',
+    environment: process.env.NODE_ENV || 'development'
   });
-}
+});
 
 // Error handling middleware
 // eslint-disable-next-line no-unused-vars
