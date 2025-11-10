@@ -5,7 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/itro.png",
     "splash": {
+      "image": "./assets/itro.png",
       "resizeMode": "contain",
       "backgroundColor": "#8b5cf6"
     },
@@ -17,6 +19,10 @@
       "bundleIdentifier": "com.chatysp.mobile"
     },
     "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/itro.png",
+        "backgroundColor": "#8b5cf6"
+      },
       "package": "com.chatysp.mobile",
       "permissions": [
         "android.permission.INTERNET",
