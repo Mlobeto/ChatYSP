@@ -19,9 +19,9 @@ export const APP_CONFIG = {
   NAME: 'ChatYSP',
   VERSION: '1.0.0',
   SUPPORT_EMAIL: 'support@chatysp.com',
-  WEBSITE: 'https://chatysp.com',
-  PRIVACY_POLICY: 'https://chatysp.com/privacy',
-  TERMS_OF_SERVICE: 'https://chatysp.com/terms',
+  WEBSITE: 'https://chat-ysp.vercel.app/',
+  PRIVACY_POLICY: 'https://chat-ysp.vercel.app/privacy',
+  TERMS_OF_SERVICE: 'https://chat-ysp.vercel.app/terms',
 };
 
 // UI Constants
