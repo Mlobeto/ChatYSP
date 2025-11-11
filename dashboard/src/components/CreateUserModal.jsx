@@ -1,42 +1,39 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-hot-toast';
-import {
-  XMarkIcon,
-  UserPlusIcon,
-} from '@heroicons/react/24/outline';
-import { createUser } from '../redux/dashboardSlice';
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
+import { XMarkIcon, UserPlusIcon } from "@heroicons/react/24/outline";
+import { createUser } from "../redux/dashboardSlice";
 
 const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [tempPassword, setTempPassword] = useState(null);
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    role: 'user',
-    country: '',
-    phone: '',
+    username: "",
+    email: "",
+    role: "user",
+    country: "",
+    phone: "",
     sendWelcomeEmail: true,
   });
 
   const countries = [
-    { code: 'AR', name: 'Argentina' },
-    { code: 'PE', name: 'Perú' },
-    { code: 'MX', name: 'México' },
-    { code: 'CO', name: 'Colombia' },
-    { code: 'ES', name: 'España' },
+    { code: "AR", name: "Argentina" },
+    { code: "PE", name: "Perú" },
+    { code: "MX", name: "México" },
+    { code: "CO", name: "Colombia" },
+    { code: "ES", name: "España" },
   ];
 
   const roles = [
-    { value: 'user', label: 'Usuario' },
-    { value: 'moderator', label: 'Moderador' },
-    { value: 'admin', label: 'Administrador' },
+    { value: "user", label: "Usuario" },
+    { value: "moderator", label: "Moderador" },
+    { value: "admin", label: "Administrador" },
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -44,43 +41,47 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.username || !formData.email) {
-      toast.error('Por favor, completa todos los campos obligatorios');
+      toast.error("Por favor, completa todos los campos obligatorios");
       return;
     }
 
     setLoading(true);
-    
+
     try {
       const result = await dispatch(createUser(formData));
-      
+
       if (createUser.fulfilled.match(result)) {
         const password = result.payload?.tempPassword;
-        
+
         if (password) {
           setTempPassword(password);
-          toast.success('Usuario creado exitosamente. Guarda la contraseña temporal.');
+          toast.success(
+            "Usuario creado exitosamente. Guarda la contraseña temporal."
+          );
         } else {
-          toast.success('Usuario creado exitosamente. Se envió email de bienvenida.');
+          toast.success(
+            "Usuario creado exitosamente. Se envió email de bienvenida."
+          );
           onUserCreated?.();
           onClose();
         }
-        
+
         // Resetear solo el formulario si hay contraseña temporal (no cerrar modal)
         if (!password) {
           setFormData({
-            username: '',
-            email: '',
-            role: 'user',
-            country: '',
-            phone: '',
+            username: "",
+            email: "",
+            role: "user",
+            country: "",
+            phone: "",
             sendWelcomeEmail: true,
           });
         }
       }
     } catch (error) {
-      toast.error('Error al crear usuario: ' + error.message);
+      toast.error("Error al crear usuario: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -91,9 +92,17 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
+        <div
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          onClick={onClose}
+        ></div>
 
-        <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <span
+          className="hidden sm:inline-block sm:align-middle sm:h-screen"
+          aria-hidden="true"
+        >
+          &#8203;
+        </span>
 
         <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <form onSubmit={handleSubmit}>
@@ -117,7 +126,10 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
               <div className="space-y-4">
                 {/* Username */}
                 <div>
-                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="username"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Nombre de usuario *
                   </label>
                   <input
@@ -134,7 +146,10 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
 
                 {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Email *
                   </label>
                   <input
@@ -151,7 +166,10 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
 
                 {/* Role */}
                 <div>
-                  <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="role"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Rol
                   </label>
                   <select
@@ -161,7 +179,7 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                     onChange={handleInputChange}
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   >
-                    {roles.map(role => (
+                    {roles.map((role) => (
                       <option key={role.value} value={role.value}>
                         {role.label}
                       </option>
@@ -171,7 +189,10 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
 
                 {/* Country */}
                 <div>
-                  <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="country"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     País
                   </label>
                   <select
@@ -182,7 +203,7 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   >
                     <option value="">Seleccionar país</option>
-                    {countries.map(country => (
+                    {countries.map((country) => (
                       <option key={country.code} value={country.code}>
                         {country.name}
                       </option>
@@ -192,7 +213,10 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
 
                 {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     Teléfono
                   </label>
                   <input
@@ -216,15 +240,24 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                     name="sendWelcomeEmail"
                     id="sendWelcomeEmail"
                     checked={formData.sendWelcomeEmail}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sendWelcomeEmail: e.target.checked }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        sendWelcomeEmail: e.target.checked,
+                      }))
+                    }
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                   />
-                  <label htmlFor="sendWelcomeEmail" className="ml-2 block text-sm text-gray-900">
+                  <label
+                    htmlFor="sendWelcomeEmail"
+                    className="ml-2 block text-sm text-gray-900"
+                  >
                     Enviar email de bienvenida con contraseña temporal
                   </label>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Se generará una contraseña temporal y se enviará por email junto con un enlace para cambiarla.
+                  Se generará una contraseña temporal y se enviará por email
+                  junto con un enlace para cambiarla.
                 </p>
 
                 {/* Mostrar contraseña temporal después de crear usuario */}
@@ -234,7 +267,8 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                       ⚠️ Contraseña Temporal Generada
                     </h4>
                     <p className="text-xs text-yellow-700 mb-3">
-                      Guarda esta contraseña ahora. El usuario deberá cambiarla en su primer login.
+                      Guarda esta contraseña ahora. El usuario deberá cambiarla
+                      en su primer login.
                     </p>
                     <div className="flex items-center gap-2">
                       <input
@@ -246,8 +280,9 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                       <button
                         type="button"
                         onClick={() => {
+                          // eslint-disable-next-line no-undef
                           navigator.clipboard.writeText(tempPassword);
-                          toast.success('Contraseña copiada al portapapeles');
+                          toast.success("Contraseña copiada al portapapeles");
                         }}
                         className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm font-medium"
                       >
@@ -267,14 +302,30 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Creando...
                   </>
                 ) : (
-                  'Crear Usuario'
+                  "Crear Usuario"
                 )}
               </button>
               <button
@@ -282,18 +333,18 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                 onClick={() => {
                   setTempPassword(null);
                   setFormData({
-                    username: '',
-                    email: '',
-                    role: 'user',
-                    country: '',
-                    phone: '',
+                    username: "",
+                    email: "",
+                    role: "user",
+                    country: "",
+                    phone: "",
                     sendWelcomeEmail: true,
                   });
                   onClose();
                 }}
                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
-                {tempPassword ? 'Cerrar' : 'Cancelar'}
+                {tempPassword ? "Cerrar" : "Cancelar"}
               </button>
             </div>
           </form>
