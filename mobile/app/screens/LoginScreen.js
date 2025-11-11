@@ -48,6 +48,8 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleLogin = async () => {
+    console.log('🔵 handleLogin iniciado');
+    
     if (!formData.email || !formData.password) {
       Alert.alert('Campos Requeridos', 'Por favor, completa todos los campos');
       return;
@@ -58,11 +60,15 @@ export default function LoginScreen({ navigation }) {
       return;
     }
 
+    console.log('🔵 Validaciones pasadas, llamando dispatch');
+
     try {
       const result = await dispatch(loginUser({
         email: formData.email.toLowerCase().trim(),
         password: formData.password
       }));
+      
+      console.log('🔵 Resultado del dispatch:', result);
 
       if (loginUser.fulfilled.match(result)) {
         // Login exitoso
@@ -83,9 +89,12 @@ export default function LoginScreen({ navigation }) {
             { cancelable: false }
           );
         }
+      } else {
+        console.log('❌ Login rechazado:', result);
       }
     } catch (err) {
-      console.error('Error en login:', err);
+      console.error('❌ Error capturado en handleLogin:', err);
+      Alert.alert('Error', 'Error inesperado: ' + err.message);
     }
   };
 
