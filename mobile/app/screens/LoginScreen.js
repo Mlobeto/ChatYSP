@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
 import { loginUser, selectIsLoading, selectError, clearError } from '../redux/authSlice';
+import TestConnection from '../components/TestConnection';
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -126,6 +127,9 @@ export default function LoginScreen({ navigation }) {
               Inicia sesión para conectar con tu coach personal de IA
             </Text>
           </View>
+
+          {/* TEST DE CONEXIÓN - TEMPORAL */}
+          <TestConnection />
 
           {/* Formulario */}
           <View className="space-y-6">
