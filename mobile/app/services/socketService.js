@@ -20,7 +20,7 @@ class SocketService {
         return false;
       }
 
-      const SOCKET_URL = 'https://vercel.com/inno-projects/chat-ysp';
+      const SOCKET_URL = 'https://chat-ysp.vercel.app/';
 
       // Configuración del socket
       this.socket = io(SOCKET_URL, {
