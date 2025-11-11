@@ -10,6 +10,7 @@ import { createUser } from '../redux/dashboardSlice';
 const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const [tempPassword, setTempPassword] = useState(null);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -55,34 +56,28 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
       const result = await dispatch(createUser(formData));
       
       if (createUser.fulfilled.match(result)) {
-        const tempPassword = result.payload?.tempPassword;
+        const password = result.payload?.tempPassword;
         
-        if (tempPassword) {
-          // Mostrar la contraseña temporal en un alert copiable
-          const message = `Usuario creado exitosamente.\n\nContraseña temporal: ${tempPassword}\n\n⚠️ IMPORTANTE: Copia esta contraseña ahora. El usuario deberá cambiarla en su primer login.`;
-          
-          // Mostrar alert con opción de copiar
-          if (window.confirm(message + '\n\n¿Deseas copiar la contraseña al portapapeles?')) {
-            // eslint-disable-next-line no-undef
-            navigator.clipboard.writeText(tempPassword);
-            toast.success('Contraseña copiada al portapapeles');
-          }
+        if (password) {
+          setTempPassword(password);
+          toast.success('Usuario creado exitosamente. Guarda la contraseña temporal.');
         } else {
           toast.success('Usuario creado exitosamente. Se envió email de bienvenida.');
+          onUserCreated?.();
+          onClose();
         }
         
-        onUserCreated?.();
-        onClose();
-        
-        // Resetear formulario
-        setFormData({
-          username: '',
-          email: '',
-          role: 'user',
-          country: '',
-          phone: '',
-          sendWelcomeEmail: true,
-        });
+        // Resetear solo el formulario si hay contraseña temporal (no cerrar modal)
+        if (!password) {
+          setFormData({
+            username: '',
+            email: '',
+            role: 'user',
+            country: '',
+            phone: '',
+            sendWelcomeEmail: true,
+          });
+        }
       }
     } catch (error) {
       toast.error('Error al crear usuario: ' + error.message);
@@ -231,6 +226,36 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
                 <p className="text-xs text-gray-500 mt-1">
                   Se generará una contraseña temporal y se enviará por email junto con un enlace para cambiarla.
                 </p>
+
+                {/* Mostrar contraseña temporal después de crear usuario */}
+                {tempPassword && (
+                  <div className="mt-4 p-4 bg-yellow-50 border-2 border-yellow-400 rounded-lg">
+                    <h4 className="text-sm font-semibold text-yellow-800 mb-2">
+                      ⚠️ Contraseña Temporal Generada
+                    </h4>
+                    <p className="text-xs text-yellow-700 mb-3">
+                      Guarda esta contraseña ahora. El usuario deberá cambiarla en su primer login.
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={tempPassword}
+                        className="flex-1 px-3 py-2 bg-white border border-yellow-300 rounded-md text-sm font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(tempPassword);
+                          toast.success('Contraseña copiada al portapapeles');
+                        }}
+                        className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 text-sm font-medium"
+                      >
+                        Copiar
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -254,10 +279,21 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
               </button>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  setTempPassword(null);
+                  setFormData({
+                    username: '',
+                    email: '',
+                    role: 'user',
+                    country: '',
+                    phone: '',
+                    sendWelcomeEmail: true,
+                  });
+                  onClose();
+                }}
                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               >
-                Cancelar
+                {tempPassword ? 'Cerrar' : 'Cancelar'}
               </button>
             </div>
           </form>
