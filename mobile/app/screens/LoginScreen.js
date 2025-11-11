@@ -65,8 +65,24 @@ export default function LoginScreen({ navigation }) {
       }));
 
       if (loginUser.fulfilled.match(result)) {
-        // Login exitoso - la navegación se maneja automáticamente por AppNavigator
+        // Login exitoso
         console.log('✅ Login exitoso');
+        
+        // Verificar si es contraseña temporal
+        const user = result.payload.user;
+        if (user && user.isTemporaryPassword) {
+          Alert.alert(
+            'Cambio de Contraseña Requerido',
+            'Por seguridad, debes cambiar tu contraseña temporal antes de continuar.',
+            [
+              {
+                text: 'Cambiar Ahora',
+                onPress: () => navigation.navigate('ChangePassword', { isFirstLogin: true })
+              }
+            ],
+            { cancelable: false }
+          );
+        }
       }
     } catch (err) {
       console.error('Error en login:', err);

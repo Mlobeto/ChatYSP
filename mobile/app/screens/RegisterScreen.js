@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { register } from '../redux/authSlice';
+import { registerUser } from '../redux/authSlice';
 import * as Location from 'expo-location';
 
 export default function RegisterScreen({ navigation }) {
@@ -138,7 +138,7 @@ export default function RegisterScreen({ navigation }) {
     if (!validateForm()) return;
 
     try {
-      const result = await dispatch(register({
+      const result = await dispatch(registerUser({
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim(),
