@@ -55,7 +55,22 @@ const CreateUserModal = ({ isOpen, onClose, onUserCreated }) => {
       const result = await dispatch(createUser(formData));
       
       if (createUser.fulfilled.match(result)) {
-        toast.success('Usuario creado exitosamente');
+        const tempPassword = result.payload?.tempPassword;
+        
+        if (tempPassword) {
+          // Mostrar la contraseña temporal en un alert copiable
+          const message = `Usuario creado exitosamente.\n\nContraseña temporal: ${tempPassword}\n\n⚠️ IMPORTANTE: Copia esta contraseña ahora. El usuario deberá cambiarla en su primer login.`;
+          
+          // Mostrar alert con opción de copiar
+          if (window.confirm(message + '\n\n¿Deseas copiar la contraseña al portapapeles?')) {
+            // eslint-disable-next-line no-undef
+            navigator.clipboard.writeText(tempPassword);
+            toast.success('Contraseña copiada al portapapeles');
+          }
+        } else {
+          toast.success('Usuario creado exitosamente. Se envió email de bienvenida.');
+        }
+        
         onUserCreated?.();
         onClose();
         
