@@ -68,13 +68,29 @@ app.use(compression());
 
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-      'https://chat-ysp.vercel.app',
-      process.env.CLIENT_URL,
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      // Permitir requests sin origin (como Postman, apps móviles)
+      if (!origin) return callback(null, true);
+      
+      // Lista de orígenes permitidos
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3002',
+        'https://chat-ysp.vercel.app',
+        process.env.CLIENT_URL,
+      ].filter(Boolean);
+      
+      // Permitir cualquier URL de Vercel (incluyendo preview deployments)
+      const isVercelDomain = origin.includes('.vercel.app');
+      
+      if (allowedOrigins.includes(origin) || isVercelDomain) {
+        callback(null, true);
+      } else {
+        console.warn('🚫 CORS blocked origin:', origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
