@@ -20,6 +20,15 @@ const apiClient = axios.create({
 // Interceptor para agregar token automáticamente
 apiClient.interceptors.request.use(
   async (config) => {
+    console.log('🚀 AXIOS REQUEST:', {
+      method: config.method?.toUpperCase(),
+      baseURL: config.baseURL,
+      url: config.url,
+      fullURL: `${config.baseURL}${config.url}`,
+      headers: config.headers,
+      data: config.data ? Object.keys(config.data) : 'no data'
+    });
+    
     try {
       const token = await AsyncStorage.getItem('userToken');
       if (token) {
@@ -31,14 +40,32 @@ apiClient.interceptors.request.use(
     return config;
   },
   (error) => {
+    console.error('❌ AXIOS REQUEST ERROR:', error);
     return Promise.reject(error);
   }
 );
 
 // Interceptor para manejar respuestas y errores
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('✅ AXIOS RESPONSE:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data ? 'data received' : 'no data'
+    });
+    return response;
+  },
   async (error) => {
+    console.error('❌ AXIOS RESPONSE ERROR:', {
+      message: error.message,
+      status: error.response?.status,
+      url: error.config?.url,
+      fullURL: error.config ? `${error.config.baseURL}${error.config.url}` : 'unknown',
+      data: error.response?.data,
+      code: error.code,
+      isNetworkError: !error.response,
+    });
+    
     if (error.response?.status === 401) {
       // Token expirado o inválido
       await AsyncStorage.multiRemove(['userToken', 'userData']);
