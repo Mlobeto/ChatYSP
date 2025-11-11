@@ -101,15 +101,15 @@ export const authAPI = {
 // Servicios de IA
 export const aiAPI = {
   sendMessage: (messageData) => 
-    apiClient.post('/ai/chat', messageData, {
+    apiClient.post('/fede/chat', messageData, {
       timeout: 60000, // 60 segundos para respuestas de IA
     }),
   
   getConversationHistory: (userId) => 
-    apiClient.get(`/ai/conversation/${userId}`),
+    apiClient.get(`/fede/conversation/${userId}`),
   
   clearConversation: (userId) => 
-    apiClient.delete(`/ai/conversation/${userId}`),
+    apiClient.delete(`/fede/conversation/${userId}`),
   
   getCoachingTips: (params = {}) => 
     apiClient.get('/ai/tips', { params }),
