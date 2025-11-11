@@ -2,7 +2,17 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+// Debug: Mostrar la URL que se está usando
+console.log('🔧 API Configuration:', {
+  VITE_API_URL: import.meta.env.VITE_API_URL,
+  API_BASE_URL: API_BASE_URL,
+  MODE: import.meta.env.MODE,
+  DEV: import.meta.env.DEV,
+  PROD: import.meta.env.PROD,
+});
+
 if (!API_BASE_URL) {
+  console.error('❌ VITE_API_URL is not set!');
   throw new Error('VITE_API_URL environment variable is not set');
 }
 
