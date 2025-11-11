@@ -33,6 +33,9 @@ const dailyTipScheduler = require('./services/dailyTipScheduler');
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy - importante para Render y rate limiting
+app.set('trust proxy', 1);
+
 // Socket.IO setup with CORS
 const io = socketIo(server, {
   cors: {
