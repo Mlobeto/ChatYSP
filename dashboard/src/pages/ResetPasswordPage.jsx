@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon, KeyIcon } from '@heroicons/react/24/outline';
+import api from '../services/api';
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
@@ -53,35 +54,23 @@ const ResetPasswordPage = () => {
     setError('');
 
     try {
-      console.log('🌐 Enviando petición a /auth/reset-password');
-      
-      const response = await fetch('http://localhost:5000/api/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token,
-          newPassword: password,
-        }),
+      const response = await api.post('/auth/reset-password', {
+        token,
+        newPassword: password,
       });
 
-      const data = await response.json();
-      console.log('📥 Respuesta del servidor:', data);
+      const data = response.data;
 
-      if (response.ok && data.success) {
-        console.log('✅ Contraseña actualizada exitosamente');
+      if (data.success) {
         setSuccess(true);
         setTimeout(() => {
           navigate('/login');
         }, 3000);
       } else {
-        console.error('❌ Error del servidor:', data.message);
         setError(data.message || 'Error al cambiar la contraseña');
       }
     } catch (error) {
-      console.error('❌ Error de red:', error);
-      setError('Error de conexión. Inténtalo de nuevo.');
+      setError(error.response?.data?.message || 'Error de conexión. Inténtalo de nuevo.');
     } finally {
       setLoading(false);
     }
