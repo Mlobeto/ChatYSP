@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
 // Configuración de la API
-const API_BASE_URL = 'https://api.chatysp.com/api'; // Producción
+const API_BASE_URL = 'https://chatysp.onrender.com/api'; // Backend en Render
 
 // Crear instancia de axios
 const apiClient = axios.create({
