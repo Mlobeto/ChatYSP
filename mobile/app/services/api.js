@@ -101,7 +101,9 @@ export const authAPI = {
 // Servicios de IA
 export const aiAPI = {
   sendMessage: (messageData) => 
-    apiClient.post('/ai/chat', messageData),
+    apiClient.post('/ai/chat', messageData, {
+      timeout: 60000, // 60 segundos para respuestas de IA
+    }),
   
   getConversationHistory: (userId) => 
     apiClient.get(`/ai/conversation/${userId}`),
