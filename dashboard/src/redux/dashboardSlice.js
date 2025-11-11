@@ -106,7 +106,8 @@ export const createUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await dashboardApi.createUser(userData);
-      return response.data.user;
+      // Devolver toda la respuesta para incluir tempPassword
+      return response.data;
     } catch (error) {
       const message = error.response?.data?.message || 'Error al crear usuario';
       return rejectWithValue(message);
@@ -340,7 +341,9 @@ const dashboardSlice = createSlice({
         state.usersError = action.payload;
       })
       .addCase(createUser.fulfilled, (state, action) => {
-        state.users.unshift(action.payload);
+        // action.payload contiene { success, message, user, tempPassword }
+        // Solo agregamos el user al estado
+        state.users.unshift(action.payload.user);
         state.stats.totalUsers += 1;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
