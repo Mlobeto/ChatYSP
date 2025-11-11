@@ -2,41 +2,83 @@ const nodemailer = require('nodemailer');
 
 class EmailService {
   constructor() {
-    this.transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Usar SendGrid si está configurado, sino usar Nodemailer
+    this.useSendGrid = !!process.env.SENDGRID_API_KEY;
+    
+    if (this.useSendGrid) {
+      console.log('📧 Using SendGrid for email delivery');
+      // SendGrid se inicializa cuando se necesita
+    } else {
+      console.log('📧 Using Nodemailer for email delivery');
+      this.transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+    }
   }
 
   async sendEmail({
     to, subject, html, text,
   }) {
     try {
-      const mailOptions = {
-        from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM_EMAIL}>`,
-        to,
-        subject,
-        html,
-        text,
-      };
-
-      const info = await this.transporter.sendMail(mailOptions);
-      console.log('📧 Email enviado exitosamente:', {
-        messageId: info.messageId,
-        to,
-        subject,
-      });
-
-      return { success: true, messageId: info.messageId };
+      if (this.useSendGrid) {
+        return await this.sendWithSendGrid({ to, subject, html, text });
+      } else {
+        return await this.sendWithNodemailer({ to, subject, html, text });
+      }
     } catch (error) {
       console.error('❌ Error enviando email:', error);
       throw new Error(`Error enviando email: ${error.message}`);
     }
+  }
+
+  async sendWithSendGrid({ to, subject, html, text }) {
+    const sgMail = require('@sendgrid/mail');
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+    const msg = {
+      to,
+      from: {
+        email: process.env.EMAIL_FROM_EMAIL || 'noreply@chatysp.com',
+        name: process.env.EMAIL_FROM_NAME || 'ChatYSP',
+      },
+      subject,
+      text: text || html.replace(/<[^>]*>/g, ''), // Fallback to HTML without tags
+      html,
+    };
+
+    const response = await sgMail.send(msg);
+    console.log('📧 Email enviado exitosamente con SendGrid:', {
+      to,
+      subject,
+      statusCode: response[0].statusCode,
+    });
+
+    return { success: true, messageId: response[0].headers['x-message-id'] };
+  }
+
+  async sendWithNodemailer({ to, subject, html, text }) {
+    const mailOptions = {
+      from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM_EMAIL}>`,
+      to,
+      subject,
+      html,
+      text,
+    };
+
+    const info = await this.transporter.sendMail(mailOptions);
+    console.log('📧 Email enviado exitosamente con Nodemailer:', {
+      messageId: info.messageId,
+      to,
+      subject,
+    });
+
+    return { success: true, messageId: info.messageId };
   }
 
   async sendWelcomeEmail({
