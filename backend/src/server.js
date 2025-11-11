@@ -72,6 +72,7 @@ app.use(
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
+      'https://chat-ysp.vercel.app',
       process.env.CLIENT_URL,
     ].filter(Boolean),
     credentials: true,
