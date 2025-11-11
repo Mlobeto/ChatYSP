@@ -5,12 +5,15 @@ import Constants from 'expo-constants';
 // Configuración de la API
 const API_BASE_URL = 'https://chatysp.onrender.com/api'; // Backend en Render
 
+console.log('📡 API configurada:', API_BASE_URL);
+
 // Crear instancia de axios
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 30000, // 30 segundos para cold start de Render
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
 });
 

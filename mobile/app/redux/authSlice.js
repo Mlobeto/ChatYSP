@@ -25,15 +25,33 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async ({ email, password }, { rejectWithValue }) => {
     try {
+      console.log('🔐 Intentando login:', { email, API: 'https://chatysp.onrender.com/api' });
+      
       const response = await authAPI.login(email, password);
+      
+      console.log('✅ Login response:', response.data);
+      
       const { user, token } = response.data;
       
       // Guardar token en AsyncStorage
       await AsyncStorage.setItem('userToken', token);
       await AsyncStorage.setItem('userData', JSON.stringify(user));
       
+      console.log('💾 Token y datos guardados');
+      
       return { user, token };
     } catch (error) {
+      console.error('❌ Login error completo:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        config: {
+          url: error.config?.url,
+          baseURL: error.config?.baseURL,
+          method: error.config?.method,
+        }
+      });
+      
       const message = error.response?.data?.message || 'Error de autenticación';
       return rejectWithValue(message);
     }
