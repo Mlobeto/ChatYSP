@@ -8,6 +8,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -119,8 +120,12 @@ export default function LoginScreen({ navigation }) {
           
           {/* Header */}
           <View className="items-center mb-12">
-            <View className="w-24 h-24 bg-primary-500 rounded-3xl justify-center items-center mb-6 shadow-lg">
-              <Ionicons name="chatbubbles" size={40} color="white" />
+            <View className="w-32 h-32 justify-center items-center mb-6">
+              <Image 
+                source={require('../../assets/itro.png')} 
+                className="w-full h-full"
+                resizeMode="contain"
+              />
             </View>
             <Text className="text-3xl font-bold text-gray-900 mb-2">¡Bienvenido!</Text>
             <Text className="text-gray-600 text-center text-base">
