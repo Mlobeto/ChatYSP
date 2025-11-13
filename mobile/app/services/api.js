@@ -241,8 +241,9 @@ export const locationAPI = {
 export const initializeApp = async () => {
   try {
     // Verificar conectividad - usar URL completa sin /api
+    // Timeout largo para cold start de Render (puede tardar hasta 60s)
     const healthCheck = await axios.get(`${API_BASE_URL.replace('/api', '')}/health`, {
-      timeout: 10000,
+      timeout: 70000, // 70 segundos para cold start
     });
     console.log('✅ Conexión con backend establecida:', healthCheck.data);
     

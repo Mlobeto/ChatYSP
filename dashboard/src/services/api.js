@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+// Fallback a la URL de producción si no está definida la variable de entorno
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://chatysp.onrender.com/api';
 
 // Debug: Mostrar la URL que se está usando
 console.log('🔧 API Configuration:', {
@@ -10,11 +11,6 @@ console.log('🔧 API Configuration:', {
   DEV: import.meta.env.DEV,
   PROD: import.meta.env.PROD,
 });
-
-if (!API_BASE_URL) {
-  console.error('❌ VITE_API_URL is not set!');
-  throw new Error('VITE_API_URL environment variable is not set');
-}
 
 // Crear instancia de axios con configuración base
 const api = axios.create({

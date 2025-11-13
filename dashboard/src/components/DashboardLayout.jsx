@@ -16,6 +16,7 @@ const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(true);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,19 +25,40 @@ const DashboardLayout = () => {
   const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // Verificar autenticación al cargar
+  // Verificar autenticación al cargar (solo una vez)
   useEffect(() => {
-    if (isAuthenticated && !user) {
-      dispatch(verifyToken());
-    }
-  }, [dispatch, isAuthenticated, user]);
+    const verifyAuth = async () => {
+      const token = localStorage.getItem('admin_token');
+      
+      if (!token) {
+        // No hay token, redirigir a login
+        setIsVerifying(false);
+        navigate('/login');
+        return;
+      }
 
-  // Redireccionar si no está autenticado
+      if (!user) {
+        // Hay token pero no hay usuario, verificar
+        try {
+          await dispatch(verifyToken()).unwrap();
+        } catch (error) {
+          console.error('Error verificando token:', error);
+          navigate('/login');
+        }
+      }
+      
+      setIsVerifying(false);
+    };
+
+    verifyAuth();
+  }, []); // Solo ejecutar una vez al montar
+
+  // Redireccionar si no está autenticado (después de verificar)
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isVerifying && !isAuthenticated) {
       navigate('/login');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, isVerifying]);
 
   // Detectar tamaño de pantalla
   useEffect(() => {
@@ -77,10 +99,13 @@ const DashboardLayout = () => {
     }
   };
 
-  if (!isAuthenticated || !user) {
+  if (isVerifying || (!isAuthenticated || !user)) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verificando autenticación...</p>
+        </div>
       </div>
     );
   }
