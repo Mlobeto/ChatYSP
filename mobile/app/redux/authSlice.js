@@ -127,6 +127,31 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const changePassword = createAsyncThunk(
+  'auth/changePassword',
+  async ({ currentPassword, newPassword }, { rejectWithValue, getState }) => {
+    try {
+      const response = await authAPI.changePassword({
+        currentPassword,
+        newPassword,
+      });
+      
+      const { user, message } = response.data;
+      
+      // Actualizar usuario en AsyncStorage si vino actualizado
+      if (user) {
+        await AsyncStorage.setItem('userData', JSON.stringify(user));
+        return { user, message };
+      }
+      
+      return { message };
+    } catch (error) {
+      const message = error.response?.data?.message || 'Error al cambiar contraseña';
+      return rejectWithValue(message);
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   'auth/logoutUser',
   async (_, { dispatch }) => {
@@ -227,6 +252,23 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(updateProfile.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      
+      // Cambiar contraseña
+      .addCase(changePassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(changePassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        if (action.payload.user) {
+          state.user = action.payload.user;
+        }
+        state.error = null;
+      })
+      .addCase(changePassword.rejected, (state, action) => {
+        state.isLoading = false;
         state.error = action.payload;
       })
       

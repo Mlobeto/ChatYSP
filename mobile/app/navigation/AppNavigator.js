@@ -7,13 +7,16 @@ import { Ionicons } from '@expo/vector-icons';
 // Screens
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import HomeScreen from '../screens/HomeScreen';
 import ChatScreen from '../screens/ChatScreen';
 import RoomsScreen from '../screens/RoomsScreen';
+import GameRoomsScreen from '../screens/GameRoomsScreen';
 import GameScreen from '../screens/GameScreen';
 import MiniGameScreen from '../screens/MiniGameScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import TipsScreen from '../screens/TipsScreen';
 import LoadingScreen from '../screens/LoadingScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 
 // Redux
 import { loadStoredAuth, selectIsAuthenticated, selectIsLoading } from '../redux/authSlice';
@@ -33,6 +36,7 @@ function AuthNavigator() {
     >
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
     </Stack.Navigator>
   );
 }
@@ -72,96 +76,24 @@ function GamesNavigator() {
   );
 }
 
-// Navegación principal con tabs (para usuarios autenticados)
-function MainTabNavigator() {
+// Navegación principal (para usuarios autenticados)
+function MainNavigator() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === 'Chat') {
-            iconName = focused ? 'chatbubbles' : 'chatbubbles-outline';
-          } else if (route.name === 'Salas') {
-            iconName = focused ? 'people' : 'people-outline';
-          } else if (route.name === 'Juegos') {
-            iconName = focused ? 'game-controller' : 'game-controller-outline';
-          } else if (route.name === 'Tips') {
-            iconName = focused ? 'bulb' : 'bulb-outline';
-          } else if (route.name === 'Perfil') {
-            iconName = focused ? 'person' : 'person-outline';
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#0ea5e9',
-        tabBarInactiveTintColor: '#6b7280',
-        tabBarStyle: {
-          backgroundColor: '#ffffff',
-          borderTopWidth: 1,
-          borderTopColor: '#e5e7eb',
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
-        },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
-        },
-        headerStyle: {
-          backgroundColor: '#ffffff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#e5e7eb',
-        },
-        headerTitleStyle: {
-          fontSize: 18,
-          fontWeight: '600',
-          color: '#1f2937',
-        },
-        headerTintColor: '#1f2937',
-      })}
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        gestureEnabled: true,
+      }}
     >
-      <Tab.Screen 
-        name="Chat" 
-        component={ChatScreen} 
-        options={{
-          title: 'Coach IA',
-          headerTitle: 'Conversación con el Coach'
-        }}
-      />
-      <Tab.Screen 
-        name="Salas" 
-        component={RoomsScreen} 
-        options={{
-          title: 'Salas',
-          headerTitle: 'Salas por País'
-        }}
-      />
-      <Tab.Screen 
-        name="Juegos" 
-        component={GamesNavigator} 
-        options={{
-          title: 'Juegos',
-          headerShown: false
-        }}
-      />
-      <Tab.Screen 
-        name="Tips" 
-        component={TipsScreen} 
-        options={{
-          title: 'Tips',
-          headerTitle: 'Tips y Videos'
-        }}
-      />
-      <Tab.Screen 
-        name="Perfil" 
-        component={ProfileScreen} 
-        options={{
-          title: 'Perfil',
-          headerTitle: 'Mi Perfil'
-        }}
-      />
-    </Tab.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="ChatRooms" component={RoomsScreen} />
+      <Stack.Screen name="GameRooms" component={GameRoomsScreen} />
+      <Stack.Screen name="GameMenu" component={GamesNavigator} />
+      <Stack.Screen name="Perfil" component={ProfileScreen} />
+      <Stack.Screen name="Tips" component={TipsScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+    </Stack.Navigator>
   );
 }
 
@@ -229,7 +161,7 @@ export default function AppNavigator() {
     >
       {isAuthenticated ? (
         // Usuario autenticado - mostrar app principal
-        <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+        <Stack.Screen name="Main" component={MainNavigator} />
       ) : (
         // Usuario no autenticado - mostrar pantallas de login
         <Stack.Screen name="Auth" component={AuthNavigator} />
