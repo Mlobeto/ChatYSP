@@ -40,21 +40,29 @@ class DailyTipController {
 
   getTodayTip = async (req, res) => {
     try {
+      console.log('📝 GET TODAY TIP - Request received:', {
+        user: req.user?.email || 'NO USER',
+        role: req.user?.role || 'NO ROLE',
+        timestamp: new Date().toISOString(),
+      });
+      
       const tip = await this.dailyTipService.getTodayTip();
 
       if (!tip) {
+        console.log('⚠️ No hay tip para hoy');
         return res.status(404).json({
           success: false,
           message: 'No hay tip generado para hoy',
         });
       }
 
+      console.log('✅ Tip encontrado:', tip.generatedTitle);
       res.json({
         success: true,
         data: tip,
       });
     } catch (error) {
-      console.error('Error en getTodayTip:', error);
+      console.error('❌ Error en getTodayTip:', error);
       res.status(500).json({
         success: false,
         message: 'Error interno del servidor',

@@ -309,8 +309,7 @@ _Fede - Tu Coach de Rupturas_
 
     footerText += `
 
-💪 ¿Te sirvió este tip?
-📱 Compartilo con quien lo necesite`;
+💪 ¿Hace sentido?`;
 
     return header + formatted + footerText;
   }
@@ -361,25 +360,42 @@ _Fede - Tu Coach de Rupturas_
 
     footerText += `
 
-💪 ¿Te sirvió este tip?
-📱 Compartilo con quien lo necesite`;
+💪 ¿Hace sentido?`;
 
     return header + formatted + footerText;
   }
 
   async generateTitle(content) {
-    const prompt = `Título corto e impactante (máximo 60 caracteres) para este tip:\n\n${content.substring(0, 300)}`;
+    const prompt = `Genera un título corto e impactante (máximo 60 caracteres) para este tip de coaching.
+
+IMPORTANTE: Devuelve SOLO el título, sin la palabra "Título:", sin comillas, sin puntos finales.
+
+CONTENIDO DEL TIP:
+${content.substring(0, 300)}
+
+Devuelve únicamente el título:`;
 
     const completion = await this.openai.chat.completions.create({
       model: 'gpt-4o-mini',
       max_tokens: 50,
+      temperature: 0.7,
       messages: [
-        { role: 'system', content: 'Crea títulos impactantes para tips de coaching.' },
+        { role: 'system', content: 'Crea títulos impactantes para tips de coaching. Devuelve SOLO el título, sin prefijos.' },
         { role: 'user', content: prompt },
       ],
     });
 
-    return completion.choices[0]?.message?.content?.trim() || 'Tip del Día';
+    let title = completion.choices[0]?.message?.content?.trim() || 'Tip del Día';
+    
+    // Limpiar prefijos comunes que el modelo pueda agregar
+    title = title
+      .replace(/^Título:\s*/i, '')
+      .replace(/^Title:\s*/i, '')
+      .replace(/^["']|["']$/g, '') // Quitar comillas
+      .replace(/\.$/g, '') // Quitar punto final
+      .trim();
+    
+    return title;
   }
 }
 

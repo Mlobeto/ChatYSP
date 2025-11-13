@@ -26,14 +26,13 @@ const GameRoomsPage = () => {
   const [newGameRoom, setNewGameRoom] = useState({
     name: '',
     description: '',
+    gameType: 'quiz',
     category: 'bienestar',
     difficulty: 'medium',
     maxPlayers: 6,
-    questionCount: 5,
+    questionCount: 10,
     timePerQuestion: 30000,
     isPrivate: false,
-    allowChat: false,
-    isGlobal: true,
   });
 
   useEffect(() => {
@@ -47,17 +46,17 @@ const GameRoomsPage = () => {
       setNewGameRoom({
         name: '',
         description: '',
+        gameType: 'quiz',
         category: 'bienestar',
         difficulty: 'medium',
         maxPlayers: 6,
-        questionCount: 5,
+        questionCount: 10,
         timePerQuestion: 30000,
         isPrivate: false,
-        allowChat: false,
-        isGlobal: true,
       });
     } catch (error) {
       console.error('Error creando GameRoom:', error);
+      alert(`Error: ${error}`);
     }
   };
 
@@ -323,6 +322,19 @@ const GameRoomsPage = () => {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Juego</label>
+                  <select
+                    value={newGameRoom.gameType}
+                    onChange={(e) => setNewGameRoom({ ...newGameRoom, gameType: e.target.value })}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  >
+                    <option value="quiz">📝 Quiz</option>
+                    <option value="trivia">🎯 Trivia</option>
+                    <option value="challenge">🏆 Desafío</option>
+                  </select>
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Categoría</label>
                   <select
                     value={newGameRoom.category}
@@ -333,7 +345,9 @@ const GameRoomsPage = () => {
                     <option value="coaching">🌱 Coaching</option>
                   </select>
                 </div>
-                
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Dificultad</label>
                   <select
@@ -345,6 +359,18 @@ const GameRoomsPage = () => {
                     <option value="medium">Medio</option>
                     <option value="hard">Difícil</option>
                   </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Max. Jugadores</label>
+                  <input
+                    type="number"
+                    min="2"
+                    max="20"
+                    value={newGameRoom.maxPlayers}
+                    onChange={(e) => setNewGameRoom({ ...newGameRoom, maxPlayers: parseInt(e.target.value) })}
+                    className="w-full border border-gray-300 rounded px-3 py-2"
+                  />
                 </div>
               </div>
               

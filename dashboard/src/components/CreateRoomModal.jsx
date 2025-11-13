@@ -40,7 +40,40 @@ const CreateRoomModal = ({
     setLoading(true);
 
     try {
-      await onSubmit(formData);
+      // Filtrar campos según el tipo de sala
+      let dataToSubmit;
+      
+      if (roomType === 'chat') {
+        // Campos para Room (chat rooms)
+        dataToSubmit = {
+          name: formData.name,
+          description: formData.description,
+          roomType: formData.roomType,
+          maxUsers: parseInt(formData.maxUsers),
+          isPrivate: formData.isPrivate,
+          country: formData.country,
+        };
+        // Solo incluir password si la sala es privada
+        if (formData.isPrivate && formData.password) {
+          dataToSubmit.password = formData.password;
+        }
+      } else {
+        // Campos para GameRoom
+        dataToSubmit = {
+          name: formData.name,
+          description: formData.description,
+          gameType: formData.gameType,
+          category: formData.category,
+          difficulty: formData.difficulty,
+          maxPlayers: parseInt(formData.maxUsers), // Renombrar a maxPlayers
+          questionCount: parseInt(formData.questionCount),
+          timePerQuestion: parseInt(formData.timePerQuestion),
+          isPrivate: formData.isPrivate,
+          allowChat: formData.allowChat,
+        };
+      }
+
+      await onSubmit(dataToSubmit);
       onClose();
       // Reset form
       setFormData({
@@ -60,6 +93,7 @@ const CreateRoomModal = ({
       });
     } catch (error) {
       console.error('Error submitting room:', error);
+      alert(`Error: ${error.response?.data?.message || error.message || 'Error desconocido'}`);
     } finally {
       setLoading(false);
     }

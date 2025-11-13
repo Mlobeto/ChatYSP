@@ -35,6 +35,7 @@ const DailyTipsPage = () => {
   const [success, setSuccess] = useState(null);
   const [activeTab, setActiveTab] = useState('today'); // today, history, stats, upload
   const [uploadProgress, setUploadProgress] = useState(null);
+  const [uploadResults, setUploadResults] = useState(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -45,14 +46,28 @@ const DailyTipsPage = () => {
     setLoading(true);
     try {
       const [tipData, historyData, statsData, healthData] = await Promise.all([
-        getTodayTip().catch(() => null),
-        getTipsHistory(30).catch(() => []),
-        getTipsStats().catch(() => null),
-        checkDailyTipsHealth().catch(() => null),
+        getTodayTip().catch((e) => {
+          console.error('Error loading today tip:', e);
+          return null;
+        }),
+        getTipsHistory(30).catch((e) => {
+          console.error('Error loading history:', e);
+          return [];
+        }),
+        getTipsStats().catch((e) => {
+          console.error('Error loading stats:', e);
+          return null;
+        }),
+        checkDailyTipsHealth().catch((e) => {
+          console.error('Error loading health:', e);
+          return null;
+        }),
       ]);
       
+      console.log('History data received:', historyData);
+      
       setTodayTip(tipData?.data || tipData);
-      setHistory(historyData?.data || historyData);
+      setHistory(historyData?.data || historyData || []);
       setStats(statsData?.data || statsData);
       setHealth(healthData?.data || healthData);
     } catch {
@@ -150,6 +165,9 @@ const DailyTipsPage = () => {
         errors: result.data.errors
       });
 
+      // Guardar resultados detallados
+      setUploadResults(result.data.results || []);
+
       setSuccess(
         `✅ Carga completada: ${result.data.inserted} tips creados, ${result.data.skipped} omitidos, ${result.data.errors} errores`
       );
@@ -159,6 +177,7 @@ const DailyTipsPage = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Error al cargar los archivos');
       setUploadProgress(null);
+      setUploadResults(null);
     } finally {
       setLoading(false);
       // Limpiar el input
@@ -535,6 +554,45 @@ const DailyTipsPage = () => {
               </div>
             )}
 
+            {/* Upload Results Details */}
+            {uploadResults && uploadResults.length > 0 && (
+              <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 max-h-96 overflow-y-auto">
+                <h3 className="font-semibold text-gray-700 mb-3">Detalles de procesamiento:</h3>
+                <div className="space-y-2">
+                  {uploadResults.map((result, index) => (
+                    <div key={index} className={`p-3 rounded-lg border ${
+                      result.status === 'success' ? 'bg-green-50 border-green-200' :
+                      result.status === 'skipped' ? 'bg-yellow-50 border-yellow-200' :
+                      'bg-red-50 border-red-200'
+                    }`}>
+                      <div className="flex items-start gap-3">
+                        {result.status === 'success' && <FaCheckCircle className="text-green-500 mt-1 flex-shrink-0" />}
+                        {result.status === 'skipped' && <FaExclamationCircle className="text-yellow-500 mt-1 flex-shrink-0" />}
+                        {result.status === 'error' && <FaExclamationCircle className="text-red-500 mt-1 flex-shrink-0" />}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-gray-900 truncate">{result.file}</p>
+                          {result.status === 'success' && result.title && (
+                            <p className="text-sm text-gray-600 mt-1">✓ Creado: &quot;{result.title}&quot;</p>
+                          )}
+                          {result.status === 'skipped' && result.reason && (
+                            <p className="text-sm text-yellow-700 mt-1">⏭ {result.reason}</p>
+                          )}
+                          {result.status === 'error' && result.error && (
+                            <p className="text-sm text-red-700 mt-1">✗ {result.error}</p>
+                          )}
+                          {result.status === 'error' && result.errors && result.errors.length > 0 && (
+                            <ul className="text-sm text-red-700 mt-1 list-disc list-inside">
+                              {result.errors.map((err, i) => <li key={i}>{err}</li>)}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Instructions */}
             {!uploadProgress && (
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
@@ -550,61 +608,82 @@ const DailyTipsPage = () => {
       {/* History Tab */}
       {activeTab === 'history' && (
         <div>
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Fecha
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Título
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    WhatsApp
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Telegram
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {history.map((tip) => (
-                  <tr key={tip.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDate(tip.date)}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {tip.title}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {tip.sentToWhatsApp ? (
-                        <span className="flex items-center gap-1 text-green-600">
-                          <FaCheckCircle /> {formatTime(tip.whatsappSentAt)}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">No enviado</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {tip.sentToTelegram ? (
-                        <span className="flex items-center gap-1 text-blue-600">
-                          <FaCheckCircle /> {formatTime(tip.telegramSentAt)}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">No enviado</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {history.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                No hay historial de tips
+          {loading ? (
+            <div className="bg-white rounded-lg shadow-md p-12 text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+              <p className="text-gray-500">Cargando historial...</p>
+            </div>
+          ) : history && history.length > 0 ? (
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800">
+                  Historial de Tips Diarios ({history.length})
+                </h3>
               </div>
-            )}
-          </div>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fecha
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Título
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Categoría
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Estado
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {history.map((tip) => (
+                      <tr key={tip.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {formatDate(tip.date)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-900">
+                          {tip.generatedTitle || tip.title || 'Sin título'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                            {tip.category || 'general'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {tip.sentToWhatsApp ? (
+                            <span className="flex items-center gap-1 text-green-600">
+                              <FaCheckCircle /> Enviado
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">Pendiente</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-md p-12 text-center">
+              <FaHistory className="text-6xl text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                No hay historial de tips
+              </h3>
+              <p className="text-gray-500 mb-4">
+                Genera tu primer tip diario para comenzar a ver el historial aquí
+              </p>
+              <button
+                onClick={() => setActiveTab('today')}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Ir a generar tip
+              </button>
+            </div>
+          )}
         </div>
       )}
 

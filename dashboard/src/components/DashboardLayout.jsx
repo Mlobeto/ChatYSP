@@ -99,7 +99,8 @@ const DashboardLayout = () => {
     }
   };
 
-  if (isVerifying || (!isAuthenticated || !user)) {
+  // Mostrar loading solo mientras verifica
+  if (isVerifying) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">

@@ -141,7 +141,7 @@ export const roomsApi = {
 
   // Crear nueva sala
   create: async (roomData) => {
-    const response = await api.post('/rooms', roomData);
+    const response = await api.post('/admin/rooms', roomData);
     return response.data;
   },
 

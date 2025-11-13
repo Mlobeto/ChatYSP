@@ -1,9 +1,25 @@
 const axios = require('axios');
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = process.env.API_URL || 'https://chatysp.onrender.com/api';
 
-// Token - reemplaza con uno válido
-const ADMIN_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI0ZWQ2NjJhYi03YTcxLTRlNmYtYWRhYi1hNWM4NzNlMWQ1NDgiLCJpYXQiOjE3NjIwNDk1OTgsImV4cCI6MTc2MjY1NDM5OH0.N7pA_H5LxH9zviredf2TiJmu9DHHwJGBhuRC6EVjzdE';
+// Credenciales de admin
+const ADMIN_CREDENTIALS = {
+  email: 'admin@chatysp.com',
+  password: 'AdminPassword123!'
+};
+
+// Login function
+async function login() {
+  console.log('🔐 Obteniendo token de administrador...');
+  try {
+    const response = await axios.post(`${API_BASE}/auth/login`, ADMIN_CREDENTIALS);
+    console.log('✅ Login exitoso\n');
+    return response.data.token;
+  } catch (error) {
+    console.error('❌ Error en login:', error.response?.data || error.message);
+    throw error;
+  }
+}
 
 const additionalBienestarQuestions = [
   {
@@ -94,6 +110,9 @@ const additionalBienestarQuestions = [
 
 async function createAdditionalQuestions() {
   console.log('🎯 Creando preguntas adicionales de bienestar...\n');
+
+  // Obtener token de admin
+  const ADMIN_TOKEN = await login();
 
   let success = 0;
   let errors = 0;
