@@ -46,7 +46,8 @@ const DailyTipsPage = () => {
   const loadInitialData = async () => {
     setLoading(true);
     try {
-      const [tipData, historyData, statsData, healthData] = await Promise.all([
+      // Solo cargar datos esenciales, no el health check
+      const [tipData, historyData, statsData] = await Promise.all([
         getTodayTip().catch((e) => {
           console.error('Error loading today tip:', e);
           return null;
@@ -59,10 +60,6 @@ const DailyTipsPage = () => {
           console.error('Error loading stats:', e);
           return null;
         }),
-        checkDailyTipsHealth().catch((e) => {
-          console.error('Error loading health:', e);
-          return null;
-        }),
       ]);
       
       console.log('History data received:', historyData);
@@ -70,7 +67,11 @@ const DailyTipsPage = () => {
       setTodayTip(tipData?.data || tipData);
       setHistory(historyData?.data || historyData || []);
       setStats(statsData?.data || statsData);
-      setHealth(healthData?.data || healthData);
+      
+      // Cargar health en segundo plano sin bloquear
+      checkDailyTipsHealth()
+        .then(healthData => setHealth(healthData?.data || healthData))
+        .catch((e) => console.error('Error loading health:', e));
     } catch {
       setError('Error al cargar los datos');
     } finally {
