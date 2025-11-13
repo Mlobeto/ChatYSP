@@ -238,9 +238,11 @@ export const locationAPI = {
 // Inicialización de la app
 export const initializeApp = async () => {
   try {
-    // Verificar conectividad
-    const healthCheck = await apiClient.get('/health');
-    console.log('✅ Conexión con backend establecida');
+    // Verificar conectividad - usar URL completa sin /api
+    const healthCheck = await axios.get(`${API_BASE_URL.replace('/api', '')}/health`, {
+      timeout: 10000,
+    });
+    console.log('✅ Conexión con backend establecida:', healthCheck.data);
     
     return true;
   } catch (error) {
