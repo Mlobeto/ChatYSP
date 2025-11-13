@@ -63,6 +63,13 @@ router.post('/chat', fedeController.sendMessage);
 router.get('/history', fedeController.getHistory);
 
 /**
+ * @route DELETE /api/fede/history
+ * @description Limpiar historial de conversaciones
+ * @access Private
+ */
+router.delete('/history', fedeController.clearHistory);
+
+/**
  * @route POST /api/fede/rate/:conversationId
  * @description Calificar una respuesta de Fede
  * @access Private

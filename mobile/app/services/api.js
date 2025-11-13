@@ -106,10 +106,12 @@ export const aiAPI = {
     }),
   
   getConversationHistory: (userId) => 
-    apiClient.get(`/fede/conversation/${userId}`),
+    apiClient.get('/fede/history', {
+      params: { limit: 50 }
+    }),
   
   clearConversation: (userId) => 
-    apiClient.delete(`/fede/conversation/${userId}`),
+    apiClient.delete('/fede/history'),
   
   getCoachingTips: (params = {}) => 
     apiClient.get('/ai/tips', { params }),

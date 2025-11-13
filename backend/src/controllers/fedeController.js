@@ -180,6 +180,37 @@ class FedeController {
   }
 
   /**
+   * Limpiar historial de conversaciones del usuario
+   */
+  async clearHistory(req, res) {
+    try {
+      const userId = req.user.id;
+      const { sessionId } = req.query;
+
+      let whereClause = { userId };
+      if (sessionId) {
+        whereClause.sessionId = sessionId;
+      }
+
+      const deletedCount = await FedeConversation.destroy({
+        where: whereClause,
+      });
+
+      res.json({
+        success: true,
+        message: `Se eliminaron ${deletedCount} conversaciones`,
+        deletedCount,
+      });
+    } catch (error) {
+      console.error('Error limpiando historial:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error limpiando historial de conversaciones',
+      });
+    }
+  }
+
+  /**
    * Calificar una respuesta de Fede
    */
   async rateResponse(req, res) {
