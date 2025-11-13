@@ -5,6 +5,7 @@ import {
   FaPaperPlane, 
   FaRobot,
   FaCalendarAlt,
+  FaCalendar,
   FaChartLine,
   FaClock,
   FaCheckCircle,
@@ -620,39 +621,23 @@ const DailyTipsPage = () => {
                   Historial de Tips Diarios ({history.length})
                 </h3>
               </div>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Fecha
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Título
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Categoría
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Estado
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {history.map((tip) => (
-                      <tr key={tip.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {formatDate(tip.date)}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900">
+              <div className="space-y-4">
+                {history.map((tip) => (
+                  <div key={tip.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
                           {tip.generatedTitle || tip.title || 'Sin título'}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-gray-600">
+                          <span className="flex items-center gap-1">
+                            <FaCalendar className="text-gray-400" />
+                            {formatDate(tip.date)}
+                          </span>
                           <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                             {tip.category || 'general'}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {tip.sentToWhatsApp ? (
                             <span className="flex items-center gap-1 text-green-600">
                               <FaCheckCircle /> Enviado
@@ -660,11 +645,21 @@ const DailyTipsPage = () => {
                           ) : (
                             <span className="text-gray-400">Pendiente</span>
                           )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    {tip.generatedContent && (
+                      <div className="mt-3 p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                          {tip.generatedContent.substring(0, 300)}
+                          {tip.generatedContent.length > 300 && '...'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           ) : (
