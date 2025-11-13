@@ -3,7 +3,9 @@ import { View, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ChatBubble({ message, isLastMessage = false }) {
-  const isUser = message.isUser;
+  // Soportar tanto el formato viejo como el nuevo
+  const isUser = message.isUser ?? (message.type === 'user');
+  const messageText = message.text ?? message.content ?? '';
   const timestamp = new Date(message.timestamp).toLocaleTimeString('es-ES', {
     hour: '2-digit',
     minute: '2-digit',
@@ -36,7 +38,7 @@ export default function ChatBubble({ message, isLastMessage = false }) {
                 isUser ? 'text-white' : 'text-gray-900'
               }`}
             >
-              {message.text}
+              {messageText}
             </Text>
           </View>
 
