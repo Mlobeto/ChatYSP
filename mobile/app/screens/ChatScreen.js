@@ -8,6 +8,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Keyboard,
+  Animated,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -31,7 +33,33 @@ export default function ChatScreen() {
 
   const [inputText, setInputText] = useState('');
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const flatListRef = useRef(null);
+
+  useEffect(() => {
+    // Detectar cuando el teclado se abre/cierra
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+        // Scroll al final cuando aparece el teclado
+        setTimeout(() => {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   useEffect(() => {
     // Cargar historial de conversación al montar el componente
@@ -112,13 +140,16 @@ export default function ChatScreen() {
     if (!isTyping) return null;
 
     return (
-      <View className="flex-row items-center px-4 py-2">
-        <View className="bg-gray-200 rounded-full px-4 py-3 ml-2">
-          <View className="flex-row items-center space-x-1">
-            <View className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" />
-            <View className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}} />
-            <View className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}} />
+      <View className="px-4 py-2 mb-2">
+        <View className="flex-row items-center">
+          <View className="bg-gray-200 rounded-2xl px-4 py-3">
+            <View className="flex-row items-center space-x-1">
+              <View className="w-2 h-2 bg-gray-500 rounded-full" />
+              <View className="w-2 h-2 bg-gray-500 rounded-full mx-1" />
+              <View className="w-2 h-2 bg-gray-500 rounded-full" />
+            </View>
           </View>
+          <Text className="text-gray-500 text-xs ml-2">Fede está escribiendo...</Text>
         </View>
       </View>
     );
@@ -127,8 +158,8 @@ export default function ChatScreen() {
   return (
     <KeyboardAvoidingView 
       className="flex-1 bg-white"
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
     >
       {/* Header */}
       <View className="bg-primary-500 pt-12 pb-4 px-4">
@@ -158,30 +189,55 @@ export default function ChatScreen() {
             data={messages}
             renderItem={renderMessage}
             keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={{ paddingVertical: 16 }}
+            contentContainerStyle={{ 
+              paddingVertical: 16,
+              paddingBottom: isTyping ? 8 : 16
+            }}
             showsVerticalScrollIndicator={false}
             onContentSizeChange={() => {
-              flatListRef.current?.scrollToEnd({ animated: true });
+              setTimeout(() => {
+                flatListRef.current?.scrollToEnd({ animated: true });
+              }, 100);
             }}
             ListFooterComponent={renderTypingIndicator}
+            maintainVisibleContentPosition={{
+              minIndexForVisible: 0,
+            }}
           />
         )}
       </View>
 
       {/* Input */}
-      <View className="bg-white border-t border-gray-200 px-4 py-3 pb-8">
-        <View className="flex-row items-end space-x-3">
-          <View className="flex-1 bg-gray-100 rounded-full px-4 py-3 flex-row items-center">
+      <View 
+        className="bg-white border-t border-gray-200 px-4 py-3"
+        style={{ 
+          paddingBottom: Platform.OS === 'ios' ? 20 : 12
+        }}
+      >
+        <View className="flex-row items-end space-x-2">
+          <View className="flex-1 bg-gray-100 rounded-3xl px-4 py-2 max-h-24">
             <TextInput
-              className="flex-1 text-gray-900 max-h-20"
+              className="text-gray-900 text-base"
               placeholder="Escribe tu mensaje..."
+              placeholderTextColor="#9ca3af"
               value={inputText}
               onChangeText={setInputText}
               multiline
               textAlignVertical="center"
-              onFocus={() => setIsInputFocused(true)}
+              onFocus={() => {
+                setIsInputFocused(true);
+                // Scroll al final cuando el usuario empieza a escribir
+                setTimeout(() => {
+                  flatListRef.current?.scrollToEnd({ animated: true });
+                }, 300);
+              }}
               onBlur={() => setIsInputFocused(false)}
               maxLength={1000}
+              style={{ 
+                minHeight: 40,
+                paddingTop: Platform.OS === 'ios' ? 10 : 8,
+                paddingBottom: Platform.OS === 'ios' ? 10 : 8,
+              }}
             />
           </View>
           
@@ -191,6 +247,7 @@ export default function ChatScreen() {
             }`}
             onPress={handleSendMessage}
             disabled={!inputText.trim() || isLoading}
+            activeOpacity={0.7}
           >
             <Ionicons 
               name="send" 
