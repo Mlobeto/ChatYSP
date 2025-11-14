@@ -37,10 +37,11 @@ TONO:
 - Motivador y orientado a la acción
 - Auténtico y humano`;
 
-    // Configuraciones del modelo (usando GPT-5 nano - más económico)
+    // Configuraciones del modelo (usando GPT-4o-mini - económico y rápido)
     this.modelConfig = {
-      model: 'gpt-5-nano', // Modelo más económico y rápido de GPT-5
-      max_completion_tokens: 500,
+      model: 'gpt-4o-mini', // Modelo económico y confiable
+      max_tokens: 500,
+      temperature: 0.7,
     };
   }
 
