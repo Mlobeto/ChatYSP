@@ -20,7 +20,7 @@ class AIKnowledgeService {
         return this.knowledgeData;
       }
 
-      const knowledgePath = path.join(__dirname, '../../data/coach_knowledge.json');
+      const knowledgePath = path.join(__dirname, '../../data/fede_complete_knowledge.json');
       const fileContent = await fs.readFile(knowledgePath, 'utf8');
       this.knowledgeData = JSON.parse(fileContent);
       this.lastLoadTime = now;

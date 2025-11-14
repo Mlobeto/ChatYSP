@@ -61,193 +61,488 @@
       {
         "step": 1,
         "concept": "Contacto Cero",
-        "description": "No contactar, desapego inicial",
-        "psychological_goal": "Recuperar control mental y emocional",
-        "ai_tone": "Sereno, firme, empático",
-        "key_phrase": "Vamos a empezar por cuidarte vos",
-        "key_advice": [
-          "No la contactes por ningún medio: WhatsApp, Instagram, llamadas, nada",
-          "Cada recaída reinicia el proceso desde cero",
-          "Tu objetivo es recuperar tu centro, no su atención",
-          "Bloqueá o silenciá sus redes sociales temporalmente",
-          "Si te contacta ella, respondé cordial pero distante"
+        "description": "Actitud de Indiferencia - Como un León relajado",
+        "psychological_goal": "Dominar tu mente y recuperar control emocional",
+        "ai_tone": "Firme, empático, directo",
+        "key_phrase": "El que primero escribe PIERDE. Es un juego, tomalo así",
+        "reglas_fundamentales": [
+          "NO la llamarás, ni le escribirás, ni le darás Likes - NADA",
+          "Hasta que tu ex se contacte primero",
+          "Si trabajás con tu ex, tratala indiferente como a un amig@",
+          "Cada vez que te equivoques, VUELVE A EMPEZAR AQUÍ",
+          "No la bloquees de Face ni WhatsApp - un León no se inquieta",
+          "No debe afectarte lo que ella haga en redes",
+          "NO espíes ni mires sus Estados"
         ],
+        "mentalidad_leon": [
+          "Un León no se inquieta por fotos ni Estados raros de ella",
+          "Si te ves tentado: ducha fría, apaga el celular, mira una película, sal a correr",
+          "Borra su contacto si es necesario",
+          "El contacto directo con una ex que no da muestras de interés NO funciona"
+        ],
+        "peliculas_recomendadas": [
+          "Hitch",
+          "Estúpido y Loco Amor",
+          "Sí Señor"
+        ],
+        "autoafirmacion": "Sino es que aún no te crees que TÚ ERES EL PREMIO y La Persona Más Importante del Mundo",
+        "mayor_desafio": "Dominar tu mente",
+        "si_caes": "Aprende y vuelve a empezar de cero desde aquí",
+        "duration": "30-90 días mínimo",
         "common_mistakes": [
-          "Mandar mensajes 'casuales'",
-          "Stalking en redes sociales",
+          "Escribir 'casual' o 'solo para saludar'",
+          "Espiar redes sociales compulsivamente",
+          "Dar likes a sus publicaciones",
           "Usar amigos como intermediarios"
-        ],
-        "duration": "Mínimo 30 días, idealmente 60-90 días"
+        ]
       },
       {
         "step": 2,
         "concept": "Redes Sociales",
-        "description": "Reforzar autoestima y apariencia online",
-        "psychological_goal": "Mostrar evolución, no dependencia",
-        "ai_tone": "Motivador, visual",
-        "key_phrase": "Cambiá tu foto, mostráte con amigos",
-        "key_advice": [
-          "Cambia tu foto de perfil: sonriendo, al aire libre, con buena luz",
-          "Publica contenido con amigos, actividades, experiencias nuevas",
-          "No publiques indirectas, canciones tristes o frases sobre amor",
-          "Sé consistente pero no obsesivo con las publicaciones",
-          "Interactuá con otros perfiles, especialmente del sexo opuesto"
+        "description": "Comunicar Vida Social Activa y rasgos Alfa",
+        "psychological_goal": "Subcomunicar evolución, sociabilidad y abundancia",
+        "ai_tone": "Motivador, práctico, visual",
+        "key_phrase": "A partir de hoy eres una 'Persona Facebook'",
+        "whatsapp_strategy": [
+          "Cambia tu foto de perfil YA, sin excusas",
+          "Tu rostro, selfie, sonriendo, de día, al aire libre, mira a cámara",
+          "Cámbiala cada 4-5 días",
+          "Actualiza tu Estado con una frase por y para ti",
+          "Ejemplos: 'La vida es una fiesta', 'Soy el capitán de mi alma'",
+          "NO la bloquees - significaría que te afecta",
+          "Si ya la bloqueaste, desbloquéala en 7 días"
         ],
-        "what_to_post": [
-          "Actividades deportivas o gimnasio",
-          "Salidas con amigos",
-          "Nuevos hobbies o intereses",
-          "Viajes o experiencias"
+        "facebook_strategy": [
+          "Cambia tu foto de perfil (igual que WhatsApp)",
+          "Como portada pon una foto grupal con amigos o similar",
+          "Ve posteando salidas y fotos grupales: amigos, compañeros, gym, cumpleaños",
+          "Estarás comunicando Vida Social Activa (Paso 4) y rasgos Alfa (sociable, abundante)"
         ],
-        "what_not_to_post": [
-          "Indirectas o frases sobre el desamor",
-          "Fotos solo en casa",
-          "Contenido que muestre tristeza o nostalgia"
-        ]
+        "que_publicar": [
+          "Fotos CON GENTE - amigos, compañeros",
+          "Actividades deportivas o gym con amigos",
+          "Salidas sociales, cumpleaños, eventos",
+          "Tu gato PERO con tu amigo",
+          "Lo que cocinaste PERO con un amigo al lado"
+        ],
+        "que_NO_publicar": [
+          "Canciones tristes o románticas",
+          "Solo tu gato o mascota",
+          "Videos clips sin contexto social",
+          "Lo que cocinaste solo",
+          "Indirectas o frases sobre desamor"
+        ],
+        "mentalidad": "No importa si tu ex te bloqueó: te espiará desde otros lados. Además, no lo haces solo por tu ex. Lo haces por TI, para compartirte y darte a los demás, a tu entorno",
+        "accion_inmediata": "Toma acción YA. No esperes comprender todo para actuar... actúa y comprenderás!"
       },
       {
         "step": 3,
         "concept": "Vestuario y Look",
-        "description": "Cambio físico y simbólico",
-        "psychological_goal": "Renovar autoimagen y energía",
-        "ai_tone": "Positivo, práctico",
-        "key_phrase": "Comprate algo nuevo, te va a subir el ánimo",
-        "key_advice": [
-          "Renová tu guardarropa: comprá al menos 3 prendas nuevas",
-          "Cambiate el corte de pelo o dejátelo crecer si lo tenías corto",
-          "Cuidá tu higiene personal: perfume, uñas, dientes",
-          "Invertí en ropa que te haga sentir seguro y atractivo",
-          "Considerá cambios más drásticos: barba, anteojos, estilo"
+        "description": "Cambio físico visible - Look nuevo que tu ex no conocía",
+        "psychological_goal": "Renovar autoimagen, generar intriga, cimentar autoestima",
+        "ai_tone": "Positivo, práctico, específico",
+        "key_phrase": "Look y ropas que tu ex NO conocía en ti - La intrigará muchísimo",
+        "cambios_cabello": [
+          "Ve a la Peluquería y córtate el cabello",
+          "Algo MODERNO - que se note el cambio",
+          "Fijate modelos o futbolistas - lleva la foto",
+          "Si usas barba, quítatela",
+          "Retócate las cejas",
+          "Quítate el vello de la nariz"
         ],
-        "investment_areas": [
-          "Ropa que resalte tu figura",
-          "Calzado de calidad",
+        "cuidado_personal": [
+          "Aféitate (no a cero) la zona pélvica",
+          "Opcional: crema facial de noche",
+          "Higiene impecable: perfume, uñas, dientes"
+        ],
+        "implementacion": [
+          "Comienza a usar tu look nuevo",
+          "Actualiza tu perfil en redes",
+          "Ve subiendo fotos a Facebook en tus salidas luciendo tus ropas nuevas"
+        ],
+        "validacion": "Comprobarás si lo has hecho bien cuando recibas elogios de tu entorno cercano",
+        "impacto_psicologico": "Te verás mejor, te halagará y cimentará tu autoestima y autoconcepto",
+        "autoafirmacion": "Mírate al espejo con tu look y dite: YO SOY EL PREMIO. YO ME LO MEREZCO",
+        "inversion_recomendada": [
+          "Al menos 3 prendas nuevas de calidad",
+          "Calzado que resalte tu estilo",
           "Corte de pelo profesional",
-          "Productos de cuidado personal",
-          "Accesorios que reflejen tu personalidad"
-        ],
-        "psychological_impact": "Cada cambio físico refuerza la sensación de 'nueva versión' de vos mismo"
+          "Productos de cuidado personal"
+        ]
       },
       {
         "step": 4,
-        "concept": "Vida Social Activa + Rasgos Alfa",
-        "description": "Volver a disfrutar la vida y proyectar abundancia",
-        "psychological_goal": "Sociabilizar, cultivar independencia",
-        "ai_tone": "Alegre, expansivo",
-        "key_phrase": "La vida es una fiesta, salí a vivirla",
-        "key_advice": [
-          "Salí mínimo 3 veces por semana: bares, eventos, deportes",
-          "Conectate con amigos que hacía tiempo no veías",
-          "Apuntate a actividades nuevas: clases, deportes, voluntariado",
-          "Sé el que organiza planes, no el que siempre espera invitaciones",
-          "Hablá con gente nueva, especialmente del sexo opuesto"
+        "concept": "Vida Social Activa",
+        "description": "Recuperar tu Ser Social y proyectar abundancia",
+        "psychological_goal": "Sociabilizar, cultivar independencia, mentalidad de abundancia (bien Alfa)",
+        "ai_tone": "Alegre, expansivo, motivador",
+        "key_phrase": "Sal, comparte, bríndate a los demás, disfruta - Recupera tu Ser Social",
+        "actividades_nuevas": [
+          "Nueva actividad que te atraiga: yoga, teatro, spinning",
+          "Conocerás además más mujeres - Mentalidad Abundancia (bien Alfa)",
+          "Gym, boxeo - sube fotos",
+          "Estarás subcomunicando esta Vida Social Activa"
         ],
-        "alpha_traits": [
-          "Iniciativa: vos proponés, vos organizás",
-          "Seguridad: opiniones firmes pero respetuosas",
-          "Abundancia: no te desesperás por una sola persona",
-          "Independencia: tu felicidad no depende de otros",
-          "Liderazgo: otros quieren estar cerca tuyo"
+        "estrategia_redes": [
+          "Etiqueta amigos en tus publicaciones",
+          "Dales Likes a tus amigos",
+          "Comenta en publicaciones de otros",
+          "Muestra tu vida social constantemente"
         ],
-        "social_activities": [
-          "Deportes grupales",
-          "Clases de baile, idiomas, cocina",
-          "Eventos de networking",
-          "Salidas nocturnas con propósito",
-          "Viajes con amigos"
-        ]
+        "mentalidad_correcta": "Lo haces por TI, no solo por tu ex",
+        "beneficios": [
+          "Recuperas tu ser social",
+          "Generas mentalidad de abundancia",
+          "Proyectas rasgos Alfa: sociable, independiente",
+          "Conoces más gente, especialmente mujeres",
+          "Tu ex verá que estás viviendo plenamente"
+        ],
+        "frecuencia": "Mínimo 3 salidas sociales por semana",
+        "actitud": "Sé el que organiza planes, no el que espera invitaciones"
       },
       {
         "step": 5,
-        "concept": "Responder de modo Alfa",
-        "description": "Control emocional en contacto",
-        "psychological_goal": "Desactivar reacciones impulsivas",
-        "ai_tone": "Calmo, racional, seguro",
-        "key_phrase": "No respondas enseguida, mantené el control",
-        "key_advice": [
-          "Si te contacta, esperá al menos 2-3 horas para responder",
-          "Respondé cordial pero sin mostrar emoción excesiva",
-          "No hagas preguntas sobre su vida actual o nueva relación",
-          "Mantené las conversaciones cortas y con propósito",
-          "No inicies vos las conversaciones"
+        "concept": "Responder de Modo Alfa",
+        "description": "Premiar y castigar - Gato y ratón - Es un juego",
+        "psychological_goal": "Control emocional total, invertir roles de poder",
+        "ai_tone": "Calmo, estratégico, racional",
+        "key_phrase": "Un León no se esfuerza. Premiar y castigar. Es un juego, grábate eso",
+        "sintesis_general": "Ironías, cebos, testeos, enojos, órdenes, planteos, exigencias, mala educación por parte de ella = la 'castigas' con tu indiferencia. Buena educación, cordialidad, trato normal = la 'premias' con un poquito más de tu atención",
+        "reglas_chat": [
+          "1. Demora 2 horas en contestar",
+          "2. Háblale breve y conciso - No te esfuerces - Un León no se esfuerza",
+          "3. A veces solo con una 'manito' de Ok es suficiente",
+          "4. Háblale siempre por su nombre entero: Susana, Marta, Agustina (nunca apodos cariñosos)",
+          "5. Si te echa culpas: Dale la razón - Ella espera que te defiendas, y NO",
+          "6. Dile: 'Es cierto, lo comprendo. Saludos'",
+          "7. TERMINA SIEMPRE TÚ EL CHAT",
+          "8. Usa: 'Chau saludos' / 'Te dejo que estaba terminando XYZ'",
+          "9. No des muchos detalles ni sobre expliques ni justifiques",
+          "10. NO agradezcas que te escribió",
+          "11. No le debes nada - ya no son pareja",
+          "12. No agradezcas ni pidas perdón por nada",
+          "13. Que la última oración sea de ella - No tuya - La dejas sin contestar"
         ],
-        "response_examples": [
-          {
-            "ella_dice": "Hola, ¿cómo estás?",
-            "respuesta_alfa": "Hola, todo bien por acá. ¿Vos qué tal?"
-          },
-          {
-            "ella_dice": "Te extraño",
-            "respuesta_alfa": "Entiendo. Yo estoy enfocado en mis cosas ahora."
-          },
-          {
-            "ella_dice": "¿Podemos hablar?",
-            "respuesta_alfa": "Claro, ¿de qué querés hablar?"
-          }
+        "principio_inversion": "No inviertas tú más en el chat que ella. Ella escribe 2, tú escribes 1.5",
+        "objetivo_chat": "No deseas tener una novia virtual. El objetivo de ser indiferente y breve es que ella se intrigue más y te INVITE a verse y tomar algo",
+        "responder_en_persona": {
+          "actitud_general": "Relajado, sereno, sin inquietarte - Relajado como un León después de comerse una cebra, descansando",
+          "lenguaje_corporal": "Serena la vista, los gestos de tu cara, y el lenguaje corporal suelto, relajado",
+          "guia_infalible": "Trátala como a un AMIGO VARÓN - esa es la guía infalible",
+          "tono": "Alegre, alegre, normal",
+          "regla": "Ni hacer nada por ella que no harías por tu colega"
+        },
+        "en_fiesta_discoteca": [
+          "No llegues muy temprano",
+          "Si es posible salúdala con la mano (de lejos)",
+          "Si debes compartir su mesa: MUÉVETE - Socializa - Baila (con ella NO)",
+          "Permanece de pie - Disfruta",
+          "Saluda a todos y muéstrate sonriente disfrutando",
+          "NO te emborraches - No hagas barra ni estés siempre con un trago en la mano",
+          "Si te habla: contesta alegre y breve, y vete a bailar",
+          "No te quedes pegado a ella",
+          "Vete TÚ antes de la fiesta - No te obligues a saludarla",
+          "NADA de llevarla a su casa"
         ],
-        "what_never_to_do": [
-          "Responder inmediatamente",
-          "Mostrar desesperación o súplica",
-          "Reclamar o hacer reproches",
-          "Preguntar sobre otros chicos"
-        ]
+        "en_el_trabajo": [
+          "Si es necesario, salúdala con la mano de lejos: 'Hola qué tal' y sigues caminando",
+          "Si te habla: contestas solo del trabajo, breve, te das vuelta y sigues",
+          "Siempre estás enfocado en lo tuyo",
+          "Si se acerca a besarte la mejilla: sonriendo en tono juguetón dices 'No no no, son $10'",
+          "Luego tú alegre y normal con todos tus compañeros - No triste por los rincones"
+        ],
+        "con_hijos_en_comun": [
+          "Te atienes a hablar asuntos de los niños",
+          "NO hablas de la relación - si ella lo hace es un Cebo",
+          "Cumples bien tu rol de padre $$",
+          "No involucras a los niños contándoles chismes",
+          "Siempre sereno y sonriente",
+          "La tratas como a una niñera que está cuidando tus niños",
+          "Recoges a los niños y te vas - No te quedas jugando en su casa"
+        ],
+        "en_calle_universidad": [
+          "Salúdala breve: 'Hola qué tal?' (NO 'Hola cómo estás?')",
+          "Sonríe - No le repreguntes nada",
+          "Finaliza la conversación y vete",
+          "No te quedes mirándola todo el tiempo"
+        ],
+        "llamadas_telefonicas": [
+          "1. NO atiendas a su primer llamado - La dejas esperando hasta que vuelva a llamarte",
+          "2. Si rellama ese día, la atiendes",
+          "3. Si rellama al siguiente, nuevamente NO la atiendes al primer intento",
+          "4. La atiendes COMIENDO ALGO - mastica galletas, pan, manzana - Subcomunica Desinterés",
+          "5. Le hablas como a un Amigo Varón - breve, conciso, la escuchas",
+          "6. Que diga para qué llama - No le repreguntes ni cómo está ella ni nada",
+          "7. Si pregunta por tus Sentimientos (cómo estás de ánimo, si estás mejor, etc.): le dirás que Estás Ocupado y que vas cortando la llamada porque debes irte",
+          "8. CORTAS SIEMPRE TÚ LA LLAMADA - Fundamental - No aguardas a que ella te salude",
+          "9. Si te invita a tomar algo: equivale a que te pregunte por tus sentimientos - le dices que estás ocupado y cortas",
+          "10. La próxima vez que invite (por chat o llamada): le dirás que justo ese día no puedes, sino el día XX siguiente",
+          "11. Siempre procurarás verse en un lugar PÚBLICO (confitería) - No en sus casas"
+        ],
+        "objetivo_llamada": "Acentuar el Contacto Cero, aumentar su intriga, ser breve y no cachorrear en sus Cebos",
+        "recordatorio": "Aplica aquí también lo visto en CHATS - Ojo con sus cebos y testeos - No inviertas más que ella"
       },
       {
         "step": 6,
-        "concept": "Ahora tú estás confundido",
-        "description": "Desafiar la expectativa del ex",
-        "psychological_goal": "Invertir roles, recuperar poder",
-        "ai_tone": "Astuto, sereno",
-        "key_phrase": "Mostrale que vos también estás procesando",
-        "key_advice": [
-          "Cuando ella muestre interés, vos mostrás dudas genuinas",
-          "No te apresures a volver, aunque sea lo que más querés",
-          "Hacé preguntas sobre qué cambió en ella",
-          "Mencioná sutilmente que vos también estás conociendo gente",
-          "Poné condiciones: 'necesito tiempo para pensarlo'"
+        "concept": "Ahora Tú Estás Confundido",
+        "description": "El momento de la verdad - Inversión total de roles",
+        "psychological_goal": "Desactivar su arma más poderosa (sexo) y generar incertidumbre total",
+        "ai_tone": "Astuto, estratégico, sereno",
+        "key_phrase": "Ni idea, es raro. Me siento confundido yo también - Baldazo de agua fría para ella",
+        "contexto_previo": [
+          "Con los primeros 4 Pasos te has ido recuperando y mejorando tu mente",
+          "A la vez subcomunicabas hacia ella y generabas intriga",
+          "Ella rompe el Contacto Cero y te plantea Cebos y Testeos",
+          "Olfatea un Cachorro disfrazado de Leoncito",
+          "Con el Paso 5 Responder de Modo Alfa los superas"
         ],
-        "power_shift_phrases": [
-          "'No sé si estoy listo para esto'",
-          "'Necesito estar seguro de que realmente querés esto'",
-          "'He estado bien solo, no quiero volver por costumbre'",
-          "'¿Qué te hace pensar que ahora va a ser diferente?'"
+        "momento_clave": "Si has hecho todo bien, ha llegado el momento de la verdad: QUE ELLA TE PIDA JUNTARSE A TOMAR ALGO PARA 'CHARLAR'",
+        "objetivo_logrado": "Eso queríamos: que INVIERTA en la interacción y diera ese paso",
+        "estrategia_encuentro": [
+          "NO te apresures ansioso - sería de Cachorro",
+          "Cuando ella te pregunte cómo te sentís / si la extrañas / qué pensás de la relación",
+          "Le decís: 'Ni idea, es raro. Me siento confundido yo también'",
+          "BALDAZO DE AGUA FRÍA para ella - ¿El Cachorro dejó de ser Cachorro?",
+          "Luego cambias de tema y sigues hablando",
+          "Procura juntarse en una CONFITERÍA o similar - NO en sus casas"
         ],
-        "psychological_principle": "Cuando vos dudás, ella se esfuerza más. Inversión de roles completa."
+        "manejo_del_sexo": [
+          "Puede ocurrir que ella también intente ahí mismo besarte / tocarte / tener sexo",
+          "PUEDES besarla UN POCO para que tu Confusión sea creíble",
+          "PERO si tienes SEXO estarás a punto de PERDERLA PARA SIEMPRE",
+          "Si te contienes: a punto de RECUPERARLA FINALMENTE",
+          "¿Por qué? El sexo es su ARMA INFALIBLE",
+          "Si NO funciona contigo, queda casi rendida, desconcertada",
+          "Torbellino de emociones: '¿Ya tiene otra mujer? ¿Ya se olvidó de mí?!'"
+        ],
+        "cierre_encuentro": [
+          "Estando siempre relajado y alegre, tratándola como un Amigo Varón",
+          "FINALIZA TÚ EL ENCUENTRO",
+          "Paga lo tuyo y VETE VETE VETE",
+          "Tienes 'cosas que hacer'",
+          "Quedará INTRIGADÍSIMA",
+          "Pronto te pedirá de volver a reunirse"
+        ],
+        "impacto_psicologico": "Ella esperaba que te lanzaras desesperado. Tu indiferencia y confusión la desestabilizan completamente"
       },
       {
         "step": 7,
-        "concept": "Vuelves a probar / o te recuperas",
-        "description": "Reencuentro o cierre definitivo",
-        "psychological_goal": "Decidir con madurez",
-        "ai_tone": "Reflexivo, empoderador",
-        "key_phrase": "Si vuelve, que sea desde el equilibrio",
-        "key_advice": [
-          "Si decidís volver: establecé límites claros desde el inicio",
-          "No vuelvas a los viejos patrones que causaron la ruptura",
-          "Si decidís no volver: celebrá tu crecimiento personal",
-          "Mantené las lecciones aprendidas para futuras relaciones",
-          "Recordá: tu valor no depende de que ella vuelva o no"
+        "concept": "Vuelves a probar pero en Modo Alfa",
+        "description": "Reencuentro consciente o cierre con dignidad",
+        "psychological_goal": "Mantener el equilibrio de poder y la relación sana",
+        "ai_tone": "Reflexivo, empoderador, maduro",
+        "key_phrase": "Tú eres la persona más importante del mundo. Ámate primero tú, para poder amar plenamente",
+        "proceso_reunion": [
+          "Si hiciste bien el Paso 6, habrán vuelto a chatear muy eróticamente",
+          "Como en los primeros tiempos de noviazgo",
+          "Ella volverá a invitarte para verse",
+          "RECIÉN AQUÍ puedes aceptar que sea en sus casas",
+          "RECIÉN al segundo o tercer encuentro accedes a tener sexo - SOLO SI ELLA PIDE",
+          "Sigues mostrándote indeciso y confundido"
         ],
+        "cuando_pregunta_si_quieres_volver": [
+          "Ella preguntará si quieres volver",
+          "Tú dirás que NO ESTÁS SEGURO",
+          "Ella te dirá que ella SÍ",
+          "Y DEBE PEDIRLO - Ella debe pedirte volver"
+        ],
+        "acuerdo_de_volver": [
+          "Acuerdan volver a PROBAR la relación",
+          "NO te apresures por volver a convivir inmediatamente",
+          "Hazlo lento, sé difícil, no fácil como un cachorro"
+        ],
+        "mentalidad_nueva_relacion": [
+          "A partir de aquí deberás mostrarte siempre como que tú TAMBIÉN...",
+          "...estás EVALUANDO la relación y a ella",
+          "No solo ella a ti",
+          "NO eres solo tú el que debe 'pasar el examen'",
+          "Sigue subcomunicando siempre Rasgos Alfa"
+        ],
+        "reglas_mantenimiento": [
+          "Cuida el EQUILIBRIO DE INVERSIÓN",
+          "Si ella hace 2, NO vuelvas tú a hacer 8",
+          "Mantén siempre tu VIDA SOCIAL ACTIVA",
+          "Descuidar este punto es lo que hace la mayoría",
+          "Y sus ex los vuelven a dejar al poco tiempo"
+        ],
+        "comunicacion_emocional": [
+          "YA NO digas tú primero ni tan fácilmente 'Te Amo'",
+          "Brinda tu CONFIANZA",
+          "Confía en ella para mantener una relación sana y fructífera en el tiempo",
+          "Si NO vuelve a haber confianza, NO vuelvas",
+          "Pues durarán lo que una pompa de jabón"
+        ],
+        "mensaje_final": "Recuerda: TÚ ERES LA PERSONA MÁS IMPORTANTE DEL MUNDO. Ámate primero tú, para poder amar plenamente. Y sé Feliz. ¡La Vida es una Fiesta! ;)",
         "if_she_returns": [
-          "Conversación honesta sobre qué cambió",
-          "Límites claros sobre comportamientos pasados",
-          "Tomar las cosas despacio, sin apuros",
-          "Mantener tu vida social y personal activa"
+          "Establecé límites claros desde el inicio",
+          "No vuelvas a los viejos patrones",
+          "Mantené tu vida social activa",
+          "Evaluá constantemente si la relación es sana"
         ],
         "if_she_doesnt": [
-          "Celebrar el crecimiento personal logrado",
-          "Aplicar las lecciones en nuevas relaciones",
-          "Mantener los hábitos positivos desarrollados",
-          "Ayudar a otros en situaciones similares"
+          "Celebrá el crecimiento personal logrado",
+          "Aplicá las lecciones en nuevas relaciones",
+          "Mantené los hábitos positivos desarrollados",
+          "Tu valor no depende de que ella vuelva"
         ],
         "success_metrics": [
           "Tu autoestima no depende de ella",
           "Tenés una vida plena sin ella",
-          "Podés tomar decisiones desde la razón, no la emoción",
-          "Te convertiste en una mejor versión de vos mismo"
+          "Podés tomar decisiones desde la razón",
+          "Te convertiste en una mejor versión de vos mismo",
+          "Mantenés equilibrio de inversión en la relación",
+          "Preservás tu vida social activa"
         ]
       }
-    ]
+    ],
+    "guia_rapida_primeros_4_pasos": {
+      "titulo": "Por dónde empezar: Cuatro pasos para recuperar a tu ex",
+      "descripcion": "Giro de 180 grados en la relación de poder y dinámica entre vos y tu ex",
+      "pasos_iniciales": [
+        "1. Contacto Cero",
+        "2. Redes Sociales", 
+        "3. Vestuario y Look",
+        "4. Vida Social Activa"
+      ],
+      "paso_1_contacto_cero": {
+        "definicion": "A partir de HOY rompes TODO contacto con tu ex",
+        "que_NO_hacer": [
+          "NO escribir por WhatsApp",
+          "NO escribir por Facebook",
+          "NO mandar mail",
+          "NO dar me gusta en nada de lo que publique",
+          "NO hacer llamadas perdidas",
+          "NO preguntar a amigos en común cómo está ella",
+          "NO hablar con amigos en común acerca de tu ex",
+          "NO hablar de cómo te sientes, que la extrañas o estás sufriendo"
+        ],
+        "desafio": "Lo más difícil es dominar tu mente. Si aún estás dolorido, ansioso, despechado, con bronca, aplicar contacto cero es difícil",
+        "video_relacionado": "Mira el video 'El mayor desafío para recuperar a tu ex'"
+      },
+      "paso_2_redes_sociales": {
+        "whatsapp": {
+          "foto_perfil": {
+            "accion": "Cambiar la foto de perfil sea cual sea que tengas - Pon una nueva",
+            "caracteristicas": [
+              "Tu rostro en PRIMER PLANO - una selfie",
+              "NADA con el espejo ni que se vea tu celular",
+              "SONRIENDO plenamente - sonrisa natural, con ganas",
+              "No sonrisa forzada ni cuadrada - como si te estuvieran contando un chiste",
+              "Que te la saque otra persona (modo selfie)",
+              "En cualquier lugar - puede ser cerrado",
+              "Fondo sencillo: pared lisa o algo simple",
+              "NO que se vea toda tu pieza o habitación desordenada"
+            ]
+          },
+          "estado": {
+            "accion": "Cambia el estado de WhatsApp",
+            "contenido": "Una frase que te identifique - un valor de vida para vos",
+            "ejemplos": [
+              "No a la tibieza (valor: decisión)",
+              "Trabaja en lo que te guste y nunca más trabajarás",
+              "Soy más que suficiente"
+            ],
+            "que_NO_poner": [
+              "Frase hecha o copiada textualmente",
+              "Frase muy extensa",
+              "Frase ridícula, tonta o infantil"
+            ]
+          }
+        },
+        "facebook": {
+          "foto_perfil": "La MISMA foto de WhatsApp - tu rostro en primer plano",
+          "portada": {
+            "tipo": "Foto GRUPAL",
+            "opciones": [
+              "Con compañeros/as de trabajo",
+              "Salida del viernes o sábado a la noche con amigos",
+              "En un cumpleaños",
+              "En la plaza tomando mate con amigos"
+            ],
+            "regla": "DEBE ser una foto grupal, NO solo vos"
+          }
+        },
+        "resumen": "Esas dos simples cosas: fotos de perfil en WhatsApp y Facebook, y cambiar portada de Facebook"
+      },
+      "paso_3_vestuario": {
+        "ropa_nueva": {
+          "minimo_indispensable": [
+            "Una remera nueva para todos los días",
+            "Una remera nueva para salir",
+            "Una camisa para salir",
+            "Un pantalón",
+            "Algún calzado",
+            "Alguna chaqueta o campera"
+          ],
+          "objecion_presupuesto": "Desconozco qué presupuesto tienes, pero si realmente quieres intentar recuperar a tu ex, MÍNIMAMENTE debes hacer esto"
+        },
+        "corte_cabello": {
+          "imperativo": "Sí o sí - es IMPERATIVO ir a cortarte el cabello",
+          "objetivo": "Renovar tu look - haz un cambio de look",
+          "resistencias_comunes": [
+            "No digas: 'No, pero yo me siento cómodo así'",
+            "No digas: 'Siempre estuve así'",
+            "Tu ex NO se va a volver a enamorar o enganchar con más de lo mismo"
+          ],
+          "como_hacerlo": [
+            "Busca en Google algunos peinados modernos de actores",
+            "Ve a tu peluquero y dile que te haga uno de esos cortes"
+          ],
+          "resultado": "Vas a ver cómo cambiará tu look, cómo a vos mismo te gustará enseguida, y cuántos comentarios positivos empezarás a recibir de tu entorno - incluso en tu trabajo"
+        },
+        "razon": "Tu ex no se volverá a enganchar con más de lo mismo - necesita verte diferente, renovado"
+      },
+      "paso_4_vida_social_activa": {
+        "descripcion": "MUY IMPORTANTE - donde vamos a reunir todo lo visto en los tres pasos anteriores",
+        "objetivo": "SUBCOMUNICAR Vida Social Activa",
+        "facebook_posts": {
+          "frecuencia": "A diario o cada 2-3 días",
+          "contenido_fotos": [
+            "En tu trabajo tomando mate con compañeros",
+            "Saliendo con amigos viernes o sábados",
+            "Donde se vea tu ROPA NUEVA",
+            "Donde se vea tu LOOK NUEVO"
+          ]
+        },
+        "si_tienes_pocos_amigos": {
+          "historia_real": "Un suscriptor tenía pocos amigos, no tenía con quién salir un sábado",
+          "actitud_correcta": [
+            "Se animó y fue SOLO a un bar",
+            "Enseguida se enganchó con dos muchachos alegres y sociables",
+            "Le invitaron a tomar algo",
+            "Se sacaron fotos naturales y espontáneas",
+            "Lo agregaron en Facebook",
+            "Lo invitaron a una fiesta el viernes próximo"
+          ],
+          "resultado": "Está re contento - empieza a tener mentalidad de ABUNDANCIA - Actitud Alfa/León: sociable",
+          "leccion": "Obtuvo fotos REALES de vida social activa - ESA es la ACTITUD"
+        },
+        "hobby_actividad_extra": {
+          "importancia": "De la mano con vida social activa",
+          "si_ya_tenias_uno": [
+            "Gimnasio: vuelve a ir - sácate fotos sencillas y normales (no exageradas ni soberbio)",
+            "Yoga: vuelve a yoga",
+            "Running: vuelve a running"
+          ],
+          "si_nunca_hiciste_nada": "Si no hacías nada pero te gustaría, ESTE ES EL MOMENTO de hacerlo",
+          "opciones": [
+            "Running",
+            "Gimnasio",
+            "Spinning",
+            "Yoga",
+            "Meditación",
+            "Canto",
+            "Teatro"
+          ],
+          "beneficio": "Te distrae y relaja - estar RELAJADO y en DOMINIO DE SÍ MISMO y de la situación es una de las cualidades CLAVE",
+          "publicacion": "Utiliza fotos del gym/hobby para cambiar tu portada de Facebook cada 2-3 días"
+        },
+        "confluencia": "Vida Social Activa es el cuarto y ÚLTIMO punto, el MÁS IMPORTANTE donde confluye TODA la estrategia",
+        "que_subcomunicas": "Tienes y eres una persona de VIDA SOCIAL ACTIVA",
+        "resultado_esperado": "Si empiezas a implementar estos 4 pasos, NO te sorprendas si pronto recibes novedades de tu ex: escribirá por WhatsApp, Facebook o mail"
+      },
+      "cuando_tu_ex_contacte": "Escribime rápido por WhatsApp y te cuento cómo debes contestarle (aplicando Paso 5: Responder de Modo Alfa)"
+    }
   },
   
   "keywords_importantes": [
