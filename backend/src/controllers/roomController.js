@@ -4,6 +4,12 @@ const { Room, User, RoomParticipant } = require('../models');
 
 const getRooms = async (req, res) => {
   try {
+    console.log('📋 GET ROOMS - Iniciando petición:', {
+      user: req.user?.email || 'NO USER',
+      query: req.query,
+      timestamp: new Date().toISOString()
+    });
+
     const {
       type = 'all', page = 1, limit = 20, search,
     } = req.query;
@@ -30,6 +36,8 @@ const getRooms = async (req, res) => {
         '$participants.id$': req.user.id,
       };
     }
+
+    console.log('🔍 WHERE CLAUSE:', JSON.stringify(whereClause, null, 2));
 
     const rooms = await Room.findAndCountAll({
       where: whereClause,
@@ -63,6 +71,12 @@ const getRooms = async (req, res) => {
       };
     });
 
+    console.log('✅ ROOMS ENCONTRADAS:', {
+      total: rooms.count,
+      returning: roomsWithCount.length,
+      firstRoom: roomsWithCount[0]?.name || 'N/A'
+    });
+
     res.json({
       success: true,
       rooms: roomsWithCount,
@@ -75,7 +89,11 @@ const getRooms = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Get rooms error:', error);
+    console.error('❌ GET ROOMS ERROR:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',

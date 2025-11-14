@@ -58,7 +58,7 @@ const joinRoomValidation = [
 const getRoomsValidation = [
   query('type')
     .optional()
-    .isIn(['all', 'public', 'private', 'game'])
+    .isIn(['all', 'public', 'private', 'game', 'chat'])
     .withMessage('Tipo de sala inválido'),
   query('page')
     .optional()
