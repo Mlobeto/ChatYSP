@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const FedeAIService = require('../services/fedeAIService');
+const FedeAIService = require('../services/FedeAIService');
 const FedeConversation = require('../models/FedeConversation');
 
 class FedeController {
