@@ -104,8 +104,10 @@ export default function AppNavigator() {
   const isLoading = useSelector(selectIsLoading);
 
   useEffect(() => {
-    // Intentar cargar sesión guardada al iniciar la app
-    dispatch(loadStoredAuth());
+    // Solo intentar cargar sesión guardada si no está ya autenticado
+    if (!isAuthenticated) {
+      dispatch(loadStoredAuth());
+    }
   }, [dispatch]);
 
   useEffect(() => {
