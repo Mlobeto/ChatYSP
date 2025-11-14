@@ -9,11 +9,9 @@ export default function LoadingScreen() {
       
       {/* Logo o icono */}
       <View className="mb-8">
-        <View className="w-20 h-20 bg-primary-500 rounded-2xl justify-center items-center mb-4">
-          <Text className="text-white text-2xl font-bold">C</Text>
-        </View>
+       
         <Text className="text-2xl font-bold text-gray-900 text-center">ChatYSP</Text>
-        <Text className="text-gray-600 text-center mt-2">Tu coach personal de IA</Text>
+        <Text className="text-gray-600 text-center mt-2">Chatea Con Fede</Text>
       </View>
 
       {/* Indicador de carga */}
@@ -27,7 +25,7 @@ export default function LoadingScreen() {
       {/* Información adicional */}
       <View className="mt-12 px-4">
         <Text className="text-xs text-gray-400 text-center">
-          Conectando con el coaching inteligente
+          Conectando con Fede
         </Text>
       </View>
     </View>

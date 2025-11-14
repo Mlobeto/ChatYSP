@@ -35,7 +35,7 @@ export default function HomeScreen({ navigation }) {
     {
       id: 3,
       title: 'Salas de Juego',
-      subtitle: 'Juega y diviértete con otros',
+      subtitle: 'Pasa tiempo divirtiéndote',
       icon: 'game-controller',
       color: '#f59e0b',
       gradient: 'from-amber-400 to-orange-500',
