@@ -54,7 +54,39 @@ const submitAnswerValidation = [
     .withMessage('Índice de respuesta inválido'),
 ];
 
+const quickCreateGameValidation = [
+  body('category')
+    .optional()
+    .isString()
+    .withMessage('Categoría inválida'),
+  body('difficulty')
+    .optional()
+    .isIn(['easy', 'medium', 'hard'])
+    .withMessage('Dificultad inválida'),
+  body('maxPlayers')
+    .optional()
+    .isInt({ min: 2, max: 10 })
+    .withMessage('Número de jugadores debe estar entre 2 y 10'),
+  body('questionsCount')
+    .optional()
+    .isInt({ min: 5, max: 50 })
+    .withMessage('Número de preguntas debe estar entre 5 y 50'),
+  body('timePerQuestion')
+    .optional()
+    .isInt({ min: 10, max: 120 })
+    .withMessage('Tiempo por pregunta debe estar entre 10 y 120 segundos'),
+];
+
 // Routes
+// Quick create: Create GameRoom and start game in one step
+router.post(
+  '/create',
+  authMiddleware,
+  quickCreateGameValidation,
+  validateRequest,
+  gameController.quickCreateGame,
+);
+
 router.post(
   '/rooms/:roomId/games',
   authMiddleware,

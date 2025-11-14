@@ -5,6 +5,123 @@ const {
 // Game session storage (in production, use Redis)
 const gameSessions = new Map();
 
+// Quick create: Create GameRoom and start game in one step (for mobile app)
+const quickCreateGame = async (req, res) => {
+  try {
+    console.log('🎮 QUICK CREATE GAME - Iniciando:', {
+      user: req.user?.email || 'NO USER',
+      body: req.body,
+      timestamp: new Date().toISOString()
+    });
+
+    const userId = req.user.id;
+    const {
+      category = 'general',
+      difficulty = 'medium',
+      maxPlayers = 6,
+      questionsCount = 10,
+      timePerQuestion = 30,
+    } = req.body;
+
+    // 1. Create GameRoom
+    const gameRoom = await GameRoom.create({
+      name: `Partida de ${req.user.username}`,
+      description: `Juego ${difficulty} de ${category}`,
+      gameType: 'quiz',
+      maxPlayers: parseInt(maxPlayers),
+      difficulty,
+      category,
+      questionCount: parseInt(questionsCount),
+      timePerQuestion: parseInt(timePerQuestion),
+      createdById: userId,
+      status: 'waiting',
+      isActive: true,
+    });
+
+    console.log('✅ GameRoom creado:', gameRoom.id);
+
+    // 2. Get questions
+    const whereClause = { isActive: true };
+    if (difficulty) whereClause.difficulty = difficulty;
+    if (category) whereClause.category = category;
+
+    const questions = await Question.findAll({
+      where: whereClause,
+      order: [
+        ['timesUsed', 'ASC'],
+        ['createdAt', 'DESC'],
+      ],
+      limit: parseInt(questionsCount),
+    });
+
+    console.log('📝 Preguntas encontradas:', questions.length);
+
+    if (questions.length < questionsCount) {
+      await gameRoom.destroy(); // Rollback
+      return res.status(400).json({
+        success: false,
+        message: `Preguntas insuficientes. Solo hay ${questions.length} disponibles para ${category}/${difficulty}.`,
+      });
+    }
+
+    // 3. Create game session
+    const gameSession = {
+      id: `game_${Date.now()}`,
+      gameRoomId: gameRoom.id,
+      gameType: 'quiz',
+      questions: questions.map((q) => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        points: q.points,
+        category: q.category,
+        difficulty: q.difficulty,
+      })),
+      currentQuestionIndex: 0,
+      players: new Map([[userId, {
+        id: userId,
+        username: req.user.username,
+        score: 0,
+        answers: [],
+      }]]),
+      startedAt: new Date(),
+      status: 'active',
+      timePerQuestion: parseInt(timePerQuestion),
+    };
+
+    gameSessions.set(gameRoom.id, gameSession);
+
+    // Update game room status
+    await gameRoom.update({ status: 'active' });
+
+    console.log('🎉 Juego iniciado exitosamente');
+
+    res.status(201).json({
+      success: true,
+      message: 'Juego creado e iniciado exitosamente',
+      id: gameRoom.id,
+      gameRoom: gameRoom.toJSON(),
+      session: {
+        id: gameSession.id,
+        currentQuestionIndex: 0,
+        totalQuestions: questions.length,
+        timePerQuestion: parseInt(timePerQuestion),
+      },
+    });
+  } catch (error) {
+    console.error('❌ QUICK CREATE GAME ERROR:', {
+      message: error.message,
+      stack: error.stack
+    });
+    res.status(500).json({
+      success: false,
+      message: 'Error creando el juego',
+      error: error.message,
+    });
+  }
+};
+
 const createGame = async (req, res) => {
   try {
     const { gameRoomId } = req.params;
@@ -522,6 +639,7 @@ const endGame = async (req, res) => {
 };
 
 module.exports = {
+  quickCreateGame,
   createGame,
   joinGame,
   startGame,
