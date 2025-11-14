@@ -49,7 +49,7 @@ export const sendMessageToAI = createAsyncThunk(
       const aiMessage = {
         id: response.data.messageId || (Date.now() + 1).toString(),
         type: MESSAGE_TYPES.AI,
-        content: response.data.response,
+        content: response.data.message || response.data.response,
         timestamp: new Date().toISOString(),
         metadata: response.data.metadata || {}
       };

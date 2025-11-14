@@ -52,23 +52,12 @@ export default function ChatScreen() {
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
-    const userMessage = {
-      id: Date.now(),
-      text: inputText.trim(),
-      isUser: true,
-      timestamp: new Date().toISOString(),
-      userId: user.id,
-    };
-
-    // Agregar mensaje del usuario inmediatamente
-    dispatch(addMessage(userMessage));
-    
     // Limpiar input
     const messageText = inputText.trim();
     setInputText('');
 
     try {
-      // Enviar mensaje a la IA
+      // Enviar mensaje a la IA (sendMessageToAI ya agrega el mensaje del usuario)
       await dispatch(sendMessageToAI({
         message: messageText,
         conversationId,
@@ -180,9 +169,7 @@ export default function ChatScreen() {
       </View>
 
       {/* Input */}
-      <View className={`bg-white border-t border-gray-200 px-4 py-3 ${
-        isInputFocused ? 'pb-6' : ''
-      }`}>
+      <View className="bg-white border-t border-gray-200 px-4 py-3 pb-8">
         <View className="flex-row items-end space-x-3">
           <View className="flex-1 bg-gray-100 rounded-full px-4 py-3 flex-row items-center">
             <TextInput
